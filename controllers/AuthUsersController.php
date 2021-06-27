@@ -18,6 +18,7 @@ use yii\web\Response;
  */
 class AuthUsersController extends Controller
 {
+    public $layout = 'sistema';
     /**
      * {@inheritdoc}
      */
@@ -80,7 +81,7 @@ class AuthUsersController extends Controller
 
                 $person->auth_user_id = $user->id;
                 if($person->save()){
-                    return $this->redirect(['site/login']);
+                    return $this->redirect(['sistema/login']);
                 }
             }else{
                 var_dump($model->getErrors());

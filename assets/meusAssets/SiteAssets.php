@@ -18,7 +18,7 @@ class SiteAssets extends Assetbundle
     'js\bootstrap.bundle.min.js',
     'js\jquery.easing.min.js',
     'js\jquery.min.js',
-    'js\sb-admin-2.min.js'
+    'js\sb-admin-2.min.js',
   ];
 
   public $depends = [

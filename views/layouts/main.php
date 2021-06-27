@@ -22,6 +22,7 @@ AppAsset::register($this);
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+    
 </head>
 <body>
 <?php $this->beginBody() ?>
@@ -43,7 +44,7 @@ AppAsset::register($this);
             ['label' => 'Contato', 'url' => ['/site/contact']],
             ['label' => 'Registre-se', 'url' => ['/auth-users/create']],
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+                ['label' => 'Login', 'url' => ['/sistema/login']]
             ) : (
                 '<li>'
                 . Html::beginForm(['/site/logout'], 'post')
