@@ -27,9 +27,7 @@ class m210627_130019_AuthUsers extends Migration
      */
     public function safeDown()
     {
-        echo "m210627_130019_AuthUsers cannot be reverted.\n";
-
-        return false;
+       $this->dropTable('auth_users');
     }
 
     /*

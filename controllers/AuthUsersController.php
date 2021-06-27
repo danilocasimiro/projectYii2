@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\AuthUser;
+use app\models\Person;
 use app\models\AuthUserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -68,15 +69,30 @@ class AuthUsersController extends Controller
     public function actionCreate()
     {
         $model = new AuthUser();
+        $person = new Person();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+      
+        if ($model->load(Yii::$app->request->post()) && $person->load(Yii::$app->request->post())) {
            // return $this->redirect(['view', 'id' => $model->id]);
-           return $this->redirect(['site/login']);
+          
+            if($model->save()){
+                $user = AuthUser::find()->where(['email' => $model->email])->one();
+
+                $person->auth_user_id = $user->id;
+                if($person->save()){
+                    return $this->redirect(['site/login']);
+                }
+            }else{
+                var_dump($model->getErrors());
+                exit;
+            }
         }
 
         return $this->render('create', [
             'model' => $model,
+            'person' => $person
         ]);
+        
     }
 
     /**

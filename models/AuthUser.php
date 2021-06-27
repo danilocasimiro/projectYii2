@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\web\IdentityInterface;
+use \yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "auth_users".
@@ -13,8 +14,9 @@ use yii\web\IdentityInterface;
  * @property string $password
  * @property string $authKey
  * @property string $acessToken
+ * @property Person $person
  */
-class AuthUser extends \yii\db\ActiveRecord implements IdentityInterface
+class AuthUser extends ActiveRecord implements IdentityInterface
 {
     /**
      * {@inheritdoc}
@@ -30,8 +32,10 @@ class AuthUser extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
+            [['email', 'password'], 'required'],
             [['email', 'authKey', 'acessToken'], 'string', 'max' => 45],
             [['password'], 'string', 'max' => 60],
+            [['acessToken', 'authKey'], 'default', 'value' => '7c4a8d09ca3762af61e59520943dc26494f8941b']
         ];
     }
 
@@ -107,5 +111,10 @@ class AuthUser extends \yii\db\ActiveRecord implements IdentityInterface
     public function validatePassword($password)
     {
         return $this->password === sha1($password);
+    }
+
+    public function getPerson()
+    {
+        return $this->hasOne(Person::class, ['auth_user_id' => 'id']);
     }
 }
