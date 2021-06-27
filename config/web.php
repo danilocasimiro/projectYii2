@@ -49,7 +49,7 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 'authusers' => 'auth-users/index', 
-                'authusers/create' => 'auth-users/create', 
+                'authusers/create' => 'auth-users/create',
             ],
         ],
         

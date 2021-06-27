@@ -22,6 +22,7 @@ class SiteAssets extends Assetbundle
   ];
 
   public $depends = [
-    'yii\web\JqueryAsset'
+    'yii\web\JqueryAsset',
+    'yii\web\YiiAsset',
   ];
 }
