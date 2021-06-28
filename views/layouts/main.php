@@ -44,7 +44,7 @@ AppAsset::register($this);
             ['label' => 'Contato', 'url' => ['/site/contact']],
             ['label' => 'Registre-se', 'url' => ['/auth-users/create']],
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/sistema/login']]
+                ['label' => 'Login', 'url' => ['/auth-users/login']]
             ) : (
                 '<li>'
                 . Html::beginForm(['/site/logout'], 'post')
@@ -78,6 +78,7 @@ AppAsset::register($this);
 </footer>
 
 <?php $this->endBody() ?>
+
 </body>
 </html>
 <?php $this->endPage() ?>

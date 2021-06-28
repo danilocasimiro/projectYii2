@@ -33,7 +33,6 @@ class Person extends ActiveRecord
         return [
             [['auth_user_id', 'name', 'birthday', 'sex'], 'required'],
             [['auth_user_id'], 'integer'],
-            [['birthday'], 'safe'],
             [['name'], 'string', 'max' => 60],
             [['sex'], 'string', 'max' => 1],
             ['auth_user_id', 'unique']
@@ -52,6 +51,30 @@ class Person extends ActiveRecord
             'birthday' => Yii::t('app', 'Birthday'),
             'sex' => Yii::t('app', 'Sex'),
         ];
+    }
+
+    public function getDateOfBirthAttribute()
+    {
+        [$day, $month, $year] = explode('/', $this->birthday);
+        return implode('/', [$month, $day, $year]);
+    }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $date = new \DateTime($this->getDateOfBirthAttribute(), new \DateTimeZone('UTC'));
+         
+                $this->birthday =  $date->format('Y-m-d\ H:i:s.u');
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public function getAuthUser()
+    {
+        return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
     }
 
 }

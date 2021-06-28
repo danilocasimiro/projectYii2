@@ -5,10 +5,12 @@ namespace app\controllers;
 use Yii;
 use app\models\AuthUser;
 use app\models\Person;
+use app\models\UserType;
 use app\models\AuthUserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\LoginForm;
 
 use yii\filters\AccessControl;
 use yii\web\Response;
@@ -71,17 +73,20 @@ class AuthUsersController extends Controller
     {
         $model = new AuthUser();
         $person = new Person();
-
+        $type = UserType::find()->where(['id' => 4])->one();
       
         if ($model->load(Yii::$app->request->post()) && $person->load(Yii::$app->request->post())) {
            // return $this->redirect(['view', 'id' => $model->id]);
-          
+           
             if($model->save()){
                 $user = AuthUser::find()->where(['email' => $model->email])->one();
 
                 $person->auth_user_id = $user->id;
                 if($person->save()){
-                    return $this->redirect(['sistema/login']);
+                    return $this->redirect(['auth-users/login']);
+                }else{
+                    var_dump($person->getErrors());
+                exit;
                 }
             }else{
                 var_dump($model->getErrors());
@@ -91,7 +96,8 @@ class AuthUsersController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-            'person' => $person
+            'person' => $person,
+            'type' => $type
         ]);
         
     }
@@ -144,6 +150,30 @@ class AuthUsersController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    
+     /**
+     * Login action.
+     *
+     * @return Response|string
+     */
+    public function actionLogin()
+    {
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            //return $this->goBack();
+            return $this->redirect(['sistema/index']);
+        }
+
+        $model->password = '';
+        return $this->render('login', [
+            'model' => $model,
+        ]);
     }
 
 }

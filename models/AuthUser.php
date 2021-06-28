@@ -14,7 +14,9 @@ use \yii\db\ActiveRecord;
  * @property string $password
  * @property string $authKey
  * @property string $acessToken
+ * @property int $user_type_id
  * @property Person $person
+ * @property UserType $user_type
  */
 class AuthUser extends ActiveRecord implements IdentityInterface
 {
@@ -60,6 +62,7 @@ class AuthUser extends ActiveRecord implements IdentityInterface
                 $this->authKey = \Yii::$app->security->generateRandomString();
                 $this->acessToken = \Yii::$app->security->generateRandomString();
                 $this->password = sha1($this->password);
+                $this->user_type_id = 4;
             }
             return true;
         }
@@ -116,5 +119,10 @@ class AuthUser extends ActiveRecord implements IdentityInterface
     public function getPerson()
     {
         return $this->hasOne(Person::class, ['auth_user_id' => 'id']);
+    }
+
+    public function getUserType()
+    {
+        return $this->hasOne(UserType::class, ['id' => 'user_type_id']);
     }
 }

@@ -11,7 +11,8 @@ class SiteAssets extends Assetbundle
 
   public $css = [
     'css\all.min.css',
-    'css\sb-admin-2.min.css'
+    'css\sb-admin-2.min.css',
+    'css\jquery-ui.min.css'
   ];
 
   public $js = [
