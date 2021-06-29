@@ -63,12 +63,11 @@ class Person extends ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            if ($this->isNewRecord) {
                 $date = new \DateTime($this->getDateOfBirthAttribute(), new \DateTimeZone('UTC'));
          
                 $this->birthday =  $date->format('Y-m-d\ H:i:s.u');
-            }
-            return true;
+
+                return true;
         }
         return false;
     }
@@ -77,5 +76,4 @@ class Person extends ActiveRecord
     {
         return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
     }
-
 }

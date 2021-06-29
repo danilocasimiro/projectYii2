@@ -119,16 +119,24 @@ class AuthUsersController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id = null)
     {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if($id != null && AuthUser::verifyAbility(Yii::$app->user->identity)){
+            return $id;
+        }else{
+            $id = Yii::$app->user->identity->address->id;
         }
+        
+        $model = $this->findModel($id);
+        $user = AuthUser::find()->where(['id' => $id])->one();
 
+        if ($model->load(Yii::$app->request->post()) && $model->person->load(Yii::$app->request->post()) && $model->phone->load(Yii::$app->request->post()) && $model->save() && $model->person->save() && $model->phone->save()) {
+            return $this->redirect(['sistema/profile']);
+        }
         return $this->render('update', [
-            'model' => $model,
+            'model' => $user,
+            'person' => $user->person,
+            'phone' => $user->phone
         ]);
     }
 

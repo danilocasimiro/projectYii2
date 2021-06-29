@@ -60,15 +60,24 @@ class AuthUser extends ActiveRecord implements IdentityInterface
         ];
     }
 
+    public static function verifyAbility($user)
+    {
+        if(Yii::$app->user->identity->userType->type === 'admin' || Yii::$app->user->identity->userType->type === 'own_company'){
+            return true;
+        }
+        return false;
+    }
+
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
                 $this->authKey = \Yii::$app->security->generateRandomString();
                 $this->acessToken = \Yii::$app->security->generateRandomString();
-                $this->password = sha1($this->password);
-                $this->user_type_id = 4;
+                
             }
+            $this->password = sha1($this->password);
+            $this->user_type_id = 4;
             return true;
         }
         return false;

@@ -3,12 +3,12 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\AuthUser */
+/* @var $model app\models\Address */
 
-$this->title = Yii::t('app', 'Update Auth User: {name}', [
+$this->title = Yii::t('app', 'Update Address: {name}', [
     'name' => $model->id,
 ]);
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Auth Users'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Addresses'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 ?>
@@ -31,10 +31,9 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                    <?= $this->render('/sistema/_form', [
+                    <?= $this->render('/addresses/_form', [
                         'model' => $model,
-                        'person' => $person,
-                        'phone' => $phone
+                        'address' => $address,
                     ]) ?>
                 </div>
             </div>

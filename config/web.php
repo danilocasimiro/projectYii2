@@ -56,6 +56,8 @@ $config = [
             'rules' => [
                 'authusers' => 'auth-users/index', 
                 'authusers/create' => 'auth-users/create',
+                'authusers/update' => 'auth-users/update',
+                'addresses/update' => 'addresses/update',
             ],
         ],
         
