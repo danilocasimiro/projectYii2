@@ -1,5 +1,8 @@
 <?php 
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+use app\models\AuthUser;
+
 ?>
 <div id="wrapper">
 
@@ -22,8 +25,7 @@ use yii\helpers\Html;
           <!-- Breadcrumb -->
           <nav aria-label="breadcrumb" class="main-breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-              <li class="breadcrumb-item"><a href="javascript:void(0)">User</a></li>
+              <li class="breadcrumb-item"><a href="/sistema/index">Home</a></li>
               <li class="breadcrumb-item active" aria-current="page">User Profile</li>
             </ol>
           </nav>
@@ -34,8 +36,13 @@ use yii\helpers\Html;
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex flex-column align-items-center text-center">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                    <img src=<?= AuthUser::getPhoto()?> alt="Admin" class="rounded-circle" width="150">
                     <div class="mt-3">
+                      <?php $form = ActiveForm::begin() ?>
+                        <?= $form->field($model, 'fotoCliente')->fileInput([]) ?>
+                        <?= Html::submitButton('Salvar', ['class' => 'btn btn-primary']) ?>
+                      <?php ActiveForm::end() ?>
+                      </br>
                       <h4><?= $model->person->name ?></h4>
                       <p class="text-secondary mb-1">Account type: <?= $model->userType->type ?></p>
                       <p class="text-muted font-size-sm"><?= $model->address->getFullAddress() ?></p>
@@ -274,6 +281,18 @@ body{
 }
 .shadow-none {
     box-shadow: none!important;
+}
+input[type='file'] {
+  display: none
+}
+
+label {
+  background-color: #3498db;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  margin: 10px;
+  padding: 6px 20px
 }
 
 </style>

@@ -16,6 +16,7 @@ class m210627_130019_AuthUsers extends Migration
             'id'=>$this->primaryKey(),
             'email'=>$this->string(45),
             'password'=>$this->string(60),
+            'photo'=>$this->string(60),
             'authKey'=>$this->string(45),
             'acessToken'=>$this->string(45)
             

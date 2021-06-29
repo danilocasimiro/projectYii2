@@ -13,6 +13,7 @@ use \yii\db\ActiveRecord;
  * @property string $email
  * @property string $password
  * @property string $authKey
+ * @property string $photo
  * @property string $acessToken
  * @property int $user_type_id
  * @property Person $person
@@ -22,6 +23,11 @@ use \yii\db\ActiveRecord;
  */
 class AuthUser extends ActiveRecord implements IdentityInterface
 {
+    /**
+     * @var UploadedFile
+     */
+    public $fotoCliente;
+
     /**
      * {@inheritdoc}
      */
@@ -39,7 +45,8 @@ class AuthUser extends ActiveRecord implements IdentityInterface
             [['email', 'password'], 'required'],
             [['email', 'authKey', 'acessToken'], 'string', 'max' => 45],
             [['email'], 'email'],
-            [['password'], 'string', 'max' => 60],
+            ['fotoCliente', 'file', 'extensions' => 'jpg, png'],
+            [['password', 'photo'], 'string', 'max' => 60],
             [['acessToken', 'authKey'], 'default', 'value' => '7c4a8d09ca3762af61e59520943dc26494f8941b'],
             [['user_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserType::className(), 'targetAttribute' => ['user_type_id' => 'id']],
 
@@ -54,6 +61,8 @@ class AuthUser extends ActiveRecord implements IdentityInterface
         return [
             'id' => Yii::t('app', 'ID'),
             'email' => Yii::t('app', 'Email'),
+            'fotoCliente' => 'Foto de Perfil',
+            'photo' => Yii::t('app', 'Photo'),
             'password' => Yii::t('app', 'Password'),
             'authKey' => Yii::t('app', 'Auth Key'),
             'acessToken' => Yii::t('app', 'Acess Token'),
@@ -81,6 +90,15 @@ class AuthUser extends ActiveRecord implements IdentityInterface
             return true;
         }
         return false;
+    }
+
+    public static function getPhoto()
+    {
+        if(Yii::$app->user->identity->photo === null){
+            return Yii::getAlias('/files/default.jpg');
+        }else{
+           return Yii::getAlias('/files/').  Yii::$app->user->identity->photo;
+        }
     }
 
     public static function findIdentity($id)
