@@ -17,30 +17,85 @@ use yii\widgets\ActiveForm;
                 <div class="col-lg-7">
                     <div class="p-5">
                         <div class="text-center">
-                            <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                            <h1 class="h4 text-gray-900 mb-4">Crie uma nova conta!</h1>
                         </div>
                         <?php $form = ActiveForm::begin(); ?>
-                            <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
-                            
-                            <?= $form->field($model, 'password')->passwordInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                            <h5><strong>Dados de acesso</strong></h5>
+                           
+                            <div class="form-group row"> 
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                                </div>
+                                <div class="col-sm-6">
+                                    <?= $form->field($model, 'password')->passwordInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                                </div>
+                            </div>
+                            <h5><strong>Dados pessoais</strong></h5>
+                        
+                            <div class="form-group row"> 
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                <?= $form->field($person, 'name')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                                </div>
+                                <div class="col-sm-6">
+                                <?= $form->field($person, 'sex')->dropDownList(['M' => 'Masculino', 'F' => 'Feminino' ], ['maxlength' => true]) ?>
+                                </div>
+                            </div>
+                            <div class="form-group row"> 
+                                <div class="col-sm-4 mb-3 mb-sm-0">
+                                    <?= $form->field($phone, 'ddd')->widget(\yii\widgets\MaskedInput::className(), [
+                                            'mask' => '(99)'
+                                        ]);
+                                    ?>
+                                </div>
+                                <div class="col-sm-4">
+                                    <?= $form->field($phone, 'number')->widget(\yii\widgets\MaskedInput::className(), [
+                                            'mask' => '9999-99-99'
+                                        ]);
+                                    ?>
+                                </div>
+                                <div class="col-sm-4">
+                                    <?= $form->field($person, 'birthday')->textInput(['maxlength' => true, 'id'=> 'myDatepicker']) ?>
+                                </div>
+                            </div>
 
-                            <?= $form->field($person, 'name')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                            <h5><strong>Endereço</strong></h5>
 
-                            <?= $form->field($person, 'birthday')->textInput(['maxlength' => true, 'id'=> 'myDatepicker']) ?>
-                            
-                            <?= $form->field($person, 'sex')->dropDownList(['M' => 'Masculino', 'F' => 'Feminino' ], ['maxlength' => true]) ?>
+                            <div class="form-group row"> 
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <?= $form->field($address, 'street')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                                </div>
+                                <div class="col-sm-2">
+                                    <?= $form->field($address, 'number')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                                </div>
+                                <div class="col-sm-4">
+                                    <?= $form->field($address, 'district')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                                </div>
+                            </div>
+
+                            <div class="form-group row"> 
+                                <div class="col-sm-3 mb-3 mb-sm-0">
+                                    <?= $form->field($address, 'city')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                                </div>
+                                <div class="col-sm-3">
+                                    <?= $form->field($address, 'state')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                                </div>
+                                <div class="col-sm-3">
+                                    <?= $form->field($address, 'country')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                                </div>
+                                <div class="col-sm-3">
+                                <?= $form->field($address, 'zipcode')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                            </div>
+                            </div>
+
+                           
+
 
                             <div class="form-group">
-                                <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-primary btn-user btn-block']) ?>
+                                <?= Html::submitButton(Yii::t('app', 'Salvar'), ['class' => 'btn btn-primary btn-user btn-block']) ?>
                             </div>
 
                             <hr>
-                            <a href="index.html" class="btn btn-google btn-user btn-block">
-                                <i class="fab fa-google fa-fw"></i> Register with Google
-                            </a>
-                            <a href="index.html" class="btn btn-facebook btn-user btn-block">
-                                <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
-                            </a>
+                            
                         <?php ActiveForm::end(); ?>
                         <hr>
                         <div class="text-center">

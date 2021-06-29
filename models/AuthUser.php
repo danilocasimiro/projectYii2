@@ -17,6 +17,8 @@ use \yii\db\ActiveRecord;
  * @property int $user_type_id
  * @property Person $person
  * @property UserType $user_type
+ * @property Phone $phone
+ * @property Address $adress
  */
 class AuthUser extends ActiveRecord implements IdentityInterface
 {
@@ -36,8 +38,11 @@ class AuthUser extends ActiveRecord implements IdentityInterface
         return [
             [['email', 'password'], 'required'],
             [['email', 'authKey', 'acessToken'], 'string', 'max' => 45],
+            [['email'], 'email'],
             [['password'], 'string', 'max' => 60],
-            [['acessToken', 'authKey'], 'default', 'value' => '7c4a8d09ca3762af61e59520943dc26494f8941b']
+            [['acessToken', 'authKey'], 'default', 'value' => '7c4a8d09ca3762af61e59520943dc26494f8941b'],
+            [['user_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserType::className(), 'targetAttribute' => ['user_type_id' => 'id']],
+
         ];
     }
 
@@ -124,5 +129,15 @@ class AuthUser extends ActiveRecord implements IdentityInterface
     public function getUserType()
     {
         return $this->hasOne(UserType::class, ['id' => 'user_type_id']);
+    }
+
+    public function getPhone()
+    {
+        return $this->hasOne(Phone::class, ['auth_user_id' => 'id']);
+    }
+
+    public function getAddress()
+    {
+        return $this->hasOne(Address::class, ['auth_user_id' => 'id']);
     }
 }

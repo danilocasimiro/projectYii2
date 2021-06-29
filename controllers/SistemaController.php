@@ -6,7 +6,7 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use app\models\AuthUser;
 use yii\filters\AccessControl;
 use yii\web\Response;
 
@@ -49,6 +49,15 @@ class SistemaController extends Controller
     public function actionIndex()
     {
         return $this->render('index');
+    }
+
+    public function actionProfile()
+    {
+        $model = AuthUser::find()->where(['id' => Yii::$app->user->identity->id])->one();
+       
+        return $this->render('profile', [ 
+            'model'=>$model,
+        ]);
     }
 
 

@@ -35,7 +35,8 @@ class Person extends ActiveRecord
             [['auth_user_id'], 'integer'],
             [['name'], 'string', 'max' => 60],
             [['sex'], 'string', 'max' => 1],
-            ['auth_user_id', 'unique']
+            [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::className(), 'targetAttribute' => ['auth_user_id' => 'id']],
+
         ];
     }
 

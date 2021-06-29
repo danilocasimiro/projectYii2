@@ -5,7 +5,9 @@ namespace app\controllers;
 use Yii;
 use app\models\AuthUser;
 use app\models\Person;
+use app\models\Phone;
 use app\models\UserType;
+use app\models\Address;
 use app\models\AuthUserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -73,19 +75,25 @@ class AuthUsersController extends Controller
     {
         $model = new AuthUser();
         $person = new Person();
+        $phone = new Phone();
+        $address = new Address();
         $type = UserType::find()->where(['id' => 4])->one();
       
-        if ($model->load(Yii::$app->request->post()) && $person->load(Yii::$app->request->post())) {
+        if ($model->load(Yii::$app->request->post()) && $person->load(Yii::$app->request->post()) && $phone->load(Yii::$app->request->post()) && $address->load(Yii::$app->request->post())) {
            // return $this->redirect(['view', 'id' => $model->id]);
            
             if($model->save()){
                 $user = AuthUser::find()->where(['email' => $model->email])->one();
 
                 $person->auth_user_id = $user->id;
-                if($person->save()){
+                $phone->auth_user_id = $user->id;
+                $address->auth_user_id = $user->id;
+                if($person->save() && $phone->save() && $address->save()){
                     return $this->redirect(['auth-users/login']);
                 }else{
                     var_dump($person->getErrors());
+                    var_dump($phone->getErrors());
+                    var_dump($address->getErrors());
                 exit;
                 }
             }else{
@@ -97,7 +105,9 @@ class AuthUsersController extends Controller
         return $this->render('create', [
             'model' => $model,
             'person' => $person,
-            'type' => $type
+            'type' => $type,
+            'phone' => $phone,
+            'address'=> $address
         ]);
         
     }
