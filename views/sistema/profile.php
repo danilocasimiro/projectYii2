@@ -1,4 +1,6 @@
-
+<?php 
+use yii\helpers\Html;
+?>
 <div id="wrapper">
 
 <!-- Sidebar -->
@@ -37,8 +39,13 @@
                       <h4><?= $model->person->name ?></h4>
                       <p class="text-secondary mb-1">Account type: <?= $model->userType->type ?></p>
                       <p class="text-muted font-size-sm"><?= $model->address->getFullAddress() ?></p>
-                      <button class="btn btn-primary">Follow</button>
-                      <button class="btn btn-outline-primary">Message</button>
+                      <?= Html::a(Yii::t('app', 'Delete account'), ['/authusers/delete', 'id' => $model->id], [
+                          'class' => 'btn btn-danger',
+                          'data' => [
+                              'confirm' => Yii::t('app', 'Are you sure you want to delete your account?'),
+                              'method' => 'post',
+                          ],
+                      ]) ?>
                     </div>
                   </div>
                 </div>

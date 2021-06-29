@@ -147,11 +147,19 @@ class AuthUsersController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete($id = null)
     {
-        $this->findModel($id)->delete();
+        if($id != null && AuthUser::verifyAbility(Yii::$app->user->identity)){
+            return $id;
+        }else{
+            $id = Yii::$app->user->identity->address->id;
+        }
 
-        return $this->redirect(['index']);
+        $user = AuthUser::findOne($id)->delete();
+        if($user){
+            Yii::$app->getSession()->setFlash('message', 'Usuário excluído com sucesso!!!');
+            return $this->redirect(['site/index']);
+        }
     }
 
     /**
