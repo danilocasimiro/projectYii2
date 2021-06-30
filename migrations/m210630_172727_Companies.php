@@ -22,6 +22,10 @@ class m210630_172727_Companies extends Migration
         ]);
 
         $this->addForeignKey('fk_companies_auth_user_id', 'companies', 'auth_user_id', 'auth_users', 'id', 'CASCADE', 'RESTRICT');
+        $this->addColumn('auth_users', 'company_id', $this->integer());
+
+        $this->addForeignKey('fk_auth_users_company_id', 'auth_users', 'company_id', 'companies', 'id', 'CASCADE', 'RESTRICT');
+
     }
 
     /**
@@ -30,6 +34,7 @@ class m210630_172727_Companies extends Migration
     public function safeDown()
     {
         $this->dropForeignKey('fk_companies_auth_user_id', 'companies');
+        $this->dropForeignKey('fk_auth_users_company_id', 'auth_users');
         $this->dropTable('auth_users');
     }
 }

@@ -57,7 +57,7 @@ $config = [
                 'authusers' => 'auth-users/index', 
                 'authusers/create' => 'auth-users/create',
                 'authusers/update' => 'auth-users/update',
-                'authusers/delete' => 'auth-users/delete',
+                'auth_users/delete' => 'auth-users/delete',
                 'addresses/update' => 'addresses/update',
                 'companies/create' => 'companies/create',
             ],

@@ -45,22 +45,15 @@ use yii\widgets\ActiveForm;
                                 <div class="col-sm-3">
                                 <?= $form->field($address, 'zipcode')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
                             </div>
-                            </div>
 
                             <div class="form-group">
-                                <?= Html::submitButton(Yii::t('app', 'Salvar'), ['class' => 'btn btn-primary btn-user btn-block']) ?>
+                                <?= Html::submitButton(Yii::t('app', 'Salvar'), ['class' => 'btn btn-primary']) ?>
                             </div>
 
                             <hr>
                             
                         <?php ActiveForm::end(); ?>
-                        <hr>
-                        <div class="text-center">
-                            <a class="small" href="forgot-password.html">Forgot Password?</a>
-                        </div>
-                        <div class="text-center">
-                            <a class="small" href="login">Already have an account? Login!</a>
-                        </div>
+                       
                     </div>
                 </div>
             </div>

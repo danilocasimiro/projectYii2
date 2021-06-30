@@ -14,6 +14,7 @@ use Yii;
  * @property string $cnpj
  *
  * @property AuthUser $authUser
+ * @property AuthUser $authUserCompany
  */
 class Company extends \yii\db\ActiveRecord
 {
@@ -80,5 +81,10 @@ class Company extends \yii\db\ActiveRecord
     public function getAuthUser()
     {
         return $this->hasOne(AuthUser::className(), ['id' => 'auth_user_id']);
+    }
+
+    public function getAuthUserCompany()
+    {
+        return $this->hasOne(AuthUser::className(), ['id' => 'company_id']);
     }
 }

@@ -21,6 +21,7 @@ use \yii\db\ActiveRecord;
  * @property Phone $phone
  * @property Address $adress
  * @property Company $company
+ * @property Company $company_id
  */
 class AuthUser extends ActiveRecord implements IdentityInterface
 {
@@ -72,7 +73,7 @@ class AuthUser extends ActiveRecord implements IdentityInterface
 
     public static function verifyAbility($user)
     {
-        if(Yii::$app->user->identity->userType->type === 'admin' || Yii::$app->user->identity->userType->type === 'own_company'){
+        if(!Yii::$app->user->isGuest && (Yii::$app->user->identity->userType->type === 'admin' || Yii::$app->user->identity->userType->type === 'own_company')){
             return true;
         }
         return false;
@@ -87,12 +88,15 @@ class AuthUser extends ActiveRecord implements IdentityInterface
                 
             }
             $this->password = sha1($this->password);
-            if(isset(Yii::$app->user->identity) && Yii::$app->user->identity->userType->type === 'admin'){
-                $this->user_type_id = 2;
-            }else if(isset(Yii::$app->user->identity) && Yii::$app->user->identity->userType->type === 'own_company'){
-                $this->user_type_id = 3;
-            }else {
-                $this->user_type_id = 4;
+            if(Yii::$app->user->identity->id !== $this->id){
+                if(isset(Yii::$app->user->identity) && Yii::$app->user->identity->userType->type === 'admin'){
+                    $this->user_type_id = 2;
+                }else if(isset(Yii::$app->user->identity) && Yii::$app->user->identity->userType->type === 'own_company'){
+                    $this->user_type_id = 3;
+                    $this->company_id = Yii::$app->user->identity->company->id;
+                }else {
+                    $this->user_type_id = 4;
+                }
             }
             
             return true;
@@ -184,5 +188,10 @@ class AuthUser extends ActiveRecord implements IdentityInterface
     public function getCompany()
     {
         return $this->hasOne(Company::class, ['auth_user_id' => 'id']);
+    }
+
+    public function getCompanyUser()
+    {
+        return $this->hasOne(Company::class, ['company_id' => 'id']);
     }
 }

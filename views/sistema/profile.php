@@ -43,10 +43,10 @@ use app\models\AuthUser;
                         <?= Html::submitButton('Salvar', ['class' => 'btn btn-primary']) ?>
                       <?php ActiveForm::end() ?>
                       </br>
-                      <h4><?= $model->person->name ?></h4>
+                      <h4><?= $model->getName(); ?></h4>
                       <p class="text-secondary mb-1">Account type: <?= $model->userType->type ?></p>
                       <p class="text-muted font-size-sm"><?= $model->address->getFullAddress() ?></p>
-                      <?= Html::a(Yii::t('app', 'Delete account'), ['/authusers/delete', 'id' => $model->id], [
+                      <?= Html::a(Yii::t('app', 'Delete account'), ['/' . $model->tableName() . '/delete', 'id' => $model->id], [
                           'class' => 'btn btn-danger',
                           'data' => [
                               'confirm' => Yii::t('app', 'Are you sure you want to delete your account?'),
@@ -92,7 +92,7 @@ use app\models\AuthUser;
                       <h6 class="mb-0">Full Name</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      <?= $model->person->name?>
+                      <?= $model->getName()?>
                     </div>
                   </div>
                   <hr>
@@ -114,6 +114,26 @@ use app\models\AuthUser;
                     </div>
                   </div>
                   <hr>
+                  <?php if(isset($model->company)) { ?>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">CNPJ</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                    <?= $model->company->cnpj ?>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Foundation</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                    
+                    <?= Yii::$app->formatter->format($model->company->foundation, 'date'); ?>
+                    </div>
+                  </div>
+                  <?php } else { ?>
                   <div class="row">
                     <div class="col-sm-3">
                       <h6 class="mb-0">Sex</h6>
@@ -132,6 +152,9 @@ use app\models\AuthUser;
                     <?= Yii::$app->formatter->format($model->person->birthday, 'date'); ?>
                     </div>
                   </div>
+
+                  <?php } ?>
+
                   <hr>
                   <div class="row">
                     <div class="col-sm-12">

@@ -27,8 +27,8 @@ use yii\widgets\ActiveForm;
                                     <?= $form->field($model, 'password')->passwordInput(['maxlength' => true, 'class' => 'form-control form-control-user', 'value' => '']) ?>
                                 </div>
                             </div>
+                            <?php if(isset($person)) { ?>
                             <h5><strong>Dados pessoais</strong></h5>
-                        
                             <div class="form-group row"> 
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                 <?= $form->field($person, 'name')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
@@ -50,7 +50,31 @@ use yii\widgets\ActiveForm;
                                     <?= $form->field($person, 'birthday')->textInput(['maxlength' => true, 'id'=> 'myDatepicker', 'value' => Yii::$app->formatter->format($person->birthday, 'date')]) ?>
                                 </div>
                             </div>
-
+                            <?php }else{ ?>
+                            <h5><strong>Dados empresariais</strong></h5>
+                        
+                            <div class="form-group row"> 
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                <?= $form->field($company, 'name')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                                </div>
+                                <div class="col-sm-6">
+                                <?= $form->field($company, 'cnpj')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                                </div>
+                            </div>
+                            <div class="form-group row"> 
+                                <div class="col-sm-4 mb-3 mb-sm-0">
+                                    <?= $form->field($phone, 'ddd');
+                                    ?>
+                                </div>
+                                <div class="col-sm-4">
+                                    <?= $form->field($phone, 'number');
+                                    ?>
+                                </div>
+                                <div class="col-sm-4">
+                                    <?= $form->field($company, 'foundation')->textInput(['maxlength' => true, 'id'=> 'myDatepicker', 'value' => Yii::$app->formatter->format($company->foundation, 'date')]) ?>
+                                </div>
+                            </div>
+                                <?php } ?>
                             <div class="form-group">
                                 <?= Html::submitButton(Yii::t('app', 'Salvar'), ['class' => 'btn btn-primary btn-user btn-block']) ?>
                             </div>

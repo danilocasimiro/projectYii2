@@ -73,6 +73,9 @@
                     </div>
                 </div>
             </li>
+            <?php } 
+                if(Yii::$app->user->identity->userType->type === 'admin' || Yii::$app->user->identity->userType->type === 'own_company'){
+            ?>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers"
                     aria-expanded="true" aria-controls="collapseUsers">
@@ -83,7 +86,7 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="utilities-color.html">Cadastrar</a>
+                        <a class="collapse-item" href="/authusers/create">Cadastrar</a>
                         <a class="collapse-item" href="utilities-border.html">Editar</a>
                         <a class="collapse-item" href="utilities-animation.html">Visualizar</a>
                     </div>

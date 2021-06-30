@@ -11,8 +11,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="auth-user-create">
 
-
-    <?= $this->render('_form', [
+    <?php $form = Yii::$app->user->isGuest ? '_form' : '_form_with_menus';  ?>
+    <?= $this->render($form, [
         'model' => $model,
         'person' => $person,
         'type' => $type,

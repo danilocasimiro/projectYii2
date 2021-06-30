@@ -73,6 +73,7 @@ class AuthUsersController extends Controller
      */
     public function actionCreate()
     {
+        $ability = AuthUser::verifyAbility(Yii::$app->user->identity);
         $model = new AuthUser();
         $person = new Person();
         $phone = new Phone();
@@ -89,7 +90,8 @@ class AuthUsersController extends Controller
                 $phone->auth_user_id = $user->id;
                 $address->auth_user_id = $user->id;
                 if($person->save() && $phone->save() && $address->save()){
-                    return $this->redirect(['auth-users/login']);
+                    return $ability ? $this->redirect(['sistema/index']) : $this->redirect(['auth-users/login']);
+                   
                 }else{
                     var_dump($person->getErrors());
                     var_dump($phone->getErrors());
@@ -121,7 +123,8 @@ class AuthUsersController extends Controller
      */
     public function actionUpdate($id = null)
     {
-        if($id != null && AuthUser::verifyAbility(Yii::$app->user->identity)){
+        $ability = AuthUser::verifyAbility(Yii::$app->user->identity);
+        if($id != null && $ability){
             return $id;
         }else{
             $id = Yii::$app->user->identity->address->id;
@@ -130,12 +133,15 @@ class AuthUsersController extends Controller
         $model = $this->findModel($id);
         $user = AuthUser::find()->where(['id' => $id])->one();
 
-        if ($model->load(Yii::$app->request->post()) && $model->person->load(Yii::$app->request->post()) && $model->phone->load(Yii::$app->request->post()) && $model->save() && $model->person->save() && $model->phone->save()) {
+        $data = isset($model->person) ? $model->person : $model->company;
+
+        if ($model->load(Yii::$app->request->post()) && $data->load(Yii::$app->request->post()) && $model->phone->load(Yii::$app->request->post()) && $model->save() && $data->save() && $model->phone->save()) {
             return $this->redirect(['sistema/profile']);
         }
         return $this->render('update', [
             'model' => $user,
             'person' => $user->person,
+            'company' => $user->company,
             'phone' => $user->phone
         ]);
     }
@@ -150,12 +156,13 @@ class AuthUsersController extends Controller
     public function actionDelete($id = null)
     {
         if($id != null && AuthUser::verifyAbility(Yii::$app->user->identity)){
-            return $id;
+            $id;
         }else{
             $id = Yii::$app->user->identity->address->id;
         }
 
         $user = AuthUser::findOne($id)->delete();
+
         if($user){
             Yii::$app->getSession()->setFlash('message', 'Usuário excluído com sucesso!!!');
             return $this->redirect(['site/index']);
