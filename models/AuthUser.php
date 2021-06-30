@@ -20,6 +20,7 @@ use \yii\db\ActiveRecord;
  * @property UserType $user_type
  * @property Phone $phone
  * @property Address $adress
+ * @property Company $company
  */
 class AuthUser extends ActiveRecord implements IdentityInterface
 {
@@ -86,7 +87,14 @@ class AuthUser extends ActiveRecord implements IdentityInterface
                 
             }
             $this->password = sha1($this->password);
-            $this->user_type_id = 4;
+            if(isset(Yii::$app->user->identity) && Yii::$app->user->identity->userType->type === 'admin'){
+                $this->user_type_id = 2;
+            }else if(isset(Yii::$app->user->identity) && Yii::$app->user->identity->userType->type === 'own_company'){
+                $this->user_type_id = 3;
+            }else {
+                $this->user_type_id = 4;
+            }
+            
             return true;
         }
         return false;
@@ -99,6 +107,11 @@ class AuthUser extends ActiveRecord implements IdentityInterface
         }else{
            return Yii::getAlias('/files/').  Yii::$app->user->identity->photo;
         }
+    }
+
+    public static function getName()
+    {
+        return Yii::$app->user->identity->person ? Yii::$app->user->identity->person->name : Yii::$app->user->identity->company->name;
     }
 
     public static function findIdentity($id)
@@ -166,5 +179,10 @@ class AuthUser extends ActiveRecord implements IdentityInterface
     public function getAddress()
     {
         return $this->hasOne(Address::class, ['auth_user_id' => 'id']);
+    }
+
+    public function getCompany()
+    {
+        return $this->hasOne(Company::class, ['auth_user_id' => 'id']);
     }
 }

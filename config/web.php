@@ -59,6 +59,7 @@ $config = [
                 'authusers/update' => 'auth-users/update',
                 'authusers/delete' => 'auth-users/delete',
                 'addresses/update' => 'addresses/update',
+                'companies/create' => 'companies/create',
             ],
         ],
         

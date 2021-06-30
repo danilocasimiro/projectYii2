@@ -85,9 +85,6 @@ use yii\widgets\ActiveForm;
                             </div>
                             </div>
 
-                           
-
-
                             <div class="form-group">
                                 <?= Html::submitButton(Yii::t('app', 'Salvar'), ['class' => 'btn btn-primary btn-user btn-block']) ?>
                             </div>

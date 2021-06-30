@@ -67,7 +67,7 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="utilities-color.html">Cadastrar</a>
+                        <a class="collapse-item" href="/companies/create">Cadastrar</a>
                         <a class="collapse-item" href="utilities-border.html">Editar</a>
                         <a class="collapse-item" href="utilities-animation.html">Visualizar</a>
                     </div>
