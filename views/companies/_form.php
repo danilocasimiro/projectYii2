@@ -15,20 +15,25 @@ use yii\widgets\ActiveForm;
 <!-- End of Sidebar -->
 
 <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
+<div id="content-wrapper" class="d-flex flex-column">
 
-        <!-- Main Content -->
-        <div id="content">
+    <!-- Main Content -->
+    <div id="content">
 
-            <!-- Topbar -->
-            <?= $this->render('/sistema/_top_menu');?>
-            <!-- End of Topbar -->
+        <!-- Topbar -->
+        <?= $this->render('/sistema/_top_menu', [
+            'currentUser' => $currentUser,
+            'model'=> $model
+        ]);?>
+        <!-- End of Topbar -->
+
             <div class="container">
                 <div class="card o-hidden border-0 shadow-lg my-5">
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
                         <div class="row">
                             <div class="col-lg-12">
+                            
                                 <div class="p-5">
                                 
                                     <?php $form = ActiveForm::begin(); ?>
@@ -39,7 +44,7 @@ use yii\widgets\ActiveForm;
                                                 <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
                                             </div>
                                             <div class="col-sm-6">
-                                                <?= $form->field($model, 'password')->passwordInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                                                <?= $form->field($model, 'password')->passwordInput(['maxlength' => true, 'class' => 'form-control form-control-user', 'value' => '']) ?>
                                             </div>
                                         </div>
                                         <h5><strong>Dados da empresa</strong></h5>
@@ -66,7 +71,7 @@ use yii\widgets\ActiveForm;
                                                 ?>
                                             </div>
                                             <div class="col-sm-4">
-                                                <?= $form->field($company, 'foundation')->textInput(['maxlength' => true, 'id'=> 'myDatepicker']) ?>
+                                                <?= $form->field($company, 'foundation')->textInput(['maxlength' => true, 'id'=> 'myDatepicker', 'value' => $company->getFoundation()]) ?>
                                             </div>
                                         </div>
 
@@ -106,13 +111,6 @@ use yii\widgets\ActiveForm;
                                         <hr>
                                         
                                     <?php ActiveForm::end(); ?>
-                                    <hr>
-                                    <div class="text-center">
-                                        <a class="small" href="forgot-password.html">Forgot Password?</a>
-                                    </div>
-                                    <div class="text-center">
-                                        <a class="small" href="login">Already have an account? Login!</a>
-                                    </div>
                                 </div>
                             </div>
                         </div>

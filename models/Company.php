@@ -73,6 +73,11 @@ class Company extends \yii\db\ActiveRecord
         return false;
     }
 
+    public function getFoundation()
+    {
+       return isset($company->foundation) ? Yii::$app->formatter->format($company->foundation, 'date') : '';
+    }
+
     /**
      * Gets query for [[AuthUser]].
      *

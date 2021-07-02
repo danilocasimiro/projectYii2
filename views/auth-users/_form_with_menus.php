@@ -22,7 +22,10 @@ use yii\widgets\ActiveForm;
             <div id="content">
 
                 <!-- Topbar -->
-                <?= $this->render('/sistema/_top_menu');?>
+                <?= $this->render('/sistema/_top_menu', [
+                    'model'=>$model,
+                    'currentUser'=>$currentUser
+                ]);?>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->

@@ -73,6 +73,7 @@ class SiteController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
+        Yii::$app->session->setFlash('success', "Logout realizado com sucesso!!!."); 
 
         return $this->goHome();
     }

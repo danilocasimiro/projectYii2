@@ -17,17 +17,25 @@ class AddressesController extends \yii\web\Controller
 
     public function actionUpdate($id = null)
     {
-        if($id != null && AuthUser::verifyAbility(Yii::$app->user->identity)){
-            return $id;
-        }else{
-            $id = Yii::$app->user->identity->address->id;
-        }
+        $id = AuthUser::verifyAbility(Yii::$app->user, $id);
         
         $model = $this->findModel($id);
         $user = AuthUser::find()->where(['id' => $id])->one();
 
-        if ((int)$id === $model->id && $model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['sistema/profile']);
+        if ((int)$id === $model->id && $model->load(Yii::$app->request->post())) {
+            $transaction = Yii::$app->db->beginTransaction();
+
+            try  {
+                if ($model->save()) {
+                    $transaction->commit();
+                    return $this->redirect(['sistema/profile']);
+                }else{
+                    $transaction->rollBack();
+                }
+            } catch (Exception $e) {
+                $transaction->rollBack();
+            }
+            
         }
 
         return $this->render('update', [

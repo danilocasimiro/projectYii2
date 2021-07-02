@@ -71,12 +71,19 @@ class AuthUser extends ActiveRecord implements IdentityInterface
         ];
     }
 
-    public static function verifyAbility($user)
+    public static function verifyAbility($user, $id)
     {
-        if(!Yii::$app->user->isGuest && (Yii::$app->user->identity->userType->type === 'admin' || Yii::$app->user->identity->userType->type === 'own_company')){
-            return true;
+        if($id !== null && !$user->isGuest && ($user->identity->userType->type === 'admin' 
+        || $user->identity->userType->type === 'own_company')){
+            return $id;
+        }else{
+            return $user->id;
         }
-        return false;
+    }
+
+    public function isPerson()
+    {
+        return $this->person ? $this->person : $this->company;
     }
 
     public function beforeSave($insert)
@@ -85,31 +92,35 @@ class AuthUser extends ActiveRecord implements IdentityInterface
             if ($this->isNewRecord) {
                 $this->authKey = \Yii::$app->security->generateRandomString();
                 $this->acessToken = \Yii::$app->security->generateRandomString();
-                
-            }
-            $this->password = sha1($this->password);
-            if(Yii::$app->user->identity->id !== $this->id){
-                if(isset(Yii::$app->user->identity) && Yii::$app->user->identity->userType->type === 'admin'){
-                    $this->user_type_id = 2;
-                }else if(isset(Yii::$app->user->identity) && Yii::$app->user->identity->userType->type === 'own_company'){
-                    $this->user_type_id = 3;
-                    $this->company_id = Yii::$app->user->identity->company->id;
+                $current_user = !Yii::$app->user->isGuest && Yii::$app->user->identity->userType->type;
+                if($current_user){
+                    switch ($current_user) {
+                        case 'admin':
+                            $this->user_type_id = 2;
+                            break;
+                        case 'own_company':
+                            $this->user_type_id = 3;
+                            break;
+                        default:
+                            $this->user_type_id = 4;
+                    }
                 }else {
                     $this->user_type_id = 4;
                 }
             }
+            $this->password = sha1($this->password);
             
             return true;
         }
         return false;
     }
 
-    public static function getPhoto()
+    public function getPhoto()
     {
-        if(Yii::$app->user->identity->photo === null){
+        if($this->photo === null){
             return Yii::getAlias('/files/default.jpg');
         }else{
-           return Yii::getAlias('/files/').  Yii::$app->user->identity->photo;
+           return Yii::getAlias('/files/').  $this->photo;
         }
     }
 

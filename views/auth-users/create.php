@@ -15,9 +15,19 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $this->render($form, [
         'model' => $model,
         'person' => $person,
-        'type' => $type,
         'phone'=>$phone,
-        'address'=>$address
+        'address'=>$address,
+        'currentUser' => $currentUser,
     ]) ?>
 
 </div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+<script>
+    $(document).ready(function(){
+        $( "#nav-users" ).addClass( " active" );
+        $( "#collapseUsers" ).addClass( " show" );
+        $( "#cadastrar-usuario" ).addClass( " active" );
+    })
+</script>

@@ -17,7 +17,10 @@ use app\models\AuthUser;
     <div id="content">
 
         <!-- Topbar -->
-        <?= $this->render('_top_menu');?>
+        <?= $this->render('_top_menu', [
+          'currentUser' => $currentUser,
+          'model' => $model
+        ]);?>
         <!-- End of Topbar -->
       <div class="container">
         <div class="main-body">
@@ -25,8 +28,8 @@ use app\models\AuthUser;
           <!-- Breadcrumb -->
           <nav aria-label="breadcrumb" class="main-breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="/sistema/index">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">User Profile</li>
+              <li class="breadcrumb-item"><a href="/sistema/index">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Profile</li>
             </ol>
           </nav>
           <!-- /Breadcrumb -->
@@ -36,17 +39,17 @@ use app\models\AuthUser;
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex flex-column align-items-center text-center">
-                    <img src=<?= AuthUser::getPhoto()?> alt="Admin" class="rounded-circle" width="150">
+                    <img src=<?= $model->authUser->getPhoto()?> alt="Admin" class="rounded-circle" width="150">
                     <div class="mt-3">
                       <?php $form = ActiveForm::begin() ?>
-                        <?= $form->field($model, 'fotoCliente')->fileInput([]) ?>
+                        <?= $form->field($model->authUser, 'fotoCliente')->fileInput([]) ?>
                         <?= Html::submitButton('Salvar', ['class' => 'btn btn-primary']) ?>
                       <?php ActiveForm::end() ?>
                       </br>
-                      <h4><?= $model->getName(); ?></h4>
-                      <p class="text-secondary mb-1">Account type: <?= $model->userType->type ?></p>
-                      <p class="text-muted font-size-sm"><?= $model->address->getFullAddress() ?></p>
-                      <?= Html::a(Yii::t('app', 'Delete account'), ['/' . $model->tableName() . '/delete', 'id' => $model->id], [
+                      <h4><?= $model->name; ?></h4>
+                      <p class="text-secondary mb-1">Tipo de conta: <?= $model->authUser->userType->type ?></p>
+                      <p class="text-muted font-size-sm"><?= $model->authUser->address->getFullAddress() ?></p>
+                      <?= Html::a(Yii::t('app', 'Delete account'), ['/auth/users/delete', 'id' => $model->authUser->id], [
                           'class' => 'btn btn-danger',
                           'data' => [
                               'confirm' => Yii::t('app', 'Are you sure you want to delete your account?'),
@@ -89,10 +92,10 @@ use app\models\AuthUser;
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">Full Name</h6>
+                      <h6 class="mb-0">Nome completo</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      <?= $model->getName()?>
+                      <?= $model->name?>
                     </div>
                   </div>
                   <hr>
@@ -101,55 +104,55 @@ use app\models\AuthUser;
                       <h6 class="mb-0">Email</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                    <?= $model->email?>
+                    <?= $model->authUser->email?>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">Phone</h6>
+                      <h6 class="mb-0">Telefone</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                    <?= $model->phone->ddd . $model->phone->number ?>
+                    <?= $model->authUser->phone->ddd . $model->authUser->phone->number ?>
                     </div>
                   </div>
                   <hr>
-                  <?php if(isset($model->company)) { ?>
+                  <?php if($model->tableName() === 'companies') { ?>
                   <div class="row">
                     <div class="col-sm-3">
                       <h6 class="mb-0">CNPJ</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                    <?= $model->company->cnpj ?>
+                    <?= $model->cnpj ?>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">Foundation</h6>
+                      <h6 class="mb-0">Fundação</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
                     
-                    <?= Yii::$app->formatter->format($model->company->foundation, 'date'); ?>
+                    <?= Yii::$app->formatter->format($model->foundation, 'date'); ?>
                     </div>
                   </div>
                   <?php } else { ?>
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">Sex</h6>
+                      <h6 class="mb-0">Gênero</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                    <?= $model->person->sex === 'M' ? 'Masculino': 'Feminino' ?>
+                    <?= $model->sex === 'M' ? 'Masculino': 'Feminino' ?>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">Birthday</h6>
+                      <h6 class="mb-0">Data nascimento</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
                     
-                    <?= Yii::$app->formatter->format($model->person->birthday, 'date'); ?>
+                    <?= Yii::$app->formatter->format($model->birthday, 'date'); ?>
                     </div>
                   </div>
 
@@ -157,85 +160,85 @@ use app\models\AuthUser;
 
                   <hr>
                   <div class="row">
-                    <div class="col-sm-12">
-                      <a class="btn btn-info " href="<?= "/authusers/update"?>">Edit</a>
+                    <div class="col-sm-12">                 
+                      <a class="btn btn-info " href="/auth/users/update">Editar</a>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="card mb-3">
                 <div class="card-body">
-                <h5>Address</h5>
+                <h5>Endereço</h5>
               <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">Street</h6>
+                      <h6 class="mb-0">Rua</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      <?= $model->address->street?>
+                      <?= $model->authUser->address->street?>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">Number</h6>
+                      <h6 class="mb-0">Número</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                    <?= $model->address->number?>
+                    <?= $model->authUser->address->number?>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">District</h6>
+                      <h6 class="mb-0">Bairro</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                    <?= $model->address->district ?>
+                    <?= $model->authUser->address->district ?>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">City</h6>
+                      <h6 class="mb-0">Cidade</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                    <?= $model->address->city ?>
+                    <?= $model->authUser->address->city ?>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">State</h6>
+                      <h6 class="mb-0">Estado</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
                     
-                    <?= $model->address->state ?>
+                    <?= $model->authUser->address->state ?>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">Country</h6>
+                      <h6 class="mb-0">País</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
                     
-                    <?= $model->address->country ?>
+                    <?= $model->authUser->address->country ?>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">Zipcode</h6>
+                      <h6 class="mb-0">CEP</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
                     
-                    <?= $model->address->zipcode ?>
+                    <?= $model->authUser->address->zipcode ?>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-12">
-                      <a class="btn btn-info " target="__blank" href="<?= "/addresses/update"?>">Edit</a>
+                      <a class="btn btn-info " href="<?= "/addresses/update"?>">Editar</a>
                     </div>
                   </div>
                 </div>

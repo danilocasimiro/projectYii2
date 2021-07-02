@@ -28,6 +28,7 @@ SiteAssets::register($this);
 </head>
 <body class="bg-gradient-primary">
 <?php $this->beginBody() ?>
+    <?= Alert::widget() ?>
     <?= $content ?>
 <?php $this->endBody() ?>
 </body>

@@ -22,10 +22,10 @@ class m210628_110918_UserTypes extends Migration
         $this->addForeignKey('fk_auth_users_user_type_id', 'auth_users', 'user_type_id', 'user_types', 'id', 'CASCADE', 'RESTRICT');
 
         $types = [
-            ['type'=> 'admin'],
-            ['type'=> 'own_company'],
-            ['type'=> 'staff_company'], 
-            ['type'=> 'normal'],
+            ['type'=> 'Admin'],
+            ['type'=> 'Empresa'],
+            ['type'=> 'Colaborador'], 
+            ['type'=> 'Usuário'],
         ];
         
         \Yii::$app->db

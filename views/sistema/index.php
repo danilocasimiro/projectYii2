@@ -11,7 +11,11 @@
         <div id="content">
 
             <!-- Topbar -->
-            <?= $this->render('_top_menu');?>
+            <?= $this->render('_top_menu', [
+                'currentUser' => $currentUser,
+                'model' => $model,
+                
+            ]);?>
             <!-- End of Topbar -->
 
             <!-- Begin Page Content -->

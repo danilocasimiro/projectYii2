@@ -54,12 +54,14 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'authusers' => 'auth-users/index', 
-                'authusers/create' => 'auth-users/create',
-                'authusers/update' => 'auth-users/update',
-                'auth_users/delete' => 'auth-users/delete',
+                'auth/users' => 'auth-users/index',
+                'auth/users/login' =>'/auth-users/login',
+                'auth/users/create' => 'auth-users/create',
+                'auth/users/update' => 'auth-users/update',
+                'auth/users/delete' => 'auth-users/delete',
                 'addresses/update' => 'addresses/update',
                 'companies/create' => 'companies/create',
+                'companies/update' => 'companies/update',
             ],
         ],
         

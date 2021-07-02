@@ -32,10 +32,10 @@ use yii\widgets\ActiveForm;
                         
                             <div class="form-group row"> 
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                <?= $form->field($person, 'name')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
+                                    <?= $form->field($person, 'name')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
                                 </div>
                                 <div class="col-sm-6">
-                                <?= $form->field($person, 'sex')->dropDownList(['M' => 'Masculino', 'F' => 'Feminino' ], ['maxlength' => true]) ?>
+                                    <?= $form->field($person, 'sex')->dropDownList(['M' => 'Masculino', 'F' => 'Feminino' ], ['maxlength' => true]) ?>
                                 </div>
                             </div>
                             <div class="form-group row"> 
@@ -97,7 +97,7 @@ use yii\widgets\ActiveForm;
                             <a class="small" href="forgot-password.html">Forgot Password?</a>
                         </div>
                         <div class="text-center">
-                            <a class="small" href="login">Already have an account? Login!</a>
+                            <a class="small" href="/auth/users/login">Already have an account? Login!</a>
                         </div>
                     </div>
                 </div>

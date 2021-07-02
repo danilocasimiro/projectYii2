@@ -49,14 +49,20 @@ class SistemaController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $model = AuthUser::findOne(Yii::$app->user->identity->id);
+        return $this->render('index', [
+            'currentUser' => Yii::$app->user->identity,
+            'model' => $model,
+        ]);
     }
 
     public function actionProfile()
     {
         $post = Yii::$app->getRequest()->post();
-        $model = AuthUser::find()->where(['id' => Yii::$app->user->identity->id])->one();
+        $id = Yii::$app->request->get('id') !== null ? Yii::$app->request->get('id') : Yii::$app->user->identity->id;
         
+        $model = AuthUser::find()->where(['id' => $id])->one();
+ 
         if($model->load($post) && $model->validate()){
             $model->fotoCliente = UploadedFile::getInstance($model, 'fotoCliente');
             if($model->fotoCliente === null) return $this->render('profile', ['model'=>$model]);
@@ -67,7 +73,8 @@ class SistemaController extends Controller
             $model->fotoCliente->saveAs($uploadPath . '/' . $model->fotoCliente->name);
         }
         return $this->render('profile', [ 
-            'model'=>$model,
+            'model'=>$model->isPerson(),
+            'currentUser'=> Yii::$app->user->identity,
         ]);
     }
 

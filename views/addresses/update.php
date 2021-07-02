@@ -26,7 +26,9 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
             <div id="content">
 
                 <!-- Topbar -->
-                <?= $this->render('/sistema/_top_menu');?>
+                <?= $this->render('/sistema/_top_menu', [
+                    'model' => $model
+                ]);?>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->

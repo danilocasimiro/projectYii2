@@ -13,6 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
     <?= $this->render('_form', [
+        'currentUser' => $currentUser,
         'model' => $model,
         'company' => $company,
         'phone'=>$phone,
@@ -20,3 +21,12 @@ $this->params['breadcrumbs'][] = $this->title;
     ]) ?>
 
 </div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+<script>
+    $(document).ready(function(){
+        $( "#nav-company" ).addClass( " active" );
+        $( "#collapseCompanies" ).addClass( " show" );
+        $( "#cadastrar-empresa" ).addClass( " active" );
+    })
+</script>

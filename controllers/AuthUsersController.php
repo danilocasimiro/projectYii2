@@ -73,43 +73,41 @@ class AuthUsersController extends Controller
      */
     public function actionCreate()
     {
-        $ability = AuthUser::verifyAbility(Yii::$app->user->identity);
         $model = new AuthUser();
         $person = new Person();
         $phone = new Phone();
         $address = new Address();
-        $type = UserType::find()->where(['id' => 4])->one();
       
         if ($model->load(Yii::$app->request->post()) && $person->load(Yii::$app->request->post()) && $phone->load(Yii::$app->request->post()) && $address->load(Yii::$app->request->post())) {
-           // return $this->redirect(['view', 'id' => $model->id]);
            
-            if($model->save()){
-                $user = AuthUser::find()->where(['email' => $model->email])->one();
+           $transaction = Yii::$app->db->beginTransaction();
 
-                $person->auth_user_id = $user->id;
-                $phone->auth_user_id = $user->id;
-                $address->auth_user_id = $user->id;
-                if($person->save() && $phone->save() && $address->save()){
-                    return $ability ? $this->redirect(['sistema/index']) : $this->redirect(['auth-users/login']);
-                   
-                }else{
-                    var_dump($person->getErrors());
-                    var_dump($phone->getErrors());
-                    var_dump($address->getErrors());
-                exit;
-                }
-            }else{
-                var_dump($model->getErrors());
-                exit;
-            }
+           try  {
+               if ($model->save()) {
+                    $person->auth_user_id = $model->id;
+                    $phone->auth_user_id = $model->id;
+                    $address->auth_user_id = $model->id;
+                    if($person->save() && $phone->save() && $address->save()){
+                        $transaction->commit();
+                        Yii::$app->session->setFlash('success', "Usuário criado com sucesso!!!."); 
+
+                    }else{
+                        $transaction->rollBack();
+                    }
+                   return !Yii::$app->user->isGuest ? $this->redirect(['sistema/index']) : $this->redirect(['auth-users/login']);
+               }
+           } catch (Exception $e) {
+               $transaction->rollBack();
+           }
+
         }
 
         return $this->render('create', [
             'model' => $model,
             'person' => $person,
-            'type' => $type,
             'phone' => $phone,
-            'address'=> $address
+            'address'=> $address,
+            'currentUser' => Yii::$app->user->identity,
         ]);
         
     }
@@ -123,20 +121,28 @@ class AuthUsersController extends Controller
      */
     public function actionUpdate($id = null)
     {
-        $ability = AuthUser::verifyAbility(Yii::$app->user->identity);
-        if($id != null && $ability){
-            return $id;
-        }else{
-            $id = Yii::$app->user->identity->address->id;
-        }
+
+        $id = AuthUser::verifyAbility(Yii::$app->user, $id);
         
         $model = $this->findModel($id);
         $user = AuthUser::find()->where(['id' => $id])->one();
 
         $data = isset($model->person) ? $model->person : $model->company;
 
-        if ($model->load(Yii::$app->request->post()) && $data->load(Yii::$app->request->post()) && $model->phone->load(Yii::$app->request->post()) && $model->save() && $data->save() && $model->phone->save()) {
-            return $this->redirect(['sistema/profile']);
+        if ($model->load(Yii::$app->request->post()) && $data->load(Yii::$app->request->post()) && $model->phone->load(Yii::$app->request->post())) {
+            
+            $transaction = Yii::$app->db->beginTransaction();
+
+            try  {
+                if ($model->save() && $data->save() && $model->phone->save()) {
+                    $transaction->commit();
+                    return $this->redirect(['sistema/profile']);
+                }else{
+                    $transaction->rollBack();
+                }
+            } catch (Exception $e) {
+                $transaction->rollBack();
+            }
         }
         return $this->render('update', [
             'model' => $user,
@@ -155,17 +161,15 @@ class AuthUsersController extends Controller
      */
     public function actionDelete($id = null)
     {
-        if($id != null && AuthUser::verifyAbility(Yii::$app->user->identity)){
-            $id;
-        }else{
-            $id = Yii::$app->user->identity->address->id;
-        }
 
         $user = AuthUser::findOne($id)->delete();
 
         if($user){
-            Yii::$app->getSession()->setFlash('message', 'Usuário excluído com sucesso!!!');
-            return $this->redirect(['site/index']);
+            Yii::$app->session->setFlash('success', "Usuário excluído com sucesso!!!."); 
+            return (int)$id === Yii::$app->user->identity->id ? $this->redirect(['site/index']) : $this->redirect(['companies/index']);
+        }else{
+            Yii::$app->session->setFlash('error', "User not saved.");
+            return $this->redirect(['sistema/index']);
         }
     }
 
@@ -199,7 +203,8 @@ class AuthUsersController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            //return $this->goBack();
+            Yii::$app->session->setFlash('success', "Login realizado com sucesso!!!."); 
+
             return $this->redirect(['sistema/index']);
         }
 
