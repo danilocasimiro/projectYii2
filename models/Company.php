@@ -90,6 +90,6 @@ class Company extends \yii\db\ActiveRecord
 
     public function getAuthUserCompany()
     {
-        return $this->hasOne(AuthUser::className(), ['id' => 'company_id']);
+        return $this->hasMany(AuthUser::className(), ['company_id' => 'id']);
     }
 }

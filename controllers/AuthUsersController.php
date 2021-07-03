@@ -44,12 +44,30 @@ class AuthUsersController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new AuthUserSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $users = null;
+        if(Yii::$app->request->get('search') === 'submit'){
+            if(!empty(Yii::$app->request->get('input'))){
 
+                $users = AuthUser::find()
+                ->innerJoin('people', 'auth_users.id = people.auth_user_id')
+                ->where(['like', 'people.name', Yii::$app->request->get('input')])
+                ->andWhere(['user_type_id' => 4])
+                ->all();
+
+            }else{
+                $users = AuthUser::find()->where(['user_type_id' => 4])->all();
+            }
+            if($users){
+              //  Yii::$app->session->setFlash('success', "Busca realizada com sucesso!!!."); 
+            }else{
+              //  Yii::$app->session->setFlash('error', "Nada foi encontrado!!!."); 
+
+            }
+        }
+      
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'currentUser' => Yii::$app->user->identity,
+            'users' => $users,
         ]);
     }
 
@@ -166,7 +184,7 @@ class AuthUsersController extends Controller
 
         if($user){
             Yii::$app->session->setFlash('success', "Usuário excluído com sucesso!!!."); 
-            return (int)$id === Yii::$app->user->identity->id ? $this->redirect(['site/index']) : $this->redirect(['companies/index']);
+            return (int)$id === Yii::$app->user->identity->id ? $this->redirect(['site/index']) : $this->redirect(['sistema/index']);
         }else{
             Yii::$app->session->setFlash('error', "User not saved.");
             return $this->redirect(['sistema/index']);

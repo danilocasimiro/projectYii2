@@ -26,12 +26,12 @@ use yii\helpers\Html;
             <div class="container-fluid">
                 <?php $form = ActiveForm::begin([
                             'action' => ['index'],
-                            'method' => 'post',
+                            'method' => 'get',
                 ]); ?>
                 <div class="input-group col-lg-3">
                     <div class="col-md-10 col-lg-10 col-xs-10">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Nome empresa" name="input"/>
+                            <input type="text" class="form-control" placeholder="Nome empresa" name="input" value= <?= Yii::$app->request->get('input') ?>>
                         </div>
                     </div>
                     <div class="col-md-2 col-lg-2 col-xs-2">

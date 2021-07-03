@@ -18,6 +18,7 @@ use yii\helpers\Html;
             <!-- Topbar -->
             <?= $this->render('/sistema/_top_menu', [
                 'currentUser' => $currentUser,
+                'company' => $company
             ]);?>
             <!-- End of Topbar -->
 
@@ -25,12 +26,12 @@ use yii\helpers\Html;
             <div class="container-fluid">
                 <?php $form = ActiveForm::begin([
                             'action' => ['index'],
-                            'method' => 'get',
+                            'method' => 'post',
                 ]); ?>
                 <div class="input-group col-lg-3">
                     <div class="col-md-10 col-lg-10 col-xs-10">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Nome usuário" name="input"  value= <?= Yii::$app->request->get('input')?>>
+                            <input type="text" class="form-control" placeholder="Nome empresa" name="input"/>
                         </div>
                     </div>
                     <div class="col-md-2 col-lg-2 col-xs-2">
@@ -40,9 +41,9 @@ use yii\helpers\Html;
                 <?php ActiveForm::end(); ?>
             </div>
 
-            <?php if(!empty($users)){
+            <?php if(!empty($company->authUserCompany)){
              echo $this->render('_table', [
-                 'users' => $users
+                 'company' => $company
              ]); } ?>
         </div>
     </div>
@@ -52,9 +53,9 @@ use yii\helpers\Html;
 
 <script>
     $(document).ready(function(){
-        $( "#nav-users" ).addClass( " active" );
-        $( "#collapseUsers" ).addClass( " show" );
-        $( "#visualizar-usuario" ).addClass( " active" );
+        $( "#nav-company" ).addClass( " active" );
+        $( "#collapseCompanies" ).addClass( " show" );
+        $( "#visualizar-empresa" ).addClass( " active" );
         
     })
 </script>

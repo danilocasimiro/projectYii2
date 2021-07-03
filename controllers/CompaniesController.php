@@ -17,9 +17,9 @@ class CompaniesController extends \yii\web\Controller
     {
         $companies = null;
         
-        if(isset(Yii::$app->request->post()['search']) && Yii::$app->request->post()['search'] === 'submit'){
-            if(!empty(Yii::$app->request->post()['input'])){
-                $companies = Company::find()->where(['LIKE', 'name', Yii::$app->request->post()['input']])->all();
+        if(Yii::$app->request->get('search') === 'submit'){
+            if(!empty(Yii::$app->request->get('input'))){
+                $companies = Company::find()->where(['LIKE', 'name',Yii::$app->request->get('input')])->all();
             }else{
                 $companies = Company::find()->all();
             }
