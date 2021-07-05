@@ -29,5 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
         $( "#nav-users" ).addClass( " active" );
         $( "#collapseUsers" ).addClass( " show" );
         $( "#cadastrar-usuario" ).addClass( " active" );
+
+        $( "#nav-employee" ).addClass( " active" );
+        $( "#collapseEmployees" ).addClass( " show" );
+        $( "#cadastrar-employee" ).addClass( " active" );
     })
 </script>

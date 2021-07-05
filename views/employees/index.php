@@ -23,24 +23,7 @@ use yii\helpers\Html;
             <!-- End of Topbar -->
 
             <!-- Begin Page Content -->
-            <div class="container-fluid">
-                <?php $form = ActiveForm::begin([
-                            'action' => ['index'],
-                            'method' => 'post',
-                ]); ?>
-                <div class="input-group col-lg-3">
-                    <div class="col-md-10 col-lg-10 col-xs-10">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Nome empresa" name="input"/>
-                        </div>
-                    </div>
-                    <div class="col-md-2 col-lg-2 col-xs-2">
-                        <button type="submit" class="btn btn-primary" name="search" value="submit">Buscar</button>
-                    </div>
-                </div>
-                <?php ActiveForm::end(); ?>
-            </div>
-
+            
             <?php if(!empty($company->authUserCompany)){
              echo $this->render('_table', [
                  'company' => $company
@@ -56,6 +39,10 @@ use yii\helpers\Html;
         $( "#nav-company" ).addClass( " active" );
         $( "#collapseCompanies" ).addClass( " show" );
         $( "#visualizar-empresa" ).addClass( " active" );
+
+        $( "#nav-employee" ).addClass( " active" );
+        $( "#collapseEmployees" ).addClass( " show" );
+        $( "#visualizar-employee" ).addClass( " active" );
         
     })
 </script>

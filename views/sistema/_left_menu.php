@@ -42,14 +42,11 @@
                 <a class="collapse-item" href="cards.html">Finalizadas</a>
             </div>
         </div>
-        <?php }else{ ?>
+        <?php }else if(Yii::$app->user->identity->userType->type === 'Empresa' || Yii::$app->user->identity->userType->type === 'Colaborador'){ ?>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Custom Components:</h6>
-                <?php if(Yii::$app->user->identity->userType->type === 'Empresa'){ ?>
-                    <a class="collapse-item" href="buttons.html">Criar</a>
-                    <a class="collapse-item" href="cards.html">Editar</a>
-                <?php } ?>
+                <a class="collapse-item" href="buttons.html">Criar</a>
                 <a class="collapse-item" href="cards.html">Visualizar</a>
             </div>
         </div>
@@ -99,8 +96,8 @@
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Custom Utilities:</h6>
-                <a class="collapse-item" id="cadastrar-usuario" href="/auth-users/create">Cadastrar</a>
-                <a class="collapse-item" href="utilities-animation.html">Visualizar</a>
+                <a class="collapse-item" id="cadastrar-employee" href="/auth-users/create">Cadastrar</a>
+                <a class="collapse-item" id="visualizar-employee" href="/employees/index?id=<?= Yii::$app->user->identity->company->id ?>">Visualizar</a>
             </div>
         </div>
     </li>
