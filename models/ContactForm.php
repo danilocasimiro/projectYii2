@@ -23,6 +23,7 @@ class ContactForm extends Model
     public function rules()
     {
         return [
+            [['id'], 'default' => md5(uniqid(rand(), true))],
             // name, email, subject and body are required
             [['name', 'email', 'subject', 'body'], 'required'],
             // email has to be a valid email address

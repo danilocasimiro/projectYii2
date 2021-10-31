@@ -1,11 +1,11 @@
 <?php
 
-namespace app\controllers;
+namespace app\modules\v1\controllers;
 
-use app\models\Question;
+use app\models\Type;
 use Yii;
 
-class QuestionsController extends \yii\web\Controller
+class TypesController extends \yii\web\Controller
 {
     public $layout = 'sistema';
     
@@ -15,15 +15,15 @@ class QuestionsController extends \yii\web\Controller
     }
 
       /**
-     * Finds the Question model based on its primary key value.
+     * Finds the Type model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Question the loaded model
+     * @return Type the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Question::findOne($id)) !== null) {
+        if (($model = Type::findOne($id)) !== null) {
             return $model;
         }
 

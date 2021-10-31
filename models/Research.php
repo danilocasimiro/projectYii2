@@ -31,6 +31,7 @@ class Research extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['id'], 'default' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'title', 'description'], 'required'],
             [['auth_user_id'], 'integer'],
             [['title'], 'string', 'max' => 40],

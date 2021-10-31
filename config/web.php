@@ -11,7 +11,12 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    'modules' =>require __DIR__ . '/modules.php',
     'components' => [
+        'response' => [
+            'format' => yii\web\Response::FORMAT_JSON,
+            'charset' => 'UTF-8',
+        ], 
         'formatter' => [
             'dateFormat' => 'dd/MM/yyyy',
             'decimalSeparator' => ',',
@@ -21,6 +26,18 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'q4M6ot1cOycZPrJVPlaiFgUXmidzufRl',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
+        ],
+        'jwt' => [
+            'class' => \sizeg\jwt\Jwt::class,
+            'key'   => 'secret',
+            'jwtValidationData' => [
+                'class' => \sizeg\jwt\JwtValidationData::class,
+                 // configure leeway 
+                'leeway' => 20,
+            ],
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -53,16 +70,7 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [
-                'auth/users' => 'auth-users/index',
-                'auth/users/login' =>'/auth-users/login',
-                'auth/users/create' => 'auth-users/create',
-                'auth/users/update' => 'auth-users/update',
-                'auth/users/delete' => 'auth-users/delete',
-                'addresses/update' => 'addresses/update',
-                'companies/create' => 'companies/create',
-                'companies/update' => 'companies/update',
-            ],
+            'rules' => require __DIR__ . '/routes.php',
         ],
         
     ],

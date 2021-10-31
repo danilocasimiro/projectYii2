@@ -1,12 +1,13 @@
 <?php
 
-namespace app\controllers;
+namespace app\modules\v1\controllers;
 
 use app\models\AuthUser;
 use app\models\Company;
 use app\models\Phone;
 use app\models\Address;
 use app\models\UserType;
+use Exception;
 use Yii;
 
 class CompaniesController extends \yii\web\Controller

@@ -1,20 +1,17 @@
 <?php
 
-namespace app\controllers;
+namespace app\modules\v1\controllers;
 
 use Yii;
 use app\models\AuthUser;
 use app\models\Person;
 use app\models\Phone;
-use app\models\UserType;
 use app\models\Address;
-use app\models\AuthUserSearch;
+use Exception;
+use sizeg\jwt\JwtHttpBearerAuth;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
 
-use yii\filters\AccessControl;
 use yii\web\Response;
 
 /**
@@ -22,20 +19,29 @@ use yii\web\Response;
  */
 class AuthUsersController extends Controller
 {
-    public $layout = 'sistema';
+    public $enableCsrfValidation = false;
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
+        $behaviors = parent::behaviors();
+       
+        $behaviors['corsFilter'] = [
+            'class' => \yii\filters\Cors::class,
+            'cors' => [
+                'Origin' => ['*'],
+                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Access-Control-Request-Headers' => ['*'],
+                'Access-Control-Allow-Methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Allow' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Access-Control-Allow-Credentials' => null,
+                'Access-Control-Max-Age' => 86400,
+                'Access-Control-Expose-Headers' => []
+            ]
+
         ];
+        return $behaviors;
     }
 
     /**
@@ -79,9 +85,15 @@ class AuthUsersController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $user = AuthUser::find()
+        ->where(['auth_users.id' => Yii::$app->request->get('id')])
+        ->one();
+
+        if($user->isPerson()) {
+            return $user->person;
+        } else {
+            return $user->company;
+        }
     }
 
     /**
@@ -215,21 +227,32 @@ class AuthUsersController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+        $params = \Yii::$app->request->post();
+        $user = AuthUser::find()->where(['email' => $params['email'], 'password' => md5($params['password'])])->one();
+        /** @var Jwt $jwt */
+        if(empty($user)){
+            throw new yii\web\BadRequestHttpException(404, 'Email or passwors is incorrects!!!');
         }
+        $jwt = Yii::$app->jwt;
+        $signer = $jwt->getSigner('HS256');
+        $key = $jwt->getKey();
+        $time = time();
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            Yii::$app->session->setFlash('success', "Login realizado com sucesso!!!."); 
+        $token = $jwt->getBuilder()
+            ->issuedBy('http://localhost:4040')// Configures the issuer (iss claim)
+            ->permittedFor('http://localhost:3000')// Configures the audience (aud claim)
+            ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
+            ->issuedAt($time)// Configures the time that the token was issue (iat claim)
+            ->expiresAt($time + 3600)// Configures the expiration time of the token (exp claim)
+            ->withClaim('user', [
+                'id'=> $user->id,
+                'sub' => $user->email])// Configures a new claim, called "uid"
+            ->getToken($signer, $key);
 
-            return $this->redirect(['sistema/index']);
-        }
-
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+            $jsonToken = $this->asJson([
+                'token' => (string)$token,
+            ]);
+        return $jsonToken;
     }
 
 }

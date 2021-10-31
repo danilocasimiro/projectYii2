@@ -32,6 +32,7 @@ class Question extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['id'], 'default' => md5(uniqid(rand(), true))],
             [['researche_id', 'type_id', 'text'], 'required'],
             [['researche_id', 'type_id'], 'integer'],
             [['text'], 'string', 'max' => 60],

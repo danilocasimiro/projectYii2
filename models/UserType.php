@@ -28,6 +28,7 @@ class UserType extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['id'], 'default' => md5(uniqid(rand(), true))],
             [['type'], 'required'],
             [['type'], 'string', 'max' => 60],
         ];

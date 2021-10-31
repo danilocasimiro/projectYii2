@@ -1,14 +1,12 @@
 <?php
 
-namespace app\controllers;
+namespace app\modules\v1\controllers;
 
 use app\models\Answer;
 use Yii;
 
 class AnswersController extends \yii\web\Controller
-{
-    public $layout = 'sistema';
-    
+{    
     public function actionIndex()
     {
         return $this->render('index');

@@ -29,6 +29,7 @@ class Answer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['id'], 'default' => md5(uniqid(rand(), true))],
             [['question_id', 'text'], 'required'],
             [['question_id'], 'integer'],
             [['text'], 'string', 'max' => 60],

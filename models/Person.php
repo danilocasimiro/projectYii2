@@ -31,6 +31,7 @@ class Person extends ActiveRecord
     public function rules()
     {
         return [
+            [['id'], 'default' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'name', 'birthday', 'sex'], 'required'],
             [['auth_user_id'], 'integer'],
             [['name'], 'string', 'max' => 60],

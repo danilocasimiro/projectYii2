@@ -32,6 +32,7 @@ class Company extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['id'], 'default' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'name', 'foundation', 'cnpj'], 'required'],
             [['auth_user_id'], 'integer'],
             [['foundation'], 'safe'],

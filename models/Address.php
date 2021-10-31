@@ -35,6 +35,7 @@ class Address extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['id'], 'default' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'street', 'number', 'district', 'city', 'state', 'country', 'zipcode'], 'required'],
             [['auth_user_id'], 'integer'],
             [['street'], 'string', 'max' => 50],

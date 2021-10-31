@@ -28,6 +28,7 @@ class Type extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['id'], 'default' => md5(uniqid(rand(), true))],
             [['text'], 'required'],
             [['text'], 'string', 'max' => 60],
         ];

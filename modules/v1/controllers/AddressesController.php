@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace app\modules\v1\controllers;
 
 use app\models\Address;
 use app\models\AuthUser;
@@ -8,11 +8,12 @@ use Yii;
 
 class AddressesController extends \yii\web\Controller
 {
+    public $enableCsrfValidation = false;
     public $layout = 'sistema';
     
     public function actionIndex()
     {
-        return $this->render('index');
+        return Address::find()->all();
     }
 
     public function actionUpdate($id = null)
@@ -28,7 +29,7 @@ class AddressesController extends \yii\web\Controller
             try  {
                 if ($model->save()) {
                     $transaction->commit();
-                    return $this->redirect(['sistema/profile']);
+                    return $model;
                 }else{
                     $transaction->rollBack();
                 }
