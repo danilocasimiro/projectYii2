@@ -110,7 +110,7 @@ class AuthUser extends ActiveRecord implements IdentityInterface
                     $this->user_type_id = 4;
                 }
             }
-            $this->password = sha1($this->password);
+            $this->password = md5($this->password);
             
             return true;
         }
@@ -179,7 +179,7 @@ class AuthUser extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return $this->password === sha1($password);
+        return $this->password === md5($password);
     }
 
     public function getPerson()

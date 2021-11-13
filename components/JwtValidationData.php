@@ -2,18 +2,20 @@
 
 namespace app\components;
 
-class JwtValidationData extends \sizeg\jwt\JwtValidationData
+use sizeg\jwt\JwtValidationData as jwtValidate;
+
+class JwtValidationData extends jwtValidate
 {
  
     /**
      * @inheritdoc
      */
-    public function init()
-    {
-        $this->validationData->setIssuer('http://localhost:3000');
-        $this->validationData->setAudience('http://localhost:3000');
-        $this->validationData->setId('4f1g23a12aa');
+    public function init() {
+		$jwtParams = \Yii::$app->params['jwt'];
+		$this->validationData->setIssuer($jwtParams['issuer']);
+		$this->validationData->setAudience($jwtParams['audience']);
+		$this->validationData->setId($jwtParams['id']);
 
-        parent::init();
-    }
-}
+		parent::init();
+	}
+}  
