@@ -36,7 +36,7 @@ class Person extends ActiveRecord
             [['auth_user_id'], 'integer'],
             [['name'], 'string', 'max' => 60],
             [['sex'], 'string', 'max' => 1],
-            [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::className(), 'targetAttribute' => ['auth_user_id' => 'id']],
+            [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],
 
         ];
     }
@@ -59,6 +59,14 @@ class Person extends ActiveRecord
     {
         [$day, $month, $year] = explode('/', $this->birthday);
         return implode('/', [$month, $day, $year]);
+    }
+
+    public function afterFind()
+    {
+        $this->birthday = Yii::$app->formatter->format($this->birthday, 'date');
+        
+        parent::afterFind();    
+       
     }
 
     public function beforeSave($insert)

@@ -2,6 +2,8 @@
 
 namespace app\modules\v1\controllers;
 
+use app\models\AuthUser;
+
 class AuthUsersController extends \yii\web\Controller
 {
   public $enableCsrfValidation = false;
@@ -17,6 +19,7 @@ class AuthUsersController extends \yii\web\Controller
         'login',
         'refresh-token',
         'options',
+				'profile'
       ],
     ];
     
@@ -37,6 +40,19 @@ class AuthUsersController extends \yii\web\Controller
     return $behaviors;
   }
 
+	public function actionProfile($id)
+	{
+		$user = AuthUser::findOne($id);
+
+		return [
+			'user' => $user,
+			'person' => $user->person,
+			'address' => $user->address,
+			'phone' => $user->phone,
+			'userType' => $user->userType
+		];
+	}
+
   public function actionLogin() 
   {
     $model = new \app\models\LoginForm();
@@ -52,6 +68,7 @@ class AuthUsersController extends \yii\web\Controller
 
       return [
         'user' => $user,
+				'person' => $user->person,
         'token' => (string) $token,
 				'message' => 'Logado com sucesso',
 				'code' => '200'

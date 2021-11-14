@@ -52,7 +52,9 @@ return [
     'controller' => 'v1/auth-users',
     'extraPatterns' => [
       'POST login' => 'login',
-      'OPTIONS login' => 'login'
+      'OPTIONS login' => 'login',
+      'GET profile/{id}' => 'profile',
+      'OPTIONS profile' => 'profile'
     ]
   ],
 ];
