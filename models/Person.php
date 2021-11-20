@@ -12,7 +12,7 @@ use \yii\db\ActiveRecord;
  * @property int $auth_user_id
  * @property string $name
  * @property string $birthday
- * @property string $sex
+ * @property string $genre
  * @property AuthUser $authUser
  */
 class Person extends ActiveRecord
@@ -31,11 +31,11 @@ class Person extends ActiveRecord
     public function rules()
     {
         return [
-            [['id'], 'default' => md5(uniqid(rand(), true))],
-            [['auth_user_id', 'name', 'birthday', 'sex'], 'required'],
+            [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
+            [['auth_user_id', 'name', 'birthday', 'genre'], 'required'],
             [['auth_user_id'], 'integer'],
             [['name'], 'string', 'max' => 60],
-            [['sex'], 'string', 'max' => 1],
+            [['genre'], 'string', 'max' => 1],
             [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],
 
         ];
@@ -51,7 +51,7 @@ class Person extends ActiveRecord
             'auth_user_id' => Yii::t('app', 'Auth User ID'),
             'name' => Yii::t('app', 'Name'),
             'birthday' => Yii::t('app', 'Birthday'),
-            'sex' => Yii::t('app', 'Sex'),
+            'genre' => Yii::t('app', 'Genre'),
         ];
     }
 

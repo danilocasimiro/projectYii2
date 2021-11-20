@@ -44,13 +44,13 @@ class AuthUser extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['id'], 'default' => md5(uniqid(rand(), true))],
+            [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['email', 'password'], 'required'],
             [['email', 'authKey', 'acessToken'], 'string', 'max' => 45],
             [['email'], 'email'],
-            ['fotoCliente', 'file', 'extensions' => 'jpg, png'],
+            [['fotoCliente'], 'file', 'extensions' => 'jpg, png'],
             [['password', 'photo'], 'string', 'max' => 60],
-            [['acessToken', 'authKey'], 'default', 'value' => '7c4a8d09ca3762af61e59520943dc26494f8941b'],
+            [['acessToken', 'authKey'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['user_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserType::class, 'targetAttribute' => ['user_type_id' => 'id']],
 
         ];
@@ -71,6 +71,19 @@ class AuthUser extends ActiveRecord implements IdentityInterface
             'acessToken' => Yii::t('app', 'Acess Token'),
         ];
     }
+
+    public function fields()
+{
+    return [
+        'id' => 'id',
+        'email' => 'email',
+        'photo' => 'photo',
+        'person' => 'person',
+        'address' => 'address',
+        'phone' => 'phone',
+        'userType' => 'userType'
+    ];
+}
 
     public static function verifyAbility($user, $id)
     {
@@ -142,7 +155,12 @@ class AuthUser extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        return static::findOne(['access_token' => $token]);
+        $users = AuthUser::find()->all();
+        foreach ($users as $user) {
+            if ((string) $user->id === (string) $token->getClaim('uid')) {
+                return new static($user);
+            }
+        }
     }
 
     public function getId()

@@ -13,15 +13,13 @@ class m210705_233104_Questions extends Migration
     public function safeUp()
     {
         $this->createTable('questions', [
-            'id'=>$this->primaryKey(),
-            'researche_id'=>$this->integer()->notNull(),
-            'type_id'=>$this->integer()->notNull(),
+            'id'=>$this->char(32)->notNull(),
+            'researche_id'=>$this->char(32)->notNull(),
+            'type_id'=>$this->char(32)->notNull(),
             'text'=>$this->string(60)->notNull(),
+            'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
+            'deleted_at' => $this->dateTime()
         ]);
-
-        $this->addForeignKey('fk_questions_researche_id', 'questions', 'researche_id', 'researches', 'id', 'CASCADE', 'RESTRICT');
-        $this->addForeignKey('fk_questions_type_id', 'questions', 'type_id', 'types', 'id', 'CASCADE', 'RESTRICT');
-
     }
 
     /**
@@ -29,8 +27,6 @@ class m210705_233104_Questions extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk_questions_researche_id', 'questions');
-        $this->dropForeignKey('fk_questions_type_id', 'questions');
         $this->dropTable('questions');
 
     }

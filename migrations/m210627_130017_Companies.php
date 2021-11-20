@@ -3,20 +3,21 @@
 use yii\db\Migration;
 
 /**
- * Class m210629_114244_Phones
+ * Class m210627_130017_Companies
  */
-class m210629_114244_Phones extends Migration
+class m210627_130017_Companies extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->createTable('phones', [
+        $this->createTable('companies', [
             'id'=>$this->char(32)->notNull(),
             'auth_user_id'=>$this->char(32)->notNull(),
-            'ddd'=>$this->string(5)->notNull(),
-            'number'=>$this->string(15)->notNull(),
+            'name'=>$this->string(60)->notNull(),
+            'foundation'=>$this->dateTime()->notNull(),
+            'cnpj'=>$this->string(18)->notNull(),
             'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
             'deleted_at' => $this->dateTime()
         ]);
@@ -27,6 +28,6 @@ class m210629_114244_Phones extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('phones');
+        $this->dropTable('companies');
     }
 }

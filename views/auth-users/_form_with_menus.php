@@ -56,7 +56,7 @@ use yii\widgets\ActiveForm;
                                                     <?= $form->field($person, 'name')->textInput(['maxlength' => true, 'class' => 'form-control form-control-user']) ?>
                                                     </div>
                                                     <div class="col-sm-6">
-                                                    <?= $form->field($person, 'sex')->dropDownList(['M' => 'Masculino', 'F' => 'Feminino' ], ['maxlength' => true]) ?>
+                                                    <?= $form->field($person, 'genre')->dropDownList(['M' => 'Masculino', 'F' => 'Feminino' ], ['maxlength' => true]) ?>
                                                     </div>
                                                 </div>
                                                 <div class="form-group row"> 

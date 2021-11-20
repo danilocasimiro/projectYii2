@@ -13,8 +13,8 @@ class m210629_121051_Addresses extends Migration
     public function safeUp()
     {
         $this->createTable('addresses', [
-            'id'=>$this->primaryKey(),
-            'auth_user_id'=>$this->integer()->notNull(),
+            'id'=>$this->char(32)->notNull(),
+            'auth_user_id'=>$this->char(32)->notNull(),
             'street'=>$this->string(50)->notNull(),
             'number'=>$this->string(15)->notNull(),
             'district'=>$this->string(30)->notNull(),
@@ -22,9 +22,9 @@ class m210629_121051_Addresses extends Migration
             'state'=>$this->string(30)->notNull(),
             'country'=>$this->string(30)->notNull(),
             'zipcode'=>$this->string(15)->notNull(),
+            'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
+            'deleted_at' => $this->dateTime()
         ]);
-
-        $this->addForeignKey('fk_addresses_auth_user_id', 'addresses', 'auth_user_id', 'auth_users', 'id', 'CASCADE', 'RESTRICT');
     }
 
     /**
@@ -32,22 +32,6 @@ class m210629_121051_Addresses extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk_addresses_auth_user_id', 'addresses');
         $this->dropTable('addresses');
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m210629_121051_Addresses cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }

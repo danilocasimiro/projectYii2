@@ -2,7 +2,10 @@
 
 namespace app\modules\v1\controllers;
 
+use app\models\Address;
 use app\models\AuthUser;
+use app\models\Person;
+use Yii;
 
 class AuthUsersController extends \yii\web\Controller
 {
@@ -13,13 +16,15 @@ class AuthUsersController extends \yii\web\Controller
   public function behaviors() {
     $behaviors = parent::behaviors();
 
+    unset($behaviors['authenticator']);
+
     $behaviors['authenticator'] = [
       'class' => \sizeg\jwt\JwtHttpBearerAuth::class,
       'except' => [
         'login',
         'refresh-token',
         'options',
-				'profile'
+				'create'
       ],
     ];
     
@@ -40,17 +45,53 @@ class AuthUsersController extends \yii\web\Controller
     return $behaviors;
   }
 
+	public function actionCreate() 
+	{
+		$params = Yii::$app->request->getBodyParams();
+		$data = $params['data'];
+		$model = new AuthUser;
+		$person = new Person;
+		$address = new Address;
+		$model->email = $data['email'];
+		$model->password = $data['password'];
+		$model->user_type_id = 4;
+		$person->name = $data['name'];
+		$person->birthday = $data['birthdate'];
+		$person->genre = $data['genre'];
+		$address->street = $data['address'];
+		$address->number = $data['number'];
+		$address->district = $data['district'];
+		$address->city = $data['city'];
+		$address->state = $data['state'];
+		$address->country = $data['country'];
+		$address->zipcode = $data['zip_code'];
+		
+		if($model->save()) {
+			$person->auth_user_id = $model->id;
+			$address->auth_user_id = $model->id;
+			
+			if(!$person->save() || !$address->save()) {
+				return [
+					$person->getErrors(),
+					$address->getErrors()
+				];
+			}
+
+		} else {
+
+			return $model->getErrors();
+		}
+		
+		return $model;
+
+	}
+
 	public function actionProfile($id)
 	{
 		$user = AuthUser::findOne($id);
 
-		return [
-			'user' => $user,
-			'person' => $user->person,
-			'address' => $user->address,
-			'phone' => $user->phone,
-			'userType' => $user->userType
-		];
+		return $user;
+		
 	}
 
   public function actionLogin() 

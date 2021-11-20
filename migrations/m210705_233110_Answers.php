@@ -13,13 +13,12 @@ class m210705_233110_Answers extends Migration
     public function safeUp()
     {
         $this->createTable('answers', [
-            'id'=>$this->primaryKey(),
-            'question_id'=>$this->integer()->notNull(),
+            'id'=>$this->char(32)->notNull(),
+            'question_id'=>$this->char(32)->notNull(),
             'text'=>$this->string(60)->notNull(),
+            'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
+            'deleted_at' => $this->dateTime()
         ]);
-
-        $this->addForeignKey('fk_answers_question_id', 'answers', 'question_id', 'questions', 'id', 'CASCADE', 'RESTRICT');
-
     }
 
     /**
@@ -27,7 +26,6 @@ class m210705_233110_Answers extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk_answers_researche_id', 'answers');
         $this->dropTable('answers');
     }
 }

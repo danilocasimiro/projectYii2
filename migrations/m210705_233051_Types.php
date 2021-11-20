@@ -13,8 +13,10 @@ class m210705_233051_Types extends Migration
     public function safeUp()
     {
         $this->createTable('types', [
-            'id'=>$this->primaryKey(),
+            'id'=>$this->char(32)->notNull(),
             'text'=>$this->string(60)->notNull(),
+            'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
+            'deleted_at' => $this->dateTime()
         ]);
 
     }
@@ -24,23 +26,6 @@ class m210705_233051_Types extends Migration
      */
     public function safeDown()
     {
-        echo "m210705_233051_Types cannot be reverted.\n";
-
-        return false;
+        $this->dropTable('types');
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m210705_233051_Types cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }

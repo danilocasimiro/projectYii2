@@ -13,12 +13,17 @@ class m210627_130019_AuthUsers extends Migration
     public function safeUp()
     {
         $this->createTable('auth_users', [
-            'id'=>$this->primaryKey(),
-            'email'=>$this->string(45),
-            'password'=>$this->string(60),
+            'id'=>$this->char(32)->notNull(),
+            'email'=>$this->string(45)->notNull(),
+            'password'=>$this->string(60)->notNull(),
+            'user_type_id'=>$this->char(32)->notNull(),
+            'auth_user_id'=>$this->char(32),
+            'company_id'=>$this->char(32),
             'photo'=>$this->string(60),
-            'authKey'=>$this->string(45),
-            'acessToken'=>$this->string(45)
+            'authKey'=>$this->string(45)->notNull(),
+            'acessToken'=>$this->string(45)->notNull(),
+            'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
+            'deleted_at' => $this->dateTime()
             
         ]);
     }
@@ -30,19 +35,4 @@ class m210627_130019_AuthUsers extends Migration
     {
        $this->dropTable('auth_users');
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m210627_130019_AuthUsers cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }

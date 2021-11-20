@@ -3,9 +3,9 @@
 use yii\db\Migration;
 
 /**
- * Class m211106_161750_create_fk_user_refresh_tokens_users
+ * Class m211120_131161_create_fk_user_refresh_tokens_users
  */
-class m211106_161750_create_fk_user_refresh_tokens_users extends Migration
+class m211120_131161_create_fk_user_refresh_tokens_users extends Migration
 {
     /**
      * {@inheritdoc}

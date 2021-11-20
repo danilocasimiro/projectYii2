@@ -3,16 +3,16 @@
 use yii\db\Migration;
 
 /**
- * Class m211106_161127_create_pk_user_refresh_token
+ * Class m211120_131160_create_pk_user_refresh_tokens
  */
-class m211106_161127_create_pk_user_refresh_token extends Migration
+class m211120_131160_create_pk_user_refresh_tokens extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->addPrimaryKey('pk_user_refresh_token', 'users_refresh_tokens', 'id');
+        $this->addPrimaryKey('pk_user_refresh_tokens', 'users_refresh_tokens', 'id');
     }
 
     /**

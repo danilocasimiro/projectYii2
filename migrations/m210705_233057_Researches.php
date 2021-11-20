@@ -13,14 +13,13 @@ class m210705_233057_Researches extends Migration
     public function safeUp()
     {
         $this->createTable('researches', [
-            'id'=>$this->primaryKey(),
-            'auth_user_id'=>$this->integer()->notNull(),
+            'id'=>$this->char(32)->notNull(),
+            'auth_user_id'=>$this->char(32)->notNull(),
             'title'=>$this->string(40)->notNull(),
             'description'=>$this->string(60)->notNull(),
+            'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
+            'deleted_at' => $this->dateTime()
         ]);
-
-        $this->addForeignKey('fk_researches_auth_user_id', 'researches', 'auth_user_id', 'auth_users', 'id', 'CASCADE', 'RESTRICT');
-
     }
 
     /**

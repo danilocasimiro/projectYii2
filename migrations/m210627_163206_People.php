@@ -13,15 +13,15 @@ class m210627_163206_People extends Migration
     public function safeUp()
     {
         $this->createTable('people', [
-            'id'=>$this->primaryKey(),
-            'auth_user_id'=>$this->integer()->notNull(),
+            'id'=>$this->char(32)->notNull(),
+            'auth_user_id'=>$this->char(32)->notNull(),
             'name'=>$this->string(60)->notNull(),
             'birthday'=>$this->dateTime()->notNull(),
-            'sex'=>$this->string(1)->notNull(),
+            'genre'=>$this->string(1)->notNull(),
+            'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
+            'deleted_at' => $this->dateTime()
             
         ]);
-
-        $this->addForeignKey('fk_people_auth_user_id', 'people', 'auth_user_id', 'auth_users', 'id', 'CASCADE', 'RESTRICT');
     }
 
     /**
@@ -29,9 +29,6 @@ class m210627_163206_People extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk_people_auth_user_id', 'people');
-        $this->dropTable('auth_users');
+        $this->dropTable('people');
     }
-
-  
 }

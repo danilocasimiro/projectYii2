@@ -142,7 +142,7 @@ use app\models\AuthUser;
                       <h6 class="mb-0">Gênero</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                    <?= $model->sex === 'M' ? 'Masculino': 'Feminino' ?>
+                    <?= $model->genre === 'M' ? 'Masculino': 'Feminino' ?>
                     </div>
                   </div>
                   <hr>
