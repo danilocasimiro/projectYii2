@@ -7,10 +7,12 @@ use Yii;
 /**
  * This is the model class for table "phones".
  *
- * @property int $id
- * @property int $auth_user_id
+ * @property string $id
+ * @property string $auth_user_id
  * @property string $ddd
  * @property string $number
+ * @property string $created_at
+ * @property string $deleted_at
  *
  * @property AuthUsers $authUser
  */
@@ -32,10 +34,10 @@ class Phone extends \yii\db\ActiveRecord
         return [
             [['id'], 'default' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'ddd', 'number'], 'required'],
-            [['auth_user_id'], 'integer'],
             [['ddd'], 'string', 'max' => 5],
+            [['id', 'auth_user_id'], 'string', 'max' => 32],
             [['number'], 'string', 'max' => 15],
-            [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::className(), 'targetAttribute' => ['auth_user_id' => 'id']],
+            [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],
         ];
     }
 
@@ -59,6 +61,6 @@ class Phone extends \yii\db\ActiveRecord
      */
     public function getAuthUser()
     {
-        return $this->hasOne(AuthUsers::className(), ['id' => 'auth_user_id']);
+        return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
     }
 }

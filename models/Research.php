@@ -7,8 +7,8 @@ use Yii;
 /**
  * This is the model class for table "researches".
  *
- * @property int $id
- * @property int $auth_user_id
+ * @property string $id
+ * @property string $auth_user_id
  * @property string $title
  * @property string $description
  *
@@ -33,10 +33,10 @@ class Research extends \yii\db\ActiveRecord
         return [
             [['id'], 'default' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'title', 'description'], 'required'],
-            [['auth_user_id'], 'integer'],
             [['title'], 'string', 'max' => 40],
+            [['auth_user_id', 'id'], 'string', 'max' => 32],
             [['description'], 'string', 'max' => 60],
-            [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUsers::className(), 'targetAttribute' => ['auth_user_id' => 'id']],
+            [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],
         ];
     }
 
@@ -60,7 +60,7 @@ class Research extends \yii\db\ActiveRecord
      */
     public function getQuestions()
     {
-        return $this->hasMany(Questions::className(), ['researche_id' => 'id']);
+        return $this->hasMany(Question::class, ['researche_id' => 'id']);
     }
 
     /**
@@ -70,6 +70,6 @@ class Research extends \yii\db\ActiveRecord
      */
     public function getAuthUser()
     {
-        return $this->hasOne(AuthUsers::className(), ['id' => 'auth_user_id']);
+        return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
     }
 }

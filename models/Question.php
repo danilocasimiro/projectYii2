@@ -7,9 +7,9 @@ use Yii;
 /**
  * This is the model class for table "questions".
  *
- * @property int $id
- * @property int $researche_id
- * @property int $type_id
+ * @property string $id
+ * @property string $researche_id
+ * @property string $type_id
  * @property string $text
  *
  * @property Answers[] $answers
@@ -34,10 +34,10 @@ class Question extends \yii\db\ActiveRecord
         return [
             [['id'], 'default' => md5(uniqid(rand(), true))],
             [['researche_id', 'type_id', 'text'], 'required'],
-            [['researche_id', 'type_id'], 'integer'],
             [['text'], 'string', 'max' => 60],
-            [['researche_id'], 'exist', 'skipOnError' => true, 'targetClass' => Researches::className(), 'targetAttribute' => ['researche_id' => 'id']],
-            [['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => Types::className(), 'targetAttribute' => ['type_id' => 'id']],
+            [['type_id', 'researche_id', 'id'], 'string', 'max' => 32],
+            [['researche_id'], 'exist', 'skipOnError' => true, 'targetClass' => Research::class, 'targetAttribute' => ['researche_id' => 'id']],
+            [['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => Type::class, 'targetAttribute' => ['type_id' => 'id']],
         ];
     }
 
@@ -61,7 +61,7 @@ class Question extends \yii\db\ActiveRecord
      */
     public function getAnswers()
     {
-        return $this->hasMany(Answers::className(), ['question_id' => 'id']);
+        return $this->hasMany(Answer::class, ['question_id' => 'id']);
     }
 
     /**
@@ -71,7 +71,7 @@ class Question extends \yii\db\ActiveRecord
      */
     public function getResearche()
     {
-        return $this->hasOne(Researches::className(), ['id' => 'researche_id']);
+        return $this->hasOne(Research::class, ['id' => 'researche_id']);
     }
 
     /**
@@ -81,6 +81,6 @@ class Question extends \yii\db\ActiveRecord
      */
     public function getType()
     {
-        return $this->hasOne(Types::className(), ['id' => 'type_id']);
+        return $this->hasOne(Type::class, ['id' => 'type_id']);
     }
 }

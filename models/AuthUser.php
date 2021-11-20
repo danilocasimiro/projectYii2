@@ -9,19 +9,21 @@ use \yii\db\ActiveRecord;
 /**
  * This is the model class for table "auth_users".
  *
- * @property int $id
+ * @property string $id
  * @property string $email
  * @property string $password
  * @property string $authKey
  * @property string $photo
  * @property string $acessToken
- * @property int $user_type_id
+ * @property string $user_type_id
+ * @property string $company_id
+ * @property string $created_at
+ * @property string $deleted_at
  * @property Person $person
  * @property UserType $user_type
  * @property Phone $phone
  * @property Address $adress
  * @property Company $company
- * @property Company $company_id
  */
 class AuthUser extends ActiveRecord implements IdentityInterface
 {
@@ -48,6 +50,7 @@ class AuthUser extends ActiveRecord implements IdentityInterface
             [['email', 'password'], 'required'],
             [['email', 'authKey', 'acessToken'], 'string', 'max' => 45],
             [['email'], 'email'],
+            [['user_type_id', 'company_id', 'id'], 'string', 'max' => 32],
             [['fotoCliente'], 'file', 'extensions' => 'jpg, png'],
             [['password', 'photo'], 'string', 'max' => 60],
             [['acessToken', 'authKey'], 'default', 'value' => md5(uniqid(rand(), true))],

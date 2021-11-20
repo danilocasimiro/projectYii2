@@ -7,11 +7,13 @@ use Yii;
 /**
  * This is the model class for table "companies".
  *
- * @property int $id
- * @property int $auth_user_id
+ * @property string $id
+ * @property string $auth_user_id
  * @property string $name
  * @property string $foundation
  * @property string $cnpj
+ * @property string $created_at
+ * @property string $deleted_at
  *
  * @property AuthUser $authUser
  * @property AuthUser $authUserCompany
@@ -34,11 +36,11 @@ class Company extends \yii\db\ActiveRecord
         return [
             [['id'], 'default' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'name', 'foundation', 'cnpj'], 'required'],
-            [['auth_user_id'], 'integer'],
             [['foundation'], 'safe'],
+            [['id', 'auth_user_id'], 'string', 'max' => 32],
             [['name'], 'string', 'max' => 60],
             [['cnpj'], 'string', 'max' => 18],
-            [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::className(), 'targetAttribute' => ['auth_user_id' => 'id']],
+            [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],
         ];
     }
 
@@ -76,7 +78,7 @@ class Company extends \yii\db\ActiveRecord
 
     public function getFoundation()
     {
-       return isset($company->foundation) ? Yii::$app->formatter->format($company->foundation, 'date') : '';
+       return isset($this->foundation) ? Yii::$app->formatter->format($this->foundation, 'date') : '';
     }
 
     /**
@@ -86,11 +88,11 @@ class Company extends \yii\db\ActiveRecord
      */
     public function getAuthUser()
     {
-        return $this->hasOne(AuthUser::className(), ['id' => 'auth_user_id']);
+        return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
     }
 
     public function getAuthUserCompany()
     {
-        return $this->hasMany(AuthUser::className(), ['company_id' => 'id']);
+        return $this->hasMany(AuthUser::class, ['company_id' => 'id']);
     }
 }

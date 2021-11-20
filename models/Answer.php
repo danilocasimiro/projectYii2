@@ -10,6 +10,8 @@ use Yii;
  * @property int $id
  * @property int $question_id
  * @property string $text
+ * @property string $created_at
+ * @property string $deleted_at
  *
  * @property Questions $question
  */
@@ -31,9 +33,9 @@ class Answer extends \yii\db\ActiveRecord
         return [
             [['id'], 'default' => md5(uniqid(rand(), true))],
             [['question_id', 'text'], 'required'],
-            [['question_id'], 'integer'],
             [['text'], 'string', 'max' => 60],
-            [['question_id'], 'exist', 'skipOnError' => true, 'targetClass' => Questions::className(), 'targetAttribute' => ['question_id' => 'id']],
+            [['id', 'question_id'], 'string', 'max' => 32],
+            [['question_id'], 'exist', 'skipOnError' => true, 'targetClass' => Question::class, 'targetAttribute' => ['question_id' => 'id']],
         ];
     }
 
@@ -56,6 +58,6 @@ class Answer extends \yii\db\ActiveRecord
      */
     public function getQuestion()
     {
-        return $this->hasOne(Questions::className(), ['id' => 'question_id']);
+        return $this->hasOne(Question::class, ['id' => 'question_id']);
     }
 }

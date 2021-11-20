@@ -7,7 +7,7 @@ use Yii;
 /**
  * This is the model class for table "types".
  *
- * @property int $id
+ * @property string $id
  * @property string $text
  *
  * @property Questions[] $questions
@@ -30,6 +30,7 @@ class Type extends \yii\db\ActiveRecord
         return [
             [['id'], 'default' => md5(uniqid(rand(), true))],
             [['text'], 'required'],
+            [['id'], 'string', 'max' => 32],
             [['text'], 'string', 'max' => 60],
         ];
     }
@@ -52,6 +53,6 @@ class Type extends \yii\db\ActiveRecord
      */
     public function getQuestions()
     {
-        return $this->hasMany(Questions::className(), ['type_id' => 'id']);
+        return $this->hasMany(Question::class, ['type_id' => 'id']);
     }
 }

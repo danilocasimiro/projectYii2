@@ -7,7 +7,7 @@ use Yii;
 /**
  * This is the model class for table "user_types".
  *
- * @property int $id
+ * @property string $id
  * @property string $type
  *
  * @property AuthUser[] $authUsers
@@ -30,6 +30,7 @@ class UserType extends \yii\db\ActiveRecord
         return [
             [['id'], 'default' => md5(uniqid(rand(), true))],
             [['type'], 'required'],
+            [['id'], 'string', 'max' => 32],
             [['type'], 'string', 'max' => 60],
         ];
     }
@@ -52,6 +53,6 @@ class UserType extends \yii\db\ActiveRecord
      */
     public function getAuthUsers()
     {
-        return $this->hasMany(AuthUsers::className(), ['user_type_id' => 'id']);
+        return $this->hasMany(AuthUser::class, ['user_type_id' => 'id']);
     }
 }
