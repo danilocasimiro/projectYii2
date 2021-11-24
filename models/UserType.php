@@ -55,4 +55,9 @@ class UserType extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AuthUser::class, ['user_type_id' => 'id']);
     }
+
+    public static function getUserTypeByType($type)
+    {
+         return static::find()->where(['type' => $type])->one();
+    } 
 }

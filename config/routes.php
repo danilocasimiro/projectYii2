@@ -48,12 +48,17 @@ return [
   ],
   [
     'class' => 'yii\rest\UrlRule',
+    'controller' => 'v1/profile',
+    'pluralize' => false,
+  ],
+  [
+    'class' => 'yii\rest\UrlRule',
     'pluralize' => false,
     'controller' => 'v1/auth-users',
     'extraPatterns' => [
       'POST login' => 'login',
       'GET profile/{id}' => 'profile',
-      'OPTIONS profile/{id}' => 'options'
+      'OPTIONS profile/{id}' => 'profile'
     ]
   ],
 ];

@@ -32,7 +32,7 @@ class Phone extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id'], 'default' => md5(uniqid(rand(), true))],
+            [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'ddd', 'number'], 'required'],
             [['ddd'], 'string', 'max' => 5],
             [['id', 'auth_user_id'], 'string', 'max' => 32],

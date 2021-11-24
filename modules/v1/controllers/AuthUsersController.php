@@ -5,6 +5,7 @@ namespace app\modules\v1\controllers;
 use app\models\Address;
 use app\models\AuthUser;
 use app\models\Person;
+use app\models\Phone;
 use Yii;
 
 class AuthUsersController extends \yii\web\Controller
@@ -23,7 +24,7 @@ class AuthUsersController extends \yii\web\Controller
       'except' => [
         'login',
         'refresh-token',
-        'options',
+				'options',
 				'create'
       ],
     ];
@@ -43,7 +44,17 @@ class AuthUsersController extends \yii\web\Controller
     ];
 
     return $behaviors;
-  }
+	}
+
+	public function actionIndex()
+	{
+		return AuthUser::find()->all();
+	}
+
+	public function actionOptions()
+	{
+		return true;
+	}
 
 	public function actionCreate() 
 	{
@@ -52,9 +63,9 @@ class AuthUsersController extends \yii\web\Controller
 		$model = new AuthUser;
 		$person = new Person;
 		$address = new Address;
+		$phone = new Phone;
 		$model->email = $data['email'];
 		$model->password = $data['password'];
-		$model->user_type_id = 4;
 		$person->name = $data['name'];
 		$person->birthday = $data['birthdate'];
 		$person->genre = $data['genre'];
@@ -65,12 +76,15 @@ class AuthUsersController extends \yii\web\Controller
 		$address->state = $data['state'];
 		$address->country = $data['country'];
 		$address->zipcode = $data['zip_code'];
+		$phone->ddd = $data['ddd'];
+		$phone->number = $data['phone_number'];
 		
 		if($model->save()) {
 			$person->auth_user_id = $model->id;
 			$address->auth_user_id = $model->id;
-			
-			if(!$person->save() || !$address->save()) {
+			$phone->auth_user_id = $model->id;
+
+			if(!$person->save() || !$address->save() || !$phone->save()) {
 				return [
 					$person->getErrors(),
 					$address->getErrors()
@@ -84,14 +98,6 @@ class AuthUsersController extends \yii\web\Controller
 		
 		return $model;
 
-	}
-
-	public function actionProfile($id)
-	{
-		$user = AuthUser::findOne($id);
-
-		return $user;
-		
 	}
 
   public function actionLogin() 

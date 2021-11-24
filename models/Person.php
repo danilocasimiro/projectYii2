@@ -35,7 +35,6 @@ class Person extends ActiveRecord
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'name', 'birthday', 'genre'], 'required'],
-            [['auth_user_id'], 'integer'],
             [['id', 'auth_user_id'], 'string', 'max' => 32],
             [['name'], 'string', 'max' => 60],
             [['genre'], 'string', 'max' => 1],

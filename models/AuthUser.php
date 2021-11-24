@@ -113,17 +113,17 @@ class AuthUser extends ActiveRecord implements IdentityInterface
                 if($current_user){
                     switch (Yii::$app->user->identity->userType->type) {
                         case 'Admin':
-                            $this->user_type_id = 2;
+                            $this->user_type_id = UserType::getUserTypeByType('Admin')->id;
                             break;
                         case 'Empresa':
-                            $this->user_type_id = 3;
+                            $this->user_type_id = UserType::getUserTypeByType('Empresa')->id;
                             $this->company_id = Yii::$app->user->identity->company->id;
                             break;
                         default:
-                            $this->user_type_id = 4;
+                            $this->user_type_id = UserType::getUserTypeByType('Usuário')->id;
                     }
                 }else {
-                    $this->user_type_id = 4;
+                    $this->user_type_id = UserType::getUserTypeByType('Usuário')->id;
                 }
             }
             $this->password = md5($this->password);
