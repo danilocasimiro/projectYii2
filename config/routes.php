@@ -50,15 +50,25 @@ return [
     'class' => 'yii\rest\UrlRule',
     'controller' => 'v1/profile',
     'pluralize' => false,
+    'tokens' => [
+      '{id}' => '<id:[\\w\\-]+>',
+    ]
   ],
   [
     'class' => 'yii\rest\UrlRule',
     'pluralize' => false,
     'controller' => 'v1/auth-users',
-    'extraPatterns' => [
-      'POST login' => 'login',
-      'GET profile/{id}' => 'profile',
-      'OPTIONS profile/{id}' => 'profile'
+   
+    'tokens' => [
+      '{id}' => '<id:[\\w\\-]+>',
     ]
+  ],
+  [
+    'class' => 'yii\rest\UrlRule',
+    'pluralize' => false,
+    'controller' => 'v1/authenticate',
+    'extraPatterns' => [
+      'POST login' => 'login'
+    ] 
   ],
 ];

@@ -4,12 +4,13 @@ namespace app\modules\v1\controllers;
 
 use app\models\Address;
 use app\models\AuthUser;
+use Exception;
 use Yii;
+use yii\web\NotFoundHttpException;
 
 class AddressesController extends \yii\web\Controller
 {
     public $enableCsrfValidation = false;
-    public $layout = 'sistema';
     
     public function actionIndex()
     {
