@@ -81,7 +81,7 @@ class AuthUser extends ActiveRecord implements IdentityInterface
         'id' => 'id',
         'email' => 'email',
         'photo' => 'photo',
-        'person' => 'person',
+        'person' => !empty($this->person) ? 'person' : 'company',
         'address' => 'address',
         'phone' => 'phone',
         'userType' => 'userType'

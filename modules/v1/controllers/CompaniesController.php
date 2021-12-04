@@ -6,36 +6,28 @@ use app\models\AuthUser;
 use app\models\Company;
 use app\models\Phone;
 use app\models\Address;
-use app\models\UserType;
 use Exception;
 use Yii;
 
-class CompaniesController extends \yii\web\Controller
+class CompaniesController extends BaseController
 {
-    public $layout = 'sistema';
+    public $enableCsrfValidation = false;
 
     public function actionIndex()
     {
-        $companies = null;
-        
-        if(Yii::$app->request->get('search') === 'submit'){
-            if(!empty(Yii::$app->request->get('input'))){
-                $companies = Company::find()->where(['LIKE', 'name',Yii::$app->request->get('input')])->all();
-            }else{
-                $companies = Company::find()->all();
-            }
-            if($companies){
-              //  Yii::$app->session->setFlash('success', "Busca realizada com sucesso!!!."); 
-            }else{
-              //  Yii::$app->session->setFlash('error', "Nada foi encontrado!!!."); 
+        $getParams = Yii::$app->request->get();
 
-            }
+        if(!empty($getParams['search'])){
+          
+            return Company::find()->where(['LIKE', 'name', $getParams['search']])->all();
         }
-       
-        return $this->render('index', [
-            'currentUser' => Yii::$app->user->identity,
-            'companies' => $companies,
-        ]);
+        
+        return Company::find()->all();
+    }
+
+    public function actionOptions()
+    {
+      return true;
     }
 
      /**
