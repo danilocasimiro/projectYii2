@@ -12,7 +12,7 @@ class m211120_130619_create_fk_questions_researches extends Migration
      */
     public function safeUp()
     {
-        $this->addForeignKey('fk_questions_researches', 'questions', 'researche_id', 'researches', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('fk_questions_researches', 'questions', 'research_id', 'researches', 'id', 'CASCADE', 'CASCADE');
     }
 
     /**

@@ -8,15 +8,15 @@ use Yii;
  * This is the model class for table "questions".
  *
  * @property string $id
- * @property string $researche_id
- * @property string $type_id
+ * @property string $research_id
+ * @property string $question_type_id
  * @property string $text
  *
- * @property Answers[] $answers
- * @property Researches $researche
- * @property Types $type
+ * @property Answer[] $answers
+ * @property Research $research
+ * @property QuestionType $type
  */
-class Question extends \yii\db\ActiveRecord
+class Question extends BaseModel
 {
     /**
      * {@inheritdoc}
@@ -32,12 +32,12 @@ class Question extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id'], 'default' => md5(uniqid(rand(), true))],
-            [['researche_id', 'type_id', 'text'], 'required'],
+            [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
+            [['research_id', 'question_type_id', 'text'], 'required'],
             [['text'], 'string', 'max' => 60],
-            [['type_id', 'researche_id', 'id'], 'string', 'max' => 32],
-            [['researche_id'], 'exist', 'skipOnError' => true, 'targetClass' => Research::class, 'targetAttribute' => ['researche_id' => 'id']],
-            [['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => Type::class, 'targetAttribute' => ['type_id' => 'id']],
+            [['question_type_id', 'research_id', 'id'], 'string', 'max' => 32],
+            [['research_id'], 'exist', 'skipOnError' => true, 'targetClass' => Research::class, 'targetAttribute' => ['research_id' => 'id']],
+            [['question_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => QuestionType::class, 'targetAttribute' => ['question_type_id' => 'id']],
         ];
     }
 
@@ -48,8 +48,8 @@ class Question extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'researche_id' => Yii::t('app', 'Researche ID'),
-            'type_id' => Yii::t('app', 'Type ID'),
+            'research_id' => Yii::t('app', 'Research ID'),
+            'question_type_id' => Yii::t('app', 'Question Type ID'),
             'text' => Yii::t('app', 'Text'),
         ];
     }
@@ -65,22 +65,27 @@ class Question extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Researche]].
+     * Gets query for [[Research]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getResearche()
+    public function getResearch()
     {
-        return $this->hasOne(Research::class, ['id' => 'researche_id']);
+        return $this->hasOne(Research::class, ['id' => 'research_id']);
     }
 
     /**
-     * Gets query for [[Type]].
+     * Gets query for [[Question Type]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getType()
+    public function getQuestionType()
     {
-        return $this->hasOne(Type::class, ['id' => 'type_id']);
+        return $this->hasOne(QuestionType::class, ['id' => 'question_type_id']);
+    }
+
+    public function fkAttribute()
+    {
+        return 'question_id';
     }
 }

@@ -5,21 +5,21 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "types".
+ * This is the model class for table "questions_types".
  *
  * @property string $id
  * @property string $text
  *
  * @property Questions[] $questions
  */
-class Type extends \yii\db\ActiveRecord
+class QuestionType extends BaseModel
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'types';
+        return 'questions_types';
     }
 
     /**
@@ -28,7 +28,7 @@ class Type extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id'], 'default' => md5(uniqid(rand(), true))],
+            [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['text'], 'required'],
             [['id'], 'string', 'max' => 32],
             [['text'], 'string', 'max' => 60],
@@ -53,6 +53,11 @@ class Type extends \yii\db\ActiveRecord
      */
     public function getQuestions()
     {
-        return $this->hasMany(Question::class, ['type_id' => 'id']);
+        return $this->hasMany(Question::class, ['question_type_id' => 'id']);
+    }
+
+    public function fkAttribute()
+    {
+        return 'question_type_id';
     }
 }

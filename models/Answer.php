@@ -15,7 +15,7 @@ use Yii;
  *
  * @property Questions $question
  */
-class Answer extends \yii\db\ActiveRecord
+class Answer extends BaseModel
 {
     /**
      * {@inheritdoc}
@@ -31,7 +31,7 @@ class Answer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id'], 'default' => md5(uniqid(rand(), true))],
+            [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['question_id', 'text'], 'required'],
             [['text'], 'string', 'max' => 60],
             [['id', 'question_id'], 'string', 'max' => 32],
@@ -59,5 +59,10 @@ class Answer extends \yii\db\ActiveRecord
     public function getQuestion()
     {
         return $this->hasOne(Question::class, ['id' => 'question_id']);
+    }
+
+    public function fkAttribute()
+    {
+        return 'answer_id';
     }
 }

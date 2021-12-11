@@ -24,7 +24,7 @@ class m210629_121051_Addresses extends Migration
             'zipcode'=>$this->string(15)->notNull(),
             'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
             'deleted_at' => $this->dateTime()
-        ]);
+        ], 'ENGINE=InnoDB');
     }
 
     /**

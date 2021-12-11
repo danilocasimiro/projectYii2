@@ -16,12 +16,12 @@ class m210627_163206_People extends Migration
             'id'=>$this->char(32)->notNull(),
             'auth_user_id'=>$this->char(32)->notNull(),
             'name'=>$this->string(60)->notNull(),
-            'birthday'=>$this->dateTime()->notNull(),
-            'genre'=>$this->string(1)->notNull(),
+            'birthdate'=>$this->dateTime()->notNull(),
+            'genre'=> "ENUM('male', 'female', 'undefined')",
             'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
             'deleted_at' => $this->dateTime()
             
-        ]);
+        ], 'ENGINE=InnoDB');
     }
 
     /**

@@ -18,7 +18,7 @@ class m210705_233110_Answers extends Migration
             'text'=>$this->string(60)->notNull(),
             'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
             'deleted_at' => $this->dateTime()
-        ]);
+        ], 'ENGINE=InnoDB');
     }
 
     /**

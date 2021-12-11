@@ -20,7 +20,7 @@ class m210627_130017_Companies extends Migration
             'cnpj'=>$this->string(18)->notNull(),
             'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
             'deleted_at' => $this->dateTime()
-        ]);
+        ], 'ENGINE=InnoDB');
     }
 
     /**

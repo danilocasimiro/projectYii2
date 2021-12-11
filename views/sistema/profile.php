@@ -152,7 +152,7 @@ use app\models\AuthUser;
                     </div>
                     <div class="col-sm-9 text-secondary">
                     
-                    <?= Yii::$app->formatter->format($model->birthday, 'date'); ?>
+                    <?= Yii::$app->formatter->format($model->birthdate, 'date'); ?>
                     </div>
                   </div>
 

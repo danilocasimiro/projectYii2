@@ -18,7 +18,7 @@ use Yii;
  *
  * @property AuthUser $user
  */
-class UserRefreshToken extends \yii\db\ActiveRecord
+class UserRefreshToken extends BaseModel
 {
     /**
      * {@inheritdoc}

@@ -15,7 +15,7 @@ use Yii;
  * @property Questions[] $questions
  * @property AuthUsers $authUser
  */
-class Research extends \yii\db\ActiveRecord
+class Research extends BaseModel
 {
     /**
      * {@inheritdoc}
@@ -31,7 +31,7 @@ class Research extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id'], 'default' => md5(uniqid(rand(), true))],
+            [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'title', 'description'], 'required'],
             [['title'], 'string', 'max' => 40],
             [['auth_user_id', 'id'], 'string', 'max' => 32],
@@ -60,7 +60,7 @@ class Research extends \yii\db\ActiveRecord
      */
     public function getQuestions()
     {
-        return $this->hasMany(Question::class, ['researche_id' => 'id']);
+        return $this->hasMany(Question::class, ['research_id' => 'id']);
     }
 
     /**
@@ -71,5 +71,10 @@ class Research extends \yii\db\ActiveRecord
     public function getAuthUser()
     {
         return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
+    }
+
+    public function fkAttribute()
+    {
+        return 'research_id';
     }
 }

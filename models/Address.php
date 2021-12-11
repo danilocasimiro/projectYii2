@@ -21,7 +21,7 @@ use Yii;
  *
  * @property AuthUsers $authUser
  */
-class Address extends \yii\db\ActiveRecord
+class Address extends BaseModel
 {
     /**
      * {@inheritdoc}
@@ -78,5 +78,10 @@ class Address extends \yii\db\ActiveRecord
     public function getAuthUser()
     {
         return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
+    }
+
+    public function fkAttribute()
+    {
+        return 'address_id';
     }
 }

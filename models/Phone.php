@@ -16,7 +16,7 @@ use Yii;
  *
  * @property AuthUsers $authUser
  */
-class Phone extends \yii\db\ActiveRecord
+class Phone extends BaseModel
 {
     /**
      * {@inheritdoc}
@@ -62,5 +62,10 @@ class Phone extends \yii\db\ActiveRecord
     public function getAuthUser()
     {
         return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
+    }
+
+    public function fkAttribute()
+    {
+        return 'phone_id';
     }
 }

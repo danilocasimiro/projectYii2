@@ -20,7 +20,7 @@ class m211106_161120_create_users_refresh_tokens_table extends Migration
             'user_agent' => $this->string(100),
             'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
             'deleted_at' => $this->dateTime()
-        ]);
+        ], 'ENGINE=InnoDB');
     }
 
     /**

@@ -3,7 +3,6 @@
 namespace app\models;
 
 use Yii;
-use \yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "Person".
@@ -11,14 +10,19 @@ use \yii\db\ActiveRecord;
  * @property string $id
  * @property string $auth_user_id
  * @property string $name
- * @property string $birthday
+ * @property string $birthdate
  * @property string $genre
  * @property string $created_at
  * @property string $deleted_at
  * @property AuthUser $authUser
  */
-class Person extends ActiveRecord
+class Person extends BaseModel
 {
+
+    public const GENRE_MALE = 'male';
+    public const GENRE_FEMALE = 'female';
+    public const GENRE_UNDEFINED = 'undefined';
+
     /**
      * {@inheritdoc}
      */
@@ -34,10 +38,10 @@ class Person extends ActiveRecord
     {
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
-            [['auth_user_id', 'name', 'birthday', 'genre'], 'required'],
+            [['auth_user_id', 'name', 'birthdate', 'genre'], 'required'],
             [['id', 'auth_user_id'], 'string', 'max' => 32],
             [['name'], 'string', 'max' => 60],
-            [['genre'], 'string', 'max' => 1],
+            ['genre', 'in', 'range' => [self::GENRE_MALE, self::GENRE_FEMALE, self::GENRE_UNDEFINED]],
             [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],
 
         ];
@@ -52,20 +56,20 @@ class Person extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'auth_user_id' => Yii::t('app', 'Auth User ID'),
             'name' => Yii::t('app', 'Name'),
-            'birthday' => Yii::t('app', 'Birthday'),
+            'birthdate' => Yii::t('app', 'birthdate'),
             'genre' => Yii::t('app', 'Genre'),
         ];
     }
 
     public function getDateOfBirthAttribute()
     {
-        [$day, $month, $year] = explode('/', $this->birthday);
+        [$day, $month, $year] = explode('/', $this->birthdate);
         return implode('/', [$month, $day, $year]);
     }
 
     public function afterFind()
     {
-        $this->birthday = Yii::$app->formatter->format($this->birthday, 'date');
+        $this->birthdate = Yii::$app->formatter->format($this->birthdate, 'date');
         
         parent::afterFind();    
        
@@ -76,7 +80,7 @@ class Person extends ActiveRecord
         if (parent::beforeSave($insert)) {
                 $date = new \DateTime($this->getDateOfBirthAttribute(), new \DateTimeZone('UTC'));
          
-                $this->birthday =  $date->format('Y-m-d\ H:i:s.u');
+                $this->birthdate =  $date->format('Y-m-d\ H:i:s.u');
 
                 return true;
         }
@@ -86,5 +90,10 @@ class Person extends ActiveRecord
     public function getAuthUser()
     {
         return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
+    }
+
+    public function fkAttribute()
+    {
+        return 'person_id';
     }
 }

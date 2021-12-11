@@ -12,25 +12,24 @@ use \yii\db\ActiveRecord;
  * @property string $id
  * @property string $email
  * @property string $password
- * @property string $authKey
+ * @property string $auth_key
  * @property string $photo
- * @property string $acessToken
- * @property string $user_type_id
+ * @property string $access_token
+ * @property string $type
  * @property string $company_id
  * @property string $created_at
  * @property string $deleted_at
  * @property Person $person
- * @property UserType $user_type
  * @property Phone $phone
  * @property Address $adress
  * @property Company $company
  */
-class AuthUser extends ActiveRecord implements IdentityInterface
+class AuthUser extends BaseModel implements IdentityInterface
 {
-    /**
-     * @var UploadedFile
-     */
-    public $fotoCliente;
+    public const TYPE_ADMIN = 'Admin';
+    public const TYPE_COMPANY = 'Empresa';
+    public const TYPE_EMPLOYEE = 'Colaborador';
+    public const TYPE_USER = 'Usuário';
 
     /**
      * {@inheritdoc}
@@ -48,13 +47,12 @@ class AuthUser extends ActiveRecord implements IdentityInterface
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['email', 'password'], 'required'],
-            [['email', 'authKey', 'acessToken'], 'string', 'max' => 45],
+            [['email', 'auth_key', 'access_token'], 'string', 'max' => 45],
             [['email'], 'email'],
-            [['user_type_id', 'company_id', 'id'], 'string', 'max' => 32],
-            [['fotoCliente'], 'file', 'extensions' => 'jpg, png'],
+            ['type', 'in', 'range' => [self::TYPE_ADMIN, self::TYPE_COMPANY, self::TYPE_EMPLOYEE, self::TYPE_USER]],
+            [['company_id', 'id'], 'string', 'max' => 32],
             [['password', 'photo'], 'string', 'max' => 60],
-            [['acessToken', 'authKey'], 'default', 'value' => md5(uniqid(rand(), true))],
-            [['user_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserType::class, 'targetAttribute' => ['user_type_id' => 'id']],
+            [['access_token', 'auth_key'], 'default', 'value' => md5(uniqid(rand(), true))],
 
         ];
     }
@@ -67,35 +65,26 @@ class AuthUser extends ActiveRecord implements IdentityInterface
         return [
             'id' => Yii::t('app', 'ID'),
             'email' => Yii::t('app', 'Email'),
-            'fotoCliente' => 'Foto de Perfil',
             'photo' => Yii::t('app', 'Photo'),
             'password' => Yii::t('app', 'Password'),
-            'authKey' => Yii::t('app', 'Auth Key'),
-            'acessToken' => Yii::t('app', 'Acess Token'),
+            'auth_key' => Yii::t('app', 'Auth Key'),
+            'access_token' => Yii::t('app', 'Acess Token'),
         ];
     }
 
     public function fields()
-{
-    return [
-        'id' => 'id',
-        'email' => 'email',
-        'photo' => 'photo',
-        'person' => !empty($this->person) ? 'person' : 'company',
-        'address' => 'address',
-        'phone' => 'phone',
-        'userType' => 'userType'
-    ];
-}
-
-    public static function verifyAbility($user, $id)
     {
-        if($id !== null && !$user->isGuest && ($user->identity->userType->type === 'admin' 
-        || $user->identity->userType->type === 'own_company')){
-            return $id;
-        }else{
-            return $user->id;
-        }
+        return [
+            'id' => 'id',
+            'email' => 'email',
+            'photo' => 'photo',
+            'type' => 'type',
+            'person' => 'person',
+            'company' => 'company',
+            'address' => 'address',
+            'phone' => 'phone',
+            'deleted_at' => 'deleted_at'
+        ];
     }
 
     public function isPerson()
@@ -107,44 +96,35 @@ class AuthUser extends ActiveRecord implements IdentityInterface
     {
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
-                $this->authKey = \Yii::$app->security->generateRandomString();
-                $this->acessToken = \Yii::$app->security->generateRandomString();
-                $current_user = !Yii::$app->user->isGuest && Yii::$app->user->identity->userType->type;                
+                $this->auth_key = \Yii::$app->security->generateRandomString();
+                $this->access_token = \Yii::$app->security->generateRandomString();
+                $this->password = md5($this->password);
+                $current_user = !Yii::$app->user->isGuest && Yii::$app->user->identity->type;                
                 if($current_user){
-                    switch (Yii::$app->user->identity->userType->type) {
-                        case 'Admin':
-                            $this->user_type_id = UserType::getUserTypeByType('Admin')->id;
+                    switch (Yii::$app->user->identity->type) {
+                        case static::TYPE_ADMIN:
+                            $this->type = static::TYPE_ADMIN;
                             break;
-                        case 'Empresa':
-                            $this->user_type_id = UserType::getUserTypeByType('Empresa')->id;
+                        case static::TYPE_COMPANY:
+                            $this->type = static::TYPE_COMPANY;
                             $this->company_id = Yii::$app->user->identity->company->id;
                             break;
                         default:
-                            $this->user_type_id = UserType::getUserTypeByType('Usuário')->id;
+                            $this->type = static::TYPE_USER;
                     }
                 }else {
-                    $this->user_type_id = UserType::getUserTypeByType('Usuário')->id;
+                    $this->type = static::TYPE_USER;
                 }
             }
-            $this->password = md5($this->password);
             
             return true;
         }
         return false;
     }
 
-    public function getPhoto()
+    public function getName()
     {
-        if($this->photo === null){
-            return Yii::getAlias('/files/default.jpg');
-        }else{
-           return Yii::getAlias('/files/').  $this->photo;
-        }
-    }
-
-    public static function getName()
-    {
-        return Yii::$app->user->identity->person ? Yii::$app->user->identity->person->name : Yii::$app->user->identity->company->name;
+        return $this->company ? $this->company->name : $this->person->name;
     }
 
     public static function findIdentity($id)
@@ -173,12 +153,12 @@ class AuthUser extends ActiveRecord implements IdentityInterface
 
     public function getAuthKey()
     {
-        return $this->authKey;
+        return $this->auth_key;
     }
 
     public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
+        return $this->auth_key === $authKey;
     }
 
      /**
@@ -192,7 +172,7 @@ class AuthUser extends ActiveRecord implements IdentityInterface
        return static::findOne(['email' => $email]);
     }
 
-      /**
+    /**
      * Validates password
      *
      * @param string $password password to validate
@@ -203,14 +183,21 @@ class AuthUser extends ActiveRecord implements IdentityInterface
         return $this->password === md5($password);
     }
 
+    public function relations()
+    {
+        return [
+            'person' => Person::class,
+            'phone' => Phone::class,
+            'address' => Address::class,
+            'company' => Company::class,
+            'companyUser' => Company::class
+            
+        ];
+    }
+
     public function getPerson()
     {
         return $this->hasOne(Person::class, ['auth_user_id' => 'id']);
-    }
-
-    public function getUserType()
-    {
-        return $this->hasOne(UserType::class, ['id' => 'user_type_id']);
     }
 
     public function getPhone()
@@ -231,5 +218,10 @@ class AuthUser extends ActiveRecord implements IdentityInterface
     public function getCompanyUser()
     {
         return $this->hasOne(Company::class, ['company_id' => 'id']);
+    }
+
+    public function fkAttribute()
+    {
+        return 'auth_user_id';
     }
 }

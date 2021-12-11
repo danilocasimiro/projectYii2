@@ -52,7 +52,7 @@ use yii\widgets\ActiveForm;
                                     ?>
                                 </div>
                                 <div class="col-sm-4">
-                                    <?= $form->field($person, 'birthday')->textInput(['maxlength' => true, 'id'=> 'myDatepicker']) ?>
+                                    <?= $form->field($person, 'birthdate')->textInput(['maxlength' => true, 'id'=> 'myDatepicker']) ?>
                                 </div>
                             </div>
 

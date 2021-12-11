@@ -18,7 +18,7 @@ use Yii;
  * @property AuthUser $authUser
  * @property AuthUser $authUserCompany
  */
-class Company extends \yii\db\ActiveRecord
+class Company extends BaseModel
 {
     /**
      * {@inheritdoc}
@@ -34,7 +34,7 @@ class Company extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id'], 'default' => md5(uniqid(rand(), true))],
+            [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'name', 'foundation', 'cnpj'], 'required'],
             [['foundation'], 'safe'],
             [['id', 'auth_user_id'], 'string', 'max' => 32],
@@ -58,24 +58,6 @@ class Company extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getDateOfBirthAttribute()
-    {
-        [$day, $month, $year] = explode('/', $this->foundation);
-        return implode('/', [$month, $day, $year]);
-    }
-
-    public function beforeSave($insert)
-    {
-        if (parent::beforeSave($insert)) {
-                $date = new \DateTime($this->getDateOfBirthAttribute(), new \DateTimeZone('UTC'));
-         
-                $this->foundation =  $date->format('Y-m-d\ H:i:s.u');
-
-                return true;
-        }
-        return false;
-    }
-
     public function getFoundation()
     {
        return isset($this->foundation) ? Yii::$app->formatter->format($this->foundation, 'date') : '';
@@ -94,5 +76,10 @@ class Company extends \yii\db\ActiveRecord
     public function getAuthUserCompany()
     {
         return $this->hasMany(AuthUser::class, ['company_id' => 'id']);
+    }
+
+    public function fkAttribute()
+    {
+        return 'company_id';
     }
 }
