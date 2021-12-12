@@ -3,9 +3,9 @@
 use yii\db\Migration;
 
 /**
- * Class m210627_130017_Companies
+ * Class m210627_130017_companies
  */
-class m210627_130017_Companies extends Migration
+class m210627_130017_companies extends Migration
 {
     /**
      * {@inheritdoc}
@@ -18,6 +18,7 @@ class m210627_130017_Companies extends Migration
             'name'=>$this->string(60)->notNull(),
             'foundation'=>$this->dateTime()->notNull(),
             'cnpj'=>$this->string(18)->notNull(),
+            'friendly_id' => $this->integer()->notNull(),
             'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
             'deleted_at' => $this->dateTime()
         ], 'ENGINE=InnoDB');

@@ -3,9 +3,9 @@
 use yii\db\Migration;
 
 /**
- * Class m210629_121051_Addresses
+ * Class m210629_121051_addresses
  */
-class m210629_121051_Addresses extends Migration
+class m210629_121051_addresses extends Migration
 {
     /**
      * {@inheritdoc}
@@ -22,6 +22,7 @@ class m210629_121051_Addresses extends Migration
             'state'=>$this->string(30)->notNull(),
             'country'=>$this->string(30)->notNull(),
             'zipcode'=>$this->string(15)->notNull(),
+            'friendly_id' => $this->integer()->notNull(),
             'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
             'deleted_at' => $this->dateTime()
         ], 'ENGINE=InnoDB');

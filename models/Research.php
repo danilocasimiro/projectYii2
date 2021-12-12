@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use app\helpers\HelperMethods;
+use app\services\systemServices\CreateObjectService;
 use Yii;
 
 /**
@@ -9,6 +11,7 @@ use Yii;
  *
  * @property string $id
  * @property string $auth_user_id
+ * @property string $friendly_id
  * @property string $title
  * @property string $description
  *
@@ -33,6 +36,7 @@ class Research extends BaseModel
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'title', 'description'], 'required'],
+            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['title'], 'string', 'max' => 40],
             [['auth_user_id', 'id'], 'string', 'max' => 32],
             [['description'], 'string', 'max' => 60],

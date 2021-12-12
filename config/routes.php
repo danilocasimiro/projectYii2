@@ -55,6 +55,17 @@ return [
   ],
   [
     'class' => 'yii\rest\UrlRule',
+    'controller' => 'v1/logs',
+    'pluralize' => false,
+    'except' => [
+      'create', 'update', 'delete'
+    ],
+    'tokens' => [
+      '{id}' => '<id:[\\w\\-]+>',
+    ],
+  ],
+  [
+    'class' => 'yii\rest\UrlRule',
     'controller' => 'v1/people',
     'pluralize' => false,
     'extraPatterns' => [

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\services;
+namespace app\services\systemServices;
 
 use Yii;
 use yii\web\BadRequestHttpException;

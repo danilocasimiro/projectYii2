@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\helpers\HelperMethods;
 use Yii;
 
 /**
@@ -12,6 +13,7 @@ use Yii;
  * @property string $name
  * @property string $birthdate
  * @property string $genre
+ * @property string $friendly_id
  * @property string $created_at
  * @property string $deleted_at
  * @property AuthUser $authUser
@@ -40,6 +42,7 @@ class Person extends BaseModel
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'name', 'birthdate', 'genre'], 'required'],
             [['id', 'auth_user_id'], 'string', 'max' => 32],
+            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['name'], 'string', 'max' => 60],
             ['genre', 'in', 'range' => [self::GENRE_MALE, self::GENRE_FEMALE, self::GENRE_UNDEFINED]],
             [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],

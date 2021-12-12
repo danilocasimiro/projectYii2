@@ -1,7 +1,8 @@
 <?php
 
-namespace app\services;
+namespace app\services\systemServices;
 
+use app\models\Log;
 use Yii;
 use yii\web\BadRequestHttpException;
 
@@ -11,12 +12,13 @@ class UpdateObjectService {
   {
     $bodyParams = Yii::$app->request->getBodyParams();
 
-    $model = $class::find()->where(['id' => $id])->one();
+    $model = $class::find()->where(['id' => $id, 'deleted_at' => null])->one();
 
     if(empty($model)) {
         
         throw new BadRequestHttpException('Object '.ucfirst($class).' not found');
     }
+    $oldModel = $model->getAttributes();
 
     $model->load($bodyParams, '');
 
@@ -24,7 +26,7 @@ class UpdateObjectService {
         throw new BadRequestHttpException(json_encode($model->getErrors()));
     };
 
-   
+    Log::addLogUpdate($oldModel, $class, $bodyParams);
     return $model;
   }
 }

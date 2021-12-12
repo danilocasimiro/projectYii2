@@ -1,8 +1,9 @@
 <?php
 
-namespace app\services;
+namespace app\services\systemServices;
 
-use app\services\CreateObjectsRelationsService;
+use app\models\Log;
+use app\services\systemServices\CreateObjectsRelationsService;
 use yii\web\BadRequestHttpException;
 
 class CreateBatchObjectsService {
@@ -29,6 +30,11 @@ class CreateBatchObjectsService {
 
     }
 
+    if($class != 'app\models\Log') {
+      foreach($models as $model) {
+        Log::addLogCreate($model, $class);
+      }
+    }
 
     return $models;
   }

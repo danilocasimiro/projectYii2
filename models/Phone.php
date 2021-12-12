@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\helpers\HelperMethods;
 use Yii;
 
 /**
@@ -11,6 +12,7 @@ use Yii;
  * @property string $auth_user_id
  * @property string $ddd
  * @property string $number
+ * @property string $friendly_id
  * @property string $created_at
  * @property string $deleted_at
  *
@@ -36,6 +38,7 @@ class Phone extends BaseModel
             [['auth_user_id', 'ddd', 'number'], 'required'],
             [['ddd'], 'string', 'max' => 5],
             [['id', 'auth_user_id'], 'string', 'max' => 32],
+            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['number'], 'string', 'max' => 15],
             [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],
         ];

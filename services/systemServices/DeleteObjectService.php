@@ -1,8 +1,9 @@
 <?php
 
-namespace app\services;
+namespace app\services\systemServices;
 
-use DateTime;
+use app\components\JwtMethods;
+use app\models\Log;
 use yii\web\BadRequestHttpException;
 
 class DeleteObjectService {
@@ -36,6 +37,10 @@ class DeleteObjectService {
         throw new BadRequestHttpException('Não foi possível realizar a exclusão!!!');
       }
 
+      Log::addLogDelete($model, $class, $typeDelete);
+
       return $message;
   }
+
+ 
 }

@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\helpers\HelperMethods;
 use Yii;
 
 /**
@@ -12,6 +13,7 @@ use Yii;
  * @property string $name
  * @property string $foundation
  * @property string $cnpj
+ * @property string $friendly_id
  * @property string $created_at
  * @property string $deleted_at
  *
@@ -37,6 +39,7 @@ class Company extends BaseModel
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'name', 'foundation', 'cnpj'], 'required'],
             [['foundation'], 'safe'],
+            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['id', 'auth_user_id'], 'string', 'max' => 32],
             [['name'], 'string', 'max' => 60],
             [['cnpj'], 'string', 'max' => 18],

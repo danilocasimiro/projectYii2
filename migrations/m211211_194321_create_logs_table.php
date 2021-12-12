@@ -3,20 +3,21 @@
 use yii\db\Migration;
 
 /**
- * Class m210705_233104_questions
+ * Handles the creation of table `{{%logs}}`.
  */
-class m210705_233104_questions extends Migration
+class m211211_194321_create_logs_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->createTable('questions', [
+        $this->createTable('logs', [
             'id'=>$this->char(32)->notNull(),
-            'research_id'=>$this->char(32)->notNull(),
-            'question_type_id'=>$this->char(32)->notNull(),
-            'text'=>$this->string(60)->notNull(),
+            'auth_user_id'=>$this->char(32)->notNull(),
+            'action'=>$this->string(40),
+            'description'=>$this->string(255),
+            'model'=>$this->string(50),
             'friendly_id' => $this->integer()->notNull(),
             'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
             'deleted_at' => $this->dateTime()
@@ -28,7 +29,6 @@ class m210705_233104_questions extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('questions');
-
+        $this->dropTable('{{%logs}}');
     }
 }

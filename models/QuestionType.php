@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\helpers\HelperMethods;
 use Yii;
 
 /**
@@ -9,6 +10,9 @@ use Yii;
  *
  * @property string $id
  * @property string $text
+ * @property string $friendly_id
+ * @property string $created_at
+ * @property string $deleted_at
  *
  * @property Questions[] $questions
  */
@@ -30,6 +34,7 @@ class QuestionType extends BaseModel
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['text'], 'required'],
+            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['id'], 'string', 'max' => 32],
             [['text'], 'string', 'max' => 60],
         ];

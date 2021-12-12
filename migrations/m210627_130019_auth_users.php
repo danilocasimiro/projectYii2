@@ -3,9 +3,9 @@
 use yii\db\Migration;
 
 /**
- * Class m210627_130019_AuthUsers
+ * Class m210627_130019_auth_users
  */
-class m210627_130019_AuthUsers extends Migration
+class m210627_130019_auth_users extends Migration
 {
     /**
      * {@inheritdoc}

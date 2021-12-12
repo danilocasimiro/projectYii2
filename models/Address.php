@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\helpers\HelperMethods;
 use Yii;
 
 /**
@@ -16,6 +17,7 @@ use Yii;
  * @property string $state
  * @property string $country
  * @property string $zipcode
+ * @property string $friendly_id
  * @property string $created_at
  * @property string $deleted_at
  *
@@ -41,6 +43,7 @@ class Address extends BaseModel
             [['auth_user_id', 'street', 'number', 'district', 'city', 'state', 'country', 'zipcode'], 'required'],
             [['street'], 'string', 'max' => 50],
             [['number', 'zipcode'], 'string', 'max' => 15],
+            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['id', 'auth_user_id'], 'string', 'max' => 32],
             [['district', 'city', 'state', 'country'], 'string', 'max' => 30],
             [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],

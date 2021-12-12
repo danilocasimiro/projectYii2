@@ -3,10 +3,14 @@
 namespace app\modules\v1\controllers;
 
 use app\models\AuthUser;
+use app\models\Log;
+use app\models\Person;
 use Yii;
 
 class AuthenticateController extends BaseController
 {
+    public $modelClass = Person::class;
+
     /**
      * @inheritdoc
      */
@@ -36,6 +40,8 @@ class AuthenticateController extends BaseController
       $token = $this->generateJwt($user);
 
       $this->generateRefreshToken($user);
+
+      Log::addLogLogin($user, $this->modelClass);
 
       return [
         'user' => $user,

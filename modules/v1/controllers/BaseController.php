@@ -2,12 +2,12 @@
 
 namespace app\modules\v1\controllers;
 
-use app\services\CreateBatchObjectsService;
-use app\services\CreateObjectService;
-use app\services\DeleteObjectService;
-use app\services\GetObjectService;
-use app\services\GetObjectsService;
-use app\services\UpdateObjectService;
+use app\services\systemServices\CreateBatchObjectsService;
+use app\services\systemServices\CreateObjectService;
+use app\services\systemServices\DeleteObjectService;
+use app\services\systemServices\GetObjectService;
+use app\services\systemServices\GetObjectsService;
+use app\services\systemServices\UpdateObjectService;
 use Yii;
 
 class BaseController extends \yii\web\Controller
@@ -58,7 +58,7 @@ class BaseController extends \yii\web\Controller
     
     public function actionIndex(): array
     {
-       return GetObjectsService::getObjects($this->modelClass);
+       return GetObjectsService::getObjects($this->modelClass)->all();
     }
 
     public function actionUpdate(string $id): object
