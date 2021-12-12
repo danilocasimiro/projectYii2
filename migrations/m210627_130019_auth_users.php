@@ -14,10 +14,12 @@ class m210627_130019_auth_users extends Migration
     {
         $this->createTable('auth_users', [
             'id'=>$this->char(32)->notNull(),
+            'company_id'=>$this->char(32),
+            'role_id'=>$this->char(32),
             'email'=>$this->string(45)->notNull(),
             'password'=>$this->string(60)->notNull(),
             'type'=> "ENUM('Admin', 'Empresa', 'Colaborador', 'Usuário')",
-            'auth_user_id'=>$this->char(32),
+            'friendly_id' => $this->integer()->notNull(),
             'company_id'=>$this->char(32),
             'photo'=>$this->string(60),
             'auth_key'=>$this->string(45)->notNull(),

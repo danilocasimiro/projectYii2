@@ -2,9 +2,9 @@
 
 namespace app\models;
 
+use app\helpers\HelperMethods;
 use Yii;
 use yii\web\IdentityInterface;
-use \yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "auth_users".
@@ -16,6 +16,7 @@ use \yii\db\ActiveRecord;
  * @property string $photo
  * @property string $access_token
  * @property string $type
+ * @property string $friendly_id
  * @property string $company_id
  * @property string $created_at
  * @property string $deleted_at
@@ -49,6 +50,7 @@ class AuthUser extends BaseModel implements IdentityInterface
             [['email', 'password'], 'required'],
             [['email', 'auth_key', 'access_token'], 'string', 'max' => 45],
             [['email'], 'email'],
+            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             ['type', 'in', 'range' => [self::TYPE_ADMIN, self::TYPE_COMPANY, self::TYPE_EMPLOYEE, self::TYPE_USER]],
             [['company_id', 'id'], 'string', 'max' => 32],
             [['password', 'photo'], 'string', 'max' => 60],

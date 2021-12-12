@@ -1,6 +1,87 @@
 <?php 
 
 return [
+   //////////////////////////////////////////////////////INIT RBAC ROUTES////////////////////////////////////////////////////////////////////////////////////////////////////////
+   [
+    'class' => 'yii\rest\UrlRule',
+    'controller' => [
+        'v1/auth-users/levels' => 'v1/rbac/auth-users-levels'
+    ],
+    'pluralize' => false,
+    'extraPatterns' => [
+      'POST batch' => 'create-batch'
+    ],
+    'tokens' => [
+      '{id}' => '<id:[\\w\\-]+>',
+    ]
+  ],
+  [
+    'class' => 'yii\rest\UrlRule',
+    'controller' => [
+        'v1/authorization/levels' => 'v1/rbac/levels'
+    ],
+    'pluralize' => false,
+    'extraPatterns' => [
+      'POST batch' => 'create-batch'
+    ],
+    'tokens' => [
+      '{id}' => '<id:[\\w\\-]+>',
+    ]
+  ],
+  [
+    'class' => 'yii\rest\UrlRule',
+    'controller' => [
+        'v1/authorization/permissions' => 'v1/rbac/permissions'
+    ],
+    'pluralize' => false,
+    'extraPatterns' => [
+      'POST batch' => 'create-batch'
+    ],
+    'tokens' => [
+      '{id}' => '<id:[\\w\\-]+>',
+    ]
+  ],
+  [
+    'class' => 'yii\rest\UrlRule',
+    'controller' => [
+        'v1/authorization/roles' => 'v1/rbac/roles'
+    ],
+    'pluralize' => false,
+    'extraPatterns' => [
+      'POST batch' => 'create-batch'
+    ],
+    'tokens' => [
+      '{id}' => '<id:[\\w\\-]+>',
+    ]
+  ],
+  [
+    'class' => 'yii\rest\UrlRule',
+    'controller' => [
+        'v1/authorization/roles-permissions' => 'v1/rbac/roles-permissions'
+    ],
+    'pluralize' => false,
+    'extraPatterns' => [
+      'POST batch' => 'create-batch'
+    ],
+    'tokens' => [
+      '{id}' => '<id:[\\w\\-]+>',
+    ]
+  ],
+  [
+    'class' => 'yii\rest\UrlRule',
+    'controller' => [
+        'v1/authorization' => 'v1/rbac/authorizations'
+    ],
+    'except' => [
+      'delete', 'create', 'update', 'view', 'index'
+    ],
+    'pluralize' => false,
+    'tokens' => [
+      '{id}' => '<id:[\\w\\-]+>',
+    ]
+  ],
+  //////////////////////////////////////////////////////END RBAC ROUTES///////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////INIT OTHER ROUTES///////////////////////////////////////////////////////////////////////////////////////
   [
     'class' => 'yii\rest\UrlRule',
     'controller' => 'v1/addresses',
@@ -119,4 +200,5 @@ return [
       '{id}' => '<id:[\\w\\-]+>',
     ]
   ],
+  //////////////////////////////////////////////////////END OTHER ROUTES///////////////////////////////////////////////////////////////////////////////////////
 ];
