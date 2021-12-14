@@ -1,5 +1,6 @@
 <?php
 
+use app\models\AuthUser;
 use yii\db\Migration;
 
 /**
@@ -14,7 +15,7 @@ class m211120_131159_add_default_data extends Migration
     {
        
         $auth_users = [
-            ['id'=>'2a6571da26602a67be14ea8c5ab82349', 'email'=> 'admin@admin.com',                                  'password' => md5('123456'), 'photo' => null, 'auth_key' => \Yii::$app->security->generateRandomString(), 'access_token' => \Yii::$app->security->generateRandomString(), 'type' => 'Admin', 'company_id' => null, 'friendly_id' => '1'],
+            ['id'=>'2a6571da26602a67be14ea8c5ab82349', 'email'=> 'admin@admin.com',                                  'password' => md5('123456'), 'photo' => null, 'auth_key' => \Yii::$app->security->generateRandomString(), 'access_token' => \Yii::$app->security->generateRandomString(), 'type' => 'Admin',   'company_id' => null, 'friendly_id' => '1'],
             ['id'=>'35c8b9bbccd623ebcd584b236903cf65', 'email'=> 'administracao@gaelehenryfilmagensme.com.br',       'password' => md5('123456'), 'photo' => null, 'auth_key' => \Yii::$app->security->generateRandomString(), 'access_token' => \Yii::$app->security->generateRandomString(), 'type' => 'Empresa', 'company_id' => null, 'friendly_id' => '2'],
             ['id'=>'1890e00d6ee44fd1d33b2fc643e2b7e8', 'email'=> 'maria@hotmail.com',                                'password' => md5('123456'), 'photo' => null, 'auth_key' => \Yii::$app->security->generateRandomString(), 'access_token' => \Yii::$app->security->generateRandomString(), 'type' => 'Usuário', 'company_id' => null, 'friendly_id' => '3'],
             ['id'=>'515f94fe65c3cc0f3bbe05ea6b34f219', 'email'=> 'financeiro@andersonebeneditajoalherialtda.com.br', 'password' => md5('123456'), 'photo' => null, 'auth_key' => \Yii::$app->security->generateRandomString(), 'access_token' => \Yii::$app->security->generateRandomString(), 'type' => 'Empresa', 'company_id' => null, 'friendly_id' => '4'],

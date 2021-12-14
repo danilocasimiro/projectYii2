@@ -9,6 +9,7 @@ class HelperMethods {
   public static function incrementFriendlyId($class)
   {
     $query = GetObjectsService::getObjects($class);
+    
     $result = $query->max('friendly_id');
 
     if(!$result) {
