@@ -38,7 +38,7 @@ class Question extends BaseModel
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['research_id', 'question_type_id', 'text'], 'required'],
-            [['text'], 'string', 'max' => 60],
+            [['text'], 'string', 'max' => 255],
             [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['question_type_id', 'research_id', 'id'], 'string', 'max' => 32],
             [['research_id'], 'exist', 'skipOnError' => true, 'targetClass' => Research::class, 'targetAttribute' => ['research_id' => 'id']],
@@ -56,6 +56,18 @@ class Question extends BaseModel
             'research_id' => Yii::t('app', 'Research ID'),
             'question_type_id' => Yii::t('app', 'Question Type ID'),
             'text' => Yii::t('app', 'Text'),
+        ];
+    }
+
+    public function fields()
+    {
+        return [
+            'id' => 'id',
+            'research_id' => 'research_id',
+            'question_type_id' => 'question_type_id',
+            'friendly_id' => 'friendly_id',
+            'text' => 'text',
+            'answers' => 'answers'
         ];
     }
 

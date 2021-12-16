@@ -82,6 +82,7 @@ class AuthUser extends BaseModel implements IdentityInterface
             'photo' => 'photo',
             'type' => 'type',
             'person' => 'person',
+            'company_id' => 'company_id',
             'company' => 'company',
             'address' => 'address',
             'phone' => 'phone',

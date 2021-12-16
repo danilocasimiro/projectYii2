@@ -200,5 +200,16 @@ return [
       '{id}' => '<id:[\\w\\-]+>',
     ]
   ],
+  [
+    'class' => 'yii\rest\UrlRule',
+    'controller' => 'v1/users-questions-answers',
+    'pluralize' => false,
+    'extraPatterns' => [
+      'POST batch' => 'create-batch'
+    ],
+    'tokens' => [
+      '{id}' => '<id:[\\w\\-]+>',
+    ]
+  ],
   //////////////////////////////////////////////////////END OTHER ROUTES///////////////////////////////////////////////////////////////////////////////////////
 ];

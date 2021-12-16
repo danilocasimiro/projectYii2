@@ -31,9 +31,13 @@ class CreateBatchObjectsService {
     }
 
     if($class != 'app\models\Log') {
+
       foreach($models as $model) {
+      
         Log::addLogCreate($model, $class);
+      
       }
+    
     }
 
     return $models;

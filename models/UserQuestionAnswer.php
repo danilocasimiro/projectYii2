@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\JwtMethods;
 use app\helpers\HelperMethods;
 use Yii;
 
@@ -38,6 +39,7 @@ class UserQuestionAnswer extends BaseModel
     {
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
+            [['auth_user_id'], 'default', 'value' => JwtMethods::getAuthUserFromJwt()->id],
             [['id', 'auth_user_id', 'question_id', 'answer_id'], 'required'],
             [['friendly_id'], 'integer'],
             [['created_at', 'deleted_at'], 'safe'],

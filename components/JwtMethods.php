@@ -23,7 +23,7 @@ class JwtMethods {
     if ($token[1] && $token[0] === 'Bearer') {
     
         $jwt = new Jwt;
-        $parsed = $jwt->getParser()->parse((string) $token);
+        $parsed = $jwt->getParser()->parse((string) $token[1]);
         $id = $parsed->getClaim('uid');
 
         return GetObjectService::getObject('app\models\AuthUser', $id);
@@ -39,7 +39,7 @@ class JwtMethods {
   {
       $authUser = static::getAuthUserFromJwt();
 
-      if(!empty($authUser)) {
+      if(empty($authUser) || empty($authUser->company_id)) {
         throw new BadRequestHttpException('Company not found');
       }
 

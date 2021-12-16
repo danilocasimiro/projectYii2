@@ -2,8 +2,8 @@
 
 namespace app\models;
 
+use app\components\JwtMethods;
 use app\helpers\HelperMethods;
-use app\services\systemServices\CreateObjectService;
 use Yii;
 
 /**
@@ -35,6 +35,7 @@ class Research extends BaseModel
     {
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
+            [['company_id'], 'default', 'value' => JwtMethods::getCompanyIdFromJwt()],
             [['company_id', 'title', 'description'], 'required'],
             [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['title'], 'string', 'max' => 40],
@@ -54,6 +55,18 @@ class Research extends BaseModel
             'auth_user_id' => Yii::t('app', 'Auth User ID'),
             'title' => Yii::t('app', 'Title'),
             'description' => Yii::t('app', 'Description'),
+        ];
+    }
+
+    public function fields()
+    {
+        return [
+            'id' => 'id',
+            'company_id' => 'company_id',
+            'friendly_id' => 'friendly_id',
+            'title' => 'title',
+            'description' => 'description',
+            'questions' => 'questions'
         ];
     }
 

@@ -2,9 +2,11 @@
 
 namespace app\modules\v1\controllers;
 
+use app\models\UserQuestionAnswer;
+
 class UsersQuestionsAnswersController extends BaseController
 {
-    public $modelClass = Person::class;
+    public $modelClass = UserQuestionAnswer::class;
     public $defaultTypeDelete = 'hard';
 
 }
