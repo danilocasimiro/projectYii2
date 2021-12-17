@@ -2,13 +2,13 @@
 
 namespace app\services\systemServices;
 
-use app\models\Log;
+use app\interfaces\ModelInterface;
 use app\services\systemServices\CreateObjectsRelationsService;
 use yii\web\BadRequestHttpException;
 
 class CreateObjectService {
 
-  public static function createObject(string $class, array $params): object
+  public static function createObject(string $class, array $params): ModelInterface
   {
       $model = new $class;
 
@@ -20,10 +20,6 @@ class CreateObjectService {
       }
 
       CreateObjectsRelationsService::createObjectsRelations($model, $params);
-
-      if($class != 'app\models\Log') {
-        Log::addLogCreate($model, $class);
-      }
 
       return $model;
   }

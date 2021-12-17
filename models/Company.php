@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
+use app\interfaces\ModelInterface;
 use Yii;
 
 /**
@@ -20,7 +21,7 @@ use Yii;
  * @property AuthUser $authUser
  * @property AuthUser $authUserCompany
  */
-class Company extends BaseModel
+class Company extends BaseModel implements ModelInterface
 {
     /**
      * {@inheritdoc}

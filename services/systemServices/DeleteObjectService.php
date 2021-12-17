@@ -2,45 +2,42 @@
 
 namespace app\services\systemServices;
 
-use app\components\JwtMethods;
-use app\models\Log;
+use app\interfaces\ModelInterface;
 use yii\web\BadRequestHttpException;
 
 class DeleteObjectService {
 
-  public static function deleteObject(string $class, string $typeDelete, string $id): string
+  public static function deleteObject(string $class, string $typeDelete, ModelInterface $model): string
   {
-      $model = $class::find()->where(['id' => $id])->one();
+      if($typeDelete === 'soft') {
 
-      if(empty($model)) {
+          return static::softDelete($model, $class);
 
-        throw new BadRequestHttpException("Object ".$class." not found");
       }
 
-      if($typeDelete === 'hard') {
+      return static::hardDelete($model, $class);
 
-        $result = $model->delete();
-
-        $message = "Object ".$class." hard deleted successfully";
-
-      } else {
-
-        $model->deleted_at = date('Y-m-d H:m:s');
-
-        $result = $model->save();
-
-        $message = "Object ".$class." soft deleted successfully";
-      } 
-
-      if(!$result) {
-
-        throw new BadRequestHttpException('Não foi possível realizar a exclusão!!!');
-      }
-
-      Log::addLogDelete($model, $class, $typeDelete);
-
-      return $message;
   }
 
+  private static function hardDelete(ModelInterface $model, string $class): string
+  {
+      if(!$model->delete()) {
+          throw new BadRequestHttpException('Não foi possível realizar a hard exclusão!!!');
+      }
+
+     return  "Object ".$class." hard deleted successfully";
+  }
+
+  private static function softDelete(ModelInterface $model, string $class): string
+  {
+      $model->deleted_at = date('Y-m-d H:m:s');
+
+      if(!$model->save()){
+
+        throw new BadRequestHttpException('Não foi possível realizar a soft exclusão!!!');
+      }
+
+      return "Object ".$class." soft deleted successfully";
+  }
  
 }

@@ -2,12 +2,13 @@
 
 namespace app\services\systemServices;
 
+use app\interfaces\ModelInterface;
 use Yii;
 use yii\web\BadRequestHttpException;
 
 class CreateObjectsRelationsService {
 
-  public static function createObjectsRelations(Object $model, array $params): void
+  public static function createObjectsRelations(ModelInterface $model, array $params): void
     {
         $relations = $model->relations();
 

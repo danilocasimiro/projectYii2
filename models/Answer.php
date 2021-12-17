@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
+use app\interfaces\ModelInterface;
 use Yii;
 
 /**
@@ -17,7 +18,7 @@ use Yii;
  *
  * @property Questions $question
  */
-class Answer extends BaseModel
+class Answer extends BaseModel implements ModelInterface
 {
     /**
      * {@inheritdoc}

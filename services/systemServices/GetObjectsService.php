@@ -2,12 +2,12 @@
 
 namespace app\services\systemServices;
 
-use app\components\JwtMethods;
 use Yii;
+use yii\db\ActiveQuery;
 
 class GetObjectsService {
 
-  public static function getObjects(string $class): object
+  public static function getObjects(string $class): ActiveQuery
   {
     $query =  $class::find()->where(['deleted_at' => null]);
     static::getExtraQueries($class, $query);

@@ -2,11 +2,12 @@
 
 namespace app\services\systemServices;
 
+use app\interfaces\ModelInterface;
 use yii\web\BadRequestHttpException;
 
 class GetObjectService {
 
-  public static function getObject(string $class, string $id): object
+  public static function getObject(string $class, string $id): ModelInterface
   {
     $model = $class::find()->where(['id' => $id, 'deleted_at' => null])->one();
 

@@ -2,17 +2,21 @@
 
 namespace app\modules\v1\controllers;
 
+use app\models\Log;
 use app\services\systemServices\CreateBatchObjectsService;
 use app\services\systemServices\CreateObjectService;
 use app\services\systemServices\DeleteObjectService;
 use app\services\systemServices\GetObjectService;
 use app\services\systemServices\GetObjectsService;
 use app\services\systemServices\UpdateObjectService;
+use app\interfaces\ModelInterface;
 use Yii;
+use yii\web\BadRequestHttpException;
 
 class BaseController extends \yii\web\Controller
 {
     public $enableCsrfValidation = false;
+    public $bodyParams = [];
 
     /**
      * @inheritdoc
@@ -40,16 +44,30 @@ class BaseController extends \yii\web\Controller
       return $behaviors;
     }
 
-    public function actionView(string $id): object
+    public function beforeAction($action)
+    {
+        $this->bodyParams = Yii::$app->request->getBodyParams();
+
+        if($action->id === 'create-batch' && empty($this->bodyParams['objects'])) {
+    
+            throw new BadRequestHttpException("The params 'objects' is mandatory.");
+            
+        }
+        return parent::beforeAction($action);
+    }
+
+    public function actionView(string $id): ModelInterface
     {
         return GetObjectService::getObject($this->modelClass, $id);
     }
 
-    public function actionCreate(): object
+    public function actionCreate(): ModelInterface
     {
         $transaction = Yii::$app->db->beginTransaction();
         
-        $model = CreateObjectService::createObject($this->modelClass, Yii::$app->request->getBodyParams());
+        $model = CreateObjectService::createObject($this->modelClass, $this->bodyParams);
+
+        $this->createLog($this->modelClass, $model);
 
         $transaction->commit();
 
@@ -61,11 +79,17 @@ class BaseController extends \yii\web\Controller
        return GetObjectsService::getObjects($this->modelClass)->all();
     }
 
-    public function actionUpdate(string $id): object
+    public function actionUpdate(string $id): ModelInterface
     {        
+        $oldModel = GetObjectService::getObject($this->modelClass, $id);
+
+        $oldModelAttributes = $oldModel->getAttributes();
+
         $transaction = Yii::$app->db->beginTransaction();
 
-        $model = UpdateObjectService::updateObject($this->modelClass, $id);
+        $model = UpdateObjectService::updateObject($oldModel, $this->bodyParams);
+
+        Log::addLogUpdate($oldModelAttributes, $this->modelClass, $this->bodyParams);
 
         $transaction->commit();
 
@@ -74,11 +98,14 @@ class BaseController extends \yii\web\Controller
 
     public function actionCreateBatch(): array
     {
-        $bodyParams = Yii::$app->request->getBodyParams();
-
         $transaction = Yii::$app->db->beginTransaction();
 
-        $models = CreateBatchObjectsService::createBatchObjects($this->modelClass, $bodyParams); 
+        $models = CreateBatchObjectsService::createBatchObjects($this->modelClass, $this->bodyParams); 
+
+        foreach($models as $model) {
+        
+            $this->createLog($this->modelClass, $model);
+        }
 
         $transaction->commit();
 
@@ -87,12 +114,21 @@ class BaseController extends \yii\web\Controller
 
     public function actionDelete(string $id): string
     {
-        $bodyParams = Yii::$app->request->getBodyParams();
-        
-        $typeDelete = !empty($bodyParams['typeDelete']) ? $bodyParams['typeDelete'] : $this->defaultTypeDelete;
+        $model = GetObjectService::getObject($this->modelClass, $id);
 
-        $message = DeleteObjectService::deleteObject($this->modelClass, $typeDelete, $id); 
+        $typeDelete = !empty($this->bodyParams['typeDelete']) ? $this->bodyParams['typeDelete'] : $this->defaultTypeDelete;
+
+        $message = DeleteObjectService::deleteObject($this->modelClass, $typeDelete, $model); 
+
+        Log::addLogDelete($model, $this->modelClass, $typeDelete);
         
         return $message;
+    }
+
+    private function createLog(string $class, ModelInterface $model): void
+    {
+        if($class != 'app\models\Log') {
+            Log::addLogCreate($model, $class);
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace app\models;
 use app\components\JwtMethods;
 use app\helpers\HelperMethods;
 use app\services\systemServices\CreateObjectService;
+use app\interfaces\ModelInterface;
 use Yii;
 
 /**
@@ -19,7 +20,7 @@ use Yii;
  * @property string $created_at
  * @property string|null $deleted_at
  */
-class Log extends BaseModel
+class Log extends BaseModel implements ModelInterface
 {
     /**
      * {@inheritdoc}

@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-class BaseModel extends \yii\db\ActiveRecord {
+abstract class BaseModel extends \yii\db\ActiveRecord{
 
     public function relations() 
     {
@@ -12,5 +12,22 @@ class BaseModel extends \yii\db\ActiveRecord {
     public function fkAttribute() 
     {
       return '';
+    }
+
+    public function fields()
+    {
+        $attributes = $this->getAttributes();
+
+        foreach($attributes as $attribute => $value) {
+          $fields[$attribute] = $attribute;
+        }
+        
+        $relations = $this->relations();
+
+        foreach($relations as $relation => $value) {
+          $fields[$relation] = $relation;
+        }
+        return $fields;
+       
     }
 }

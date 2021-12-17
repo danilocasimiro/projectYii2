@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\JwtMethods;
 use app\helpers\HelperMethods;
+use app\interfaces\ModelInterface;
 use Yii;
 
 /**
@@ -18,7 +19,7 @@ use Yii;
  * @property Questions[] $questions
  * @property Company $company
  */
-class Research extends BaseModel
+class Research extends BaseModel implements ModelInterface
 {
     /**
      * {@inheritdoc}

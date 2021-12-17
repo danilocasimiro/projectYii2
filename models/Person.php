@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
+use app\interfaces\ModelInterface;
 use Yii;
 
 /**
@@ -18,7 +19,7 @@ use Yii;
  * @property string $deleted_at
  * @property AuthUser $authUser
  */
-class Person extends BaseModel
+class Person extends BaseModel implements ModelInterface
 {
 
     public const GENRE_MALE = 'male';

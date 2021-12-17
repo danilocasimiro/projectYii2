@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
+use app\interfaces\ModelInterface;
 use Yii;
 use yii\web\IdentityInterface;
 
@@ -25,7 +26,7 @@ use yii\web\IdentityInterface;
  * @property Address $adress
  * @property Company $company
  */
-class AuthUser extends BaseModel implements IdentityInterface
+class AuthUser extends BaseModel implements IdentityInterface, ModelInterface
 {
     public const TYPE_ADMIN = 'Admin';
     public const TYPE_COMPANY = 'Empresa';
@@ -71,22 +72,6 @@ class AuthUser extends BaseModel implements IdentityInterface
             'password' => Yii::t('app', 'Password'),
             'auth_key' => Yii::t('app', 'Auth Key'),
             'access_token' => Yii::t('app', 'Acess Token'),
-        ];
-    }
-
-    public function fields()
-    {
-        return [
-            'id' => 'id',
-            'email' => 'email',
-            'photo' => 'photo',
-            'type' => 'type',
-            'person' => 'person',
-            'company_id' => 'company_id',
-            'company' => 'company',
-            'address' => 'address',
-            'phone' => 'phone',
-            'deleted_at' => 'deleted_at'
         ];
     }
 
@@ -220,7 +205,7 @@ class AuthUser extends BaseModel implements IdentityInterface
 
     public function getCompanyUser()
     {
-        return $this->hasOne(Company::class, ['company_id' => 'id']);
+        return $this->hasOne(Company::class, ['id' => 'company_id']);
     }
 
     public function fkAttribute()
