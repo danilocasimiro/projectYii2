@@ -4,7 +4,6 @@ namespace app\models;
 
 use app\components\JwtMethods;
 use app\helpers\HelperMethods;
-use ModelInterface;
 use Yii;
 
 /**
@@ -23,7 +22,7 @@ use Yii;
  * @property AuthUsers $authUser
  * @property Questions $question
  */
-class UserQuestionAnswer extends BaseModel implements ModelInterface
+class UserQuestionAnswer extends BaseModel
 {
     /**
      * {@inheritdoc}

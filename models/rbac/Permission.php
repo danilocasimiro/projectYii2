@@ -3,6 +3,7 @@
 namespace app\models\rbac;
 
 use app\helpers\HelperMethods;
+use app\interfaces\ParentObjectInterface;
 use app\models\BaseModel;
 use Yii;
 
@@ -18,7 +19,7 @@ use Yii;
  *
  * @property RolePermission[] $rolesPermissions
  */
-class Permission extends BaseModel
+class Permission extends BaseModel implements ParentObjectInterface
 {
     /**
      * {@inheritdoc}
@@ -69,4 +70,16 @@ class Permission extends BaseModel
     {
         return $this->hasMany(RolePermission::class, ['permission_id' => 'id']);
     }
+
+    public function relationsName(): array
+    {
+        return [
+            'rolesPermissions' => RolePermission::class
+        ];
+    }
+
+    public function fkAttribute(): string
+    {
+        return 'permission_id';
+    } 
 }

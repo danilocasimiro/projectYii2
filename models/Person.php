@@ -3,7 +3,6 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
-use app\interfaces\ModelInterface;
 use Yii;
 
 /**
@@ -19,7 +18,7 @@ use Yii;
  * @property string $deleted_at
  * @property AuthUser $authUser
  */
-class Person extends BaseModel implements ModelInterface
+class Person extends BaseModel 
 {
 
     public const GENRE_MALE = 'male';
@@ -94,10 +93,5 @@ class Person extends BaseModel implements ModelInterface
     public function getAuthUser()
     {
         return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
-    }
-
-    public function fkAttribute()
-    {
-        return 'person_id';
     }
 }

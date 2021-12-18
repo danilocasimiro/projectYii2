@@ -3,6 +3,7 @@
 namespace app\models\rbac;
 
 use app\helpers\HelperMethods;
+use app\interfaces\ParentObjectInterface;
 use app\models\BaseModel;
 use app\models\rbac\Permission;
 use Yii;
@@ -19,7 +20,7 @@ use Yii;
  *
  * @property AuthUserLevel[] $authUsersLevels
  */
-class Level extends BaseModel
+class Level extends BaseModel implements ParentObjectInterface
 {
     /**
      * {@inheritdoc}
@@ -73,7 +74,7 @@ class Level extends BaseModel
         return $this->hasMany(AuthUserLevel::class, ['level_id' => 'id']);
     }
 
-     /**
+    /**
      * Gets query for [[AuthUsersLevels]].
      *
      * @return \yii\db\ActiveQuery
@@ -82,4 +83,17 @@ class Level extends BaseModel
     {
         return $this->hasOne(Permission::class, ['id' => 'permission_id']);
     }
+
+    public function relationsName(): array
+    {
+        return [
+            'permission' => Permission::class,
+            'authUserLevels' => AuthUserLevel::class
+        ];
+    }
+
+    public function fkAttribute(): string
+    {
+        return 'level_id';
+    } 
 }

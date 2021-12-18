@@ -4,7 +4,7 @@ namespace app\models;
 
 use app\components\JwtMethods;
 use app\helpers\HelperMethods;
-use app\interfaces\ModelInterface;
+use app\interfaces\ParentObjectInterface;
 use Yii;
 
 /**
@@ -19,7 +19,7 @@ use Yii;
  * @property Questions[] $questions
  * @property Company $company
  */
-class Research extends BaseModel implements ModelInterface
+class Research extends BaseModel implements ParentObjectInterface
 {
     /**
      * {@inheritdoc}
@@ -91,7 +91,15 @@ class Research extends BaseModel implements ModelInterface
         return $this->hasOne(Company::class, ['id' => 'company_id']);
     }
 
-    public function fkAttribute()
+    public function relationsName(): array
+    {
+        return [
+            'questions' => Question::class,
+            'company' => Company::class
+        ];
+    }
+
+    public function fkAttribute(): string
     {
         return 'research_id';
     }

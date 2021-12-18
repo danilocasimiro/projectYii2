@@ -3,7 +3,6 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
-use app\interfaces\ModelInterface;
 use Yii;
 
 /**
@@ -19,7 +18,7 @@ use Yii;
  *
  * @property AuthUsers $authUser
  */
-class Phone extends BaseModel implements ModelInterface
+class Phone extends BaseModel 
 {
     /**
      * {@inheritdoc}
@@ -66,10 +65,5 @@ class Phone extends BaseModel implements ModelInterface
     public function getAuthUser()
     {
         return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
-    }
-
-    public function fkAttribute()
-    {
-        return 'phone_id';
     }
 }

@@ -10,9 +10,9 @@ class CreateObjectsRelationsService {
 
   public static function createObjectsRelations(ModelInterface $model, array $params): void
     {
-        $relations = $model->relations();
+        $relations = $model->relationsName();
 
-        if(!empty($relations)) {
+        if(!empty($relations) && !empty($model->fkAttribute())) {
             $transaction = Yii::$app->db->beginTransaction();
 
             $fkAttribute = $model->fkAttribute(); 

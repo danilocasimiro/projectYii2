@@ -3,7 +3,7 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
-use app\interfaces\ModelInterface;
+use app\interfaces\ParentObjectInterface;
 use Yii;
 use yii\web\IdentityInterface;
 
@@ -26,7 +26,7 @@ use yii\web\IdentityInterface;
  * @property Address $adress
  * @property Company $company
  */
-class AuthUser extends BaseModel implements IdentityInterface, ModelInterface
+class AuthUser extends BaseModel implements IdentityInterface, ParentObjectInterface
 {
     public const TYPE_ADMIN = 'Admin';
     public const TYPE_COMPANY = 'Empresa';
@@ -171,7 +171,7 @@ class AuthUser extends BaseModel implements IdentityInterface, ModelInterface
         return $this->password === md5($password);
     }
 
-    public function relations()
+    public function relationsName(): array
     {
         return [
             'person' => Person::class,
@@ -208,7 +208,7 @@ class AuthUser extends BaseModel implements IdentityInterface, ModelInterface
         return $this->hasOne(Company::class, ['id' => 'company_id']);
     }
 
-    public function fkAttribute()
+    public function fkAttribute(): string
     {
         return 'auth_user_id';
     }

@@ -2,18 +2,10 @@
 
 namespace app\models;
 
-abstract class BaseModel extends \yii\db\ActiveRecord{
+use app\interfaces\ModelInterface;
 
-    public function relations() 
-    {
-      return [];
-    }
-
-    public function fkAttribute() 
-    {
-      return '';
-    }
-
+abstract class BaseModel extends \yii\db\ActiveRecord implements ModelInterface
+{
     public function fields()
     {
         $attributes = $this->getAttributes();
@@ -22,7 +14,7 @@ abstract class BaseModel extends \yii\db\ActiveRecord{
           $fields[$attribute] = $attribute;
         }
         
-        $relations = $this->relations();
+        $relations = $this->relationsName();
 
         foreach($relations as $relation => $value) {
           $fields[$relation] = $relation;

@@ -3,7 +3,7 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
-use app\interfaces\ModelInterface;
+use app\interfaces\ParentObjectInterface;
 use Yii;
 
 /**
@@ -18,7 +18,7 @@ use Yii;
  *
  * @property Questions $question
  */
-class Answer extends BaseModel implements ModelInterface
+class Answer extends BaseModel implements ParentObjectInterface
 {
     /**
      * {@inheritdoc}
@@ -65,7 +65,14 @@ class Answer extends BaseModel implements ModelInterface
         return $this->hasOne(Question::class, ['id' => 'question_id']);
     }
 
-    public function fkAttribute()
+    public function relationsName(): array
+    {
+        return [
+            'question' => Question::class
+        ];
+    }
+
+    public function fkAttribute(): string
     {
         return 'answer_id';
     }

@@ -3,7 +3,7 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
-use app\interfaces\ModelInterface;
+use app\interfaces\ParentObjectInterface;
 use Yii;
 
 /**
@@ -21,7 +21,7 @@ use Yii;
  * @property AuthUser $authUser
  * @property AuthUser $authUserCompany
  */
-class Company extends BaseModel implements ModelInterface
+class Company extends BaseModel implements ParentObjectInterface
 {
     /**
      * {@inheritdoc}
@@ -82,7 +82,15 @@ class Company extends BaseModel implements ModelInterface
         return $this->hasMany(AuthUser::class, ['company_id' => 'id']);
     }
 
-    public function fkAttribute()
+    public function relationsName(): array
+    {
+        return [
+            'authUserCompany' => AuthUser::class,
+            'AuthUser' => AuthUser::class
+        ];
+    }
+
+    public function fkAttribute(): string
     {
         return 'company_id';
     }
