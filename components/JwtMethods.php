@@ -2,6 +2,7 @@
 
 namespace app\components;
 
+use app\interfaces\ModelInterface;
 use app\services\systemServices\GetObjectService;
 use sizeg\jwt\Jwt;
 use yii\web\BadRequestHttpException;
@@ -13,26 +14,24 @@ class JwtMethods {
     $bearerToken = \Yii::$app->request->headers->get('authorization');
 
     $token = explode(" ", $bearerToken);
+
     return $token; 
   }
 
-  public static function getAuthUserFromJwt(): object
+  public static function getAuthUserFromJwt(): ModelInterface
   {
     $token = static::getJwtToken();
     
-    if ($token[1] && $token[0] === 'Bearer') {
-    
-        $jwt = new Jwt;
-        $parsed = $jwt->getParser()->parse((string) $token[1]);
-        $id = $parsed->getClaim('uid');
-
-        return GetObjectService::getObject('app\models\AuthUser', $id);
-    
-      } else {
-     
+    if (empty($token[1]) || $token[0] !== 'Bearer') {
+       
         throw new BadRequestHttpException('Required Authentication');
-
     }
+    
+    $jwt = new Jwt;
+    $parsed = $jwt->getParser()->parse((string) $token[1]);
+    $id = $parsed->getClaim('uid');
+
+    return GetObjectService::getObject('app\models\AuthUser', $id);
   }
 
   public static function getCompanyIdFromJwt()

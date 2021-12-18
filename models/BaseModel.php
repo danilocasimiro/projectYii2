@@ -22,4 +22,9 @@ abstract class BaseModel extends \yii\db\ActiveRecord implements ModelInterface
         return $fields;
        
     }
+
+    public function relationsName(): array
+    {
+      return [];
+    }
 }

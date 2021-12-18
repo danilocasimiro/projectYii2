@@ -3,8 +3,8 @@
 namespace app\models\rbac;
 
 use app\helpers\HelperMethods;
-use app\models\AuthUser;
-use app\models\BaseModel;
+use app\models\{AuthUser, BaseModel};
+use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
 /**
  * This is the model class for table "auth_users_levels".
@@ -21,6 +21,10 @@ use Yii;
  */
 class AuthUserLevel extends BaseModel
 {
+    private $actionsAfterSave= [];
+    private $actionsAfterDelete= [];
+    private $actionsAfterUpdate = [];
+    
     /**
      * {@inheritdoc}
      */
@@ -60,6 +64,27 @@ class AuthUserLevel extends BaseModel
             'created_at' => 'Created At',
             'deleted_at' => 'Deleted At',
         ];
+    }
+
+    public function actionsAfterSave(): array
+    {
+        $this->actionsAfterSave[] = LogObserverCreate::class;
+        
+        return $this->actionsAfterSave;
+    }
+
+    public function actionsAfterDelete(): array
+    {
+        $this->actionsAfterDelete[] = LogObserverDelete::class;
+        
+        return $this->actionsAfterDelete;
+    }
+
+    public function actionsAfterUpdate(): array
+    {
+        $this->actionsAfterUpdate[] = LogObserverUpdate::class;
+        
+        return $this->actionsAfterUpdate;
     }
 
     /**

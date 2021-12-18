@@ -4,7 +4,8 @@ namespace app\models\rbac;
 
 use app\helpers\HelperMethods;
 use app\interfaces\ParentObjectInterface;
-use app\models\BaseModel;
+use app\models\{AuthUser, BaseModel};
+use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
 
 /**
@@ -21,6 +22,10 @@ use Yii;
  */
 class Role extends BaseModel implements ParentObjectInterface
 {
+    private $actionsAfterSave= [];
+    private $actionsAfterDelete= [];
+    private $actionsAfterUpdate = [];
+
     /**
      * {@inheritdoc}
      */
@@ -60,6 +65,27 @@ class Role extends BaseModel implements ParentObjectInterface
         ];
     }
 
+    public function actionsAfterSave(): array
+    {
+        $this->actionsAfterSave[] = LogObserverCreate::class;
+        
+        return $this->actionsAfterSave;
+    }
+
+    public function actionsAfterDelete(): array
+    {
+        $this->actionsAfterDelete[] = LogObserverDelete::class;
+        
+        return $this->actionsAfterDelete;
+    }
+
+    public function actionsAfterUpdate(): array
+    {
+        $this->actionsAfterUpdate[] = LogObserverUpdate::class;
+        
+        return $this->actionsAfterUpdate;
+    }
+
     /**
      * Gets query for [[AuthUsers]].
      *
@@ -83,8 +109,7 @@ class Role extends BaseModel implements ParentObjectInterface
     public function relationsName(): array
     {
         return [
-            'authUsers' => AuthUser::class,
-            'RolesPermissions' => RolePermission::class
+            'rolesPermissions' => RolePermission::class
         ];
     }
 

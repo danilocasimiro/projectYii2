@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\helpers\HelperMethods;
 use app\interfaces\ParentObjectInterface;
+use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
 
 /**
@@ -23,6 +24,10 @@ use Yii;
  */
 class Company extends BaseModel implements ParentObjectInterface
 {
+    private $actionsAfterSave= [];
+    private $actionsAfterDelete= [];
+    private $actionsAfterUpdate = [];
+    
     /**
      * {@inheritdoc}
      */
@@ -67,6 +72,27 @@ class Company extends BaseModel implements ParentObjectInterface
        return isset($this->foundation) ? Yii::$app->formatter->format($this->foundation, 'date') : '';
     }
 
+    public function actionsAfterSave(): array
+    {
+        $this->actionsAfterSave[] = LogObserverCreate::class;
+        
+        return $this->actionsAfterSave;
+    }
+
+    public function actionsAfterDelete(): array
+    {
+        $this->actionsAfterDelete[] = LogObserverDelete::class;
+        
+        return $this->actionsAfterDelete;
+    }
+
+    public function actionsAfterUpdate(): array
+    {
+        $this->actionsAfterUpdate[] = LogObserverUpdate::class;
+        
+        return $this->actionsAfterUpdate;
+    }
+
     /**
      * Gets query for [[AuthUser]].
      *
@@ -80,14 +106,6 @@ class Company extends BaseModel implements ParentObjectInterface
     public function getAuthUserCompany()
     {
         return $this->hasMany(AuthUser::class, ['company_id' => 'id']);
-    }
-
-    public function relationsName(): array
-    {
-        return [
-            'authUserCompany' => AuthUser::class,
-            'AuthUser' => AuthUser::class
-        ];
     }
 
     public function fkAttribute(): string

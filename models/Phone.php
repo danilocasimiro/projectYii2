@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
+use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
 
 /**
@@ -20,6 +21,10 @@ use Yii;
  */
 class Phone extends BaseModel 
 {
+    private $actionsAfterSave= [];
+    private $actionsAfterDelete= [];
+    private $actionsAfterUpdate = [];
+    
     /**
      * {@inheritdoc}
      */
@@ -55,6 +60,27 @@ class Phone extends BaseModel
             'ddd' => Yii::t('app', 'DDD'),
             'number' => Yii::t('app', 'Number'),
         ];
+    }
+
+    public function actionsAfterSave(): array
+    {
+        $this->actionsAfterSave[] = LogObserverCreate::class;
+        
+        return $this->actionsAfterSave;
+    }
+
+    public function actionsAfterDelete(): array
+    {
+        $this->actionsAfterDelete[] = LogObserverDelete::class;
+        
+        return $this->actionsAfterDelete;
+    }
+
+    public function actionsAfterUpdate(): array
+    {
+        $this->actionsAfterUpdate[] = LogObserverUpdate::class;
+        
+        return $this->actionsAfterUpdate;
     }
 
     /**

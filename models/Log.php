@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\JwtMethods;
 use app\helpers\HelperMethods;
+use app\interfaces\ModelInterface;
 use app\services\systemServices\CreateObjectService;
 use Yii;
 
@@ -21,6 +22,10 @@ use Yii;
  */
 class Log extends BaseModel 
 {
+    private $actionsAfterSave= [];
+    private $actionsAfterDelete= [];
+    private $actionsAfterUpdate = [];
+    
     /**
      * {@inheritdoc}
      */
@@ -87,12 +92,12 @@ class Log extends BaseModel
         return $params;
     }
 
-    protected static function getMessageOfChangedAttributes(array $model, array $changedAttributes): string
+    protected static function getMessageOfChangedAttributes(ModelInterface $model, array $changedAttributes): string
     {
-        foreach($changedAttributes as $attribute => $newValue) {
+        foreach($changedAttributes as $attribute => $oldAttribute) {
 
-            if($model[$attribute] != $newValue){ 
-                $message[] = "Alterou o atributo '".$attribute. "' de '".$model[$attribute]. "' para '".$newValue."'.";
+            if($model[$attribute] != $oldAttribute){ 
+                $message[] = "Alterou o atributo '".$attribute. "' de '".$oldAttribute. "' para '".$model[$attribute]."'.";
             }
         }
 
@@ -100,7 +105,22 @@ class Log extends BaseModel
             return json_encode($message);
         }
 
-        return [];
+        return '';
+    }
+
+    public function actionsAfterSave(): array
+    {
+        return $this->actionsAfterSave;
+    }
+
+    public function actionsAfterDelete(): array
+    {        
+        return $this->actionsAfterDelete;
+    }
+
+    public function actionsAfterUpdate(): array
+    {        
+        return $this->actionsAfterUpdate;
     }
 
     public static function addLogDelete(object $model, string $class, $typeDelete): void
@@ -115,7 +135,7 @@ class Log extends BaseModel
   
     }
 
-    public static function addLogUpdate(array $model,  string $class, array $changedAttributes): void
+    public static function addLogUpdate(ModelInterface $model,  string $class, array $changedAttributes): void
     { 
         $message = static::getMessageOfChangedAttributes($model, $changedAttributes);
         
@@ -132,7 +152,7 @@ class Log extends BaseModel
 
     public static function addLogCreate(object $model, string $class): void
     {
-        $description = "O usuário de email authUserEmail criou o objeto de id:".$model->friendly_id.".";
+        $description = "O usuário de email authUserEmail adicionou o objeto de id:".$model->friendly_id.".";
 
         $params = Log::prepareParams('create',  $class, $description);
 

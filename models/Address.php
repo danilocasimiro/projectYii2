@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
+use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
 
 /**
@@ -25,6 +26,10 @@ use Yii;
  */
 class Address extends BaseModel
 {
+    private $actionsAfterSave= [];
+    private $actionsAfterDelete= [];
+    private $actionsAfterUpdate = [];
+
     /**
      * {@inheritdoc}
      */
@@ -66,6 +71,27 @@ class Address extends BaseModel
             'country' => Yii::t('app', 'Country'),
             'zipcode' => Yii::t('app', 'Zipcode'),
         ];
+    }
+
+    public function actionsAfterSave(): array
+    {
+        $this->actionsAfterSave[] = LogObserverCreate::class;
+        
+        return $this->actionsAfterSave;
+    }
+
+    public function actionsAfterDelete(): array
+    {
+        $this->actionsAfterDelete[] = LogObserverDelete::class;
+        
+        return $this->actionsAfterDelete;
+    }
+
+    public function actionsAfterUpdate(): array
+    {
+        $this->actionsAfterUpdate[] = LogObserverUpdate::class;
+        
+        return $this->actionsAfterUpdate;
     }
 
     public function getFullAddress()

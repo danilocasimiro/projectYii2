@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
+use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
 
 /**
@@ -20,6 +21,9 @@ use Yii;
  */
 class Person extends BaseModel 
 {
+    private $actionsAfterSave= [];
+    private $actionsAfterDelete= [];
+    private $actionsAfterUpdate = [];
 
     public const GENRE_MALE = 'male';
     public const GENRE_FEMALE = 'female';
@@ -64,30 +68,38 @@ class Person extends BaseModel
         ];
     }
 
+    public function actionsAfterSave(): array
+    {
+        $this->actionsAfterSave[] = LogObserverCreate::class;
+        
+        return $this->actionsAfterSave;
+    }
+
+    public function actionsAfterDelete(): array
+    {
+        $this->actionsAfterDelete[] = LogObserverDelete::class;
+        
+        return $this->actionsAfterDelete;
+    }
+
+    public function actionsAfterUpdate(): array
+    {
+        $this->actionsAfterUpdate[] = LogObserverUpdate::class;
+        
+        return $this->actionsAfterUpdate;
+    }
+
     public function getDateOfBirthAttribute()
     {
-        [$day, $month, $year] = explode('/', $this->birthdate);
-        return implode('/', [$month, $day, $year]);
+        return Yii::$app->formatter->format($this->birthdate, 'date');
     }
 
     public function afterFind()
     {
-        $this->birthdate = Yii::$app->formatter->format($this->birthdate, 'date');
+        //$this->birthdate = Yii::$app->formatter->format($this->birthdate, 'date');
         
         parent::afterFind();    
        
-    }
-
-    public function beforeSave($insert)
-    {
-        if (parent::beforeSave($insert)) {
-                $date = new \DateTime($this->getDateOfBirthAttribute(), new \DateTimeZone('UTC'));
-         
-                $this->birthdate =  $date->format('Y-m-d\ H:i:s.u');
-
-                return true;
-        }
-        return false;
     }
 
     public function getAuthUser()

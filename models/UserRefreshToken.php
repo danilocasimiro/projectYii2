@@ -2,8 +2,8 @@
 
 namespace app\models;
 
-use DateTime;
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "users_refresh_tokens".
@@ -18,7 +18,7 @@ use Yii;
  *
  * @property AuthUser $user
  */
-class UserRefreshToken extends BaseModel
+class UserRefreshToken extends ActiveRecord
 {
     /**
      * {@inheritdoc}

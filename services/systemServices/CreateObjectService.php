@@ -12,15 +12,26 @@ class CreateObjectService {
   {
       $model = new $class;
 
-      $model->load($params, '');
+      static::loadModel($model, $params);
 
-      if(!$model->save()) {
-
-        throw new BadRequestHttpException(json_encode($model->getErrors()));
-      }
+      static::saveModel($model);
 
       CreateObjectsRelationsService::createObjectsRelations($model, $params);
 
       return $model;
   }
+
+  private static function loadModel(&$model, $params)
+  {
+      $model->load($params, '');
+  }
+
+  private static function saveModel($model)
+  {
+    if(!$model->save()) {
+
+      throw new BadRequestHttpException(json_encode($model->getErrors()));
+    }
+  }
+  
 }

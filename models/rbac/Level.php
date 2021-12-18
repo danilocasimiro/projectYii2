@@ -6,6 +6,7 @@ use app\helpers\HelperMethods;
 use app\interfaces\ParentObjectInterface;
 use app\models\BaseModel;
 use app\models\rbac\Permission;
+use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
 
 /**
@@ -22,6 +23,10 @@ use Yii;
  */
 class Level extends BaseModel implements ParentObjectInterface
 {
+    private $actionsAfterSave= [];
+    private $actionsAfterDelete= [];
+    private $actionsAfterUpdate = [];
+
     /**
      * {@inheritdoc}
      */
@@ -62,6 +67,27 @@ class Level extends BaseModel implements ParentObjectInterface
             'created_at' => 'Created At',
             'deleted_at' => 'Deleted At',
         ];
+    }
+
+    public function actionsAfterSave(): array
+    {
+        $this->actionsAfterSave[] = LogObserverCreate::class;
+        
+        return $this->actionsAfterSave;
+    }
+
+    public function actionsAfterDelete(): array
+    {
+        $this->actionsAfterDelete[] = LogObserverDelete::class;
+        
+        return $this->actionsAfterDelete;
+    }
+
+    public function actionsAfterUpdate(): array
+    {
+        $this->actionsAfterUpdate[] = LogObserverUpdate::class;
+        
+        return $this->actionsAfterUpdate;
     }
 
     /**

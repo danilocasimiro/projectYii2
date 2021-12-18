@@ -4,6 +4,8 @@ namespace app\models;
 
 use app\helpers\HelperMethods;
 use app\interfaces\ParentObjectInterface;
+use app\models\rbac\Role;
+use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
 use yii\web\IdentityInterface;
 
@@ -28,6 +30,10 @@ use yii\web\IdentityInterface;
  */
 class AuthUser extends BaseModel implements IdentityInterface, ParentObjectInterface
 {
+    private $actionsAfterSave = [];
+    private $actionsAfterDelete = [];
+    private $actionsAfterUpdate = [];
+    
     /**
      * {@inheritdoc}
      */
@@ -162,6 +168,27 @@ class AuthUser extends BaseModel implements IdentityInterface, ParentObjectInter
         ];
     }
 
+    public function actionsAfterSave(): array
+    {
+        $this->actionsAfterSave[] = LogObserverCreate::class;
+        
+        return $this->actionsAfterSave;
+    }
+
+    public function actionsAfterDelete(): array
+    {
+        $this->actionsAfterDelete[] = LogObserverDelete::class;
+        
+        return $this->actionsAfterDelete;
+    }
+
+    public function actionsAfterUpdate(): array
+    {
+        $this->actionsAfterUpdate[] = LogObserverUpdate::class;
+        
+        return $this->actionsAfterUpdate;
+    }
+
     public function getPerson()
     {
         return $this->hasOne(Person::class, ['auth_user_id' => 'id']);
@@ -179,7 +206,7 @@ class AuthUser extends BaseModel implements IdentityInterface, ParentObjectInter
 
     public function getRole()
     {
-        return $this->hasOne(Role::class, ['id' => 'id']);
+        return $this->hasOne(Role::class, ['id' => 'role_id']);
     }
 
     public function getCompany()

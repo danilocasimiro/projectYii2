@@ -2,9 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
-use app\models\AuthUser;
-use app\models\Log;
-use app\models\Person;
+use app\models\{AuthUser, Log, Person};
 use Yii;
 
 class AuthenticateController extends BaseController

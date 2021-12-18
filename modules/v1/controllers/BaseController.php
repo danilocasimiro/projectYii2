@@ -2,14 +2,13 @@
 
 namespace app\modules\v1\controllers;
 
-use app\models\Log;
-use app\services\systemServices\CreateBatchObjectsService;
-use app\services\systemServices\CreateObjectService;
-use app\services\systemServices\DeleteObjectService;
-use app\services\systemServices\GetObjectService;
-use app\services\systemServices\GetObjectsService;
-use app\services\systemServices\UpdateObjectService;
+use app\services\systemServices\ {
+    CreateBatchObjectsService, CreateObjectService, DeleteObjectService, GetObjectService, GetObjectsService, UpdateObjectService
+};
 use app\interfaces\ModelInterface;
+use app\services\doActionsServices\AfterCreateService;
+use app\services\doActionsServices\AfterDeleteService;
+use app\services\doActionsServices\AfterUpdateService;
 use Yii;
 use yii\web\BadRequestHttpException;
 
@@ -67,13 +66,15 @@ class BaseController extends \yii\web\Controller
         
         $model = CreateObjectService::createObject($this->modelClass, $this->bodyParams);
 
-        $this->createLog($this->modelClass, $model);
+        $afterCreateService = new AfterCreateService;
+
+        $afterCreateService->execute($model, $this);
 
         $transaction->commit();
 
         return $model;
     }
-    
+     
     public function actionIndex(): array
     {
        return GetObjectsService::getObjects($this->modelClass)->all();
@@ -89,7 +90,9 @@ class BaseController extends \yii\web\Controller
 
         $model = UpdateObjectService::updateObject($oldModel, $this->bodyParams);
 
-        Log::addLogUpdate($oldModelAttributes, $this->modelClass, $this->bodyParams);
+        $afterUpdateService = new AfterUpdateService;
+
+        $afterUpdateService->execute($model, $this, $oldModelAttributes);
 
         $transaction->commit();
 
@@ -102,9 +105,12 @@ class BaseController extends \yii\web\Controller
 
         $models = CreateBatchObjectsService::createBatchObjects($this->modelClass, $this->bodyParams); 
 
+        $afterCreateService = new AfterCreateService;
+        
         foreach($models as $model) {
         
-            $this->createLog($this->modelClass, $model);
+            $afterCreateService->execute($model, $this);
+
         }
 
         $transaction->commit();
@@ -120,15 +126,10 @@ class BaseController extends \yii\web\Controller
 
         $message = DeleteObjectService::deleteObject($this->modelClass, $typeDelete, $model); 
 
-        Log::addLogDelete($model, $this->modelClass, $typeDelete);
+        $afterDeleteService = new AfterDeleteService;
+
+        $afterDeleteService->execute($model, $this, $typeDelete);
         
         return $message;
-    }
-
-    private function createLog(string $class, ModelInterface $model): void
-    {
-        if($class != 'app\models\Log') {
-            Log::addLogCreate($model, $class);
-        }
     }
 }
