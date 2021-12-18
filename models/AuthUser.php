@@ -11,12 +11,12 @@ use yii\web\IdentityInterface;
  * This is the model class for table "auth_users".
  *
  * @property string $id
+ * @property string role_id
  * @property string $email
  * @property string $password
  * @property string $auth_key
  * @property string $photo
  * @property string $access_token
- * @property string $type
  * @property string $friendly_id
  * @property string $company_id
  * @property string $created_at
@@ -28,11 +28,6 @@ use yii\web\IdentityInterface;
  */
 class AuthUser extends BaseModel implements IdentityInterface, ParentObjectInterface
 {
-    public const TYPE_ADMIN = 'Admin';
-    public const TYPE_COMPANY = 'Empresa';
-    public const TYPE_EMPLOYEE = 'Colaborador';
-    public const TYPE_USER = 'Usuário';
-
     /**
      * {@inheritdoc}
      */
@@ -48,11 +43,10 @@ class AuthUser extends BaseModel implements IdentityInterface, ParentObjectInter
     {
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
-            [['email', 'password'], 'required'],
+            [['email', 'password', 'role_id'], 'required'],
             [['email', 'auth_key', 'access_token'], 'string', 'max' => 45],
             [['email'], 'email'],
             [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
-            ['type', 'in', 'range' => [self::TYPE_ADMIN, self::TYPE_COMPANY, self::TYPE_EMPLOYEE, self::TYPE_USER]],
             [['company_id', 'id'], 'string', 'max' => 32],
             [['password', 'photo'], 'string', 'max' => 60],
             [['access_token', 'auth_key'], 'default', 'value' => md5(uniqid(rand(), true))],
@@ -87,22 +81,6 @@ class AuthUser extends BaseModel implements IdentityInterface, ParentObjectInter
                 $this->auth_key = \Yii::$app->security->generateRandomString();
                 $this->access_token = \Yii::$app->security->generateRandomString();
                 $this->password = md5($this->password);
-                $current_user = !Yii::$app->user->isGuest && Yii::$app->user->identity->type;                
-                if($current_user){
-                    switch (Yii::$app->user->identity->type) {
-                        case static::TYPE_ADMIN:
-                            $this->type = static::TYPE_ADMIN;
-                            break;
-                        case static::TYPE_COMPANY:
-                            $this->type = static::TYPE_COMPANY;
-                            $this->company_id = Yii::$app->user->identity->company->id;
-                            break;
-                        default:
-                            $this->type = static::TYPE_USER;
-                    }
-                }else {
-                    $this->type = static::TYPE_USER;
-                }
             }
             
             return true;
@@ -178,7 +156,8 @@ class AuthUser extends BaseModel implements IdentityInterface, ParentObjectInter
             'phone' => Phone::class,
             'address' => Address::class,
             'company' => Company::class,
-            'companyUser' => Company::class
+            'companyUser' => Company::class,
+            'role' => Role::class
             
         ];
     }
@@ -196,6 +175,11 @@ class AuthUser extends BaseModel implements IdentityInterface, ParentObjectInter
     public function getAddress()
     {
         return $this->hasOne(Address::class, ['auth_user_id' => 'id']);
+    }
+
+    public function getRole()
+    {
+        return $this->hasOne(Role::class, ['id' => 'id']);
     }
 
     public function getCompany()

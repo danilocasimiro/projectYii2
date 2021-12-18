@@ -15,7 +15,7 @@ class m210627_130019_auth_users extends Migration
         $this->createTable('auth_users', [
             'id'=>$this->char(32)->notNull(),
             'company_id'=>$this->char(32),
-            'role_id'=>$this->char(32),
+            'role_id'=>$this->char(32)->notNull(),
             'email'=>$this->string(45)->notNull(),
             'password'=>$this->string(60)->notNull(),
             'type'=> "ENUM('Admin', 'Empresa', 'Colaborador', 'Usuário')",
