@@ -6,6 +6,7 @@ use app\helpers\HelperMethods;
 use app\models\BaseModel;
 use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "roles_permissions".
@@ -88,22 +89,12 @@ class RolePermission extends BaseModel
         return $this->actionsAfterUpdate;
     }
 
-    /**
-     * Gets query for [[Permission]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPermission()
+    public function getPermission(): ActiveQuery
     {
         return $this->hasOne(Permission::class, ['id' => 'permission_id']);
     }
 
-    /**
-     * Gets query for [[Role]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getRole()
+    public function getRole(): ActiveQuery
     {
         return $this->hasOne(Role::class, ['id' => 'role_id']);
     }

@@ -3,9 +3,9 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
-use app\interfaces\ParentObjectInterface;
 use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "answers".
@@ -19,7 +19,7 @@ use Yii;
  *
  * @property Questions $question
  */
-class Answer extends BaseModel implements ParentObjectInterface
+class Answer extends BaseModel
 {
     private $actionsAfterSave= [];
     private $actionsAfterDelete= [];
@@ -81,21 +81,16 @@ class Answer extends BaseModel implements ParentObjectInterface
         return $this->actionsAfterUpdate;
     }
 
-    /**
-     * Gets query for [[Question]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getQuestion()
-    {
-        return $this->hasOne(Question::class, ['id' => 'question_id']);
-    }
-
-    public function relationsName(): array
+    public static function relations(): array
     {
         return [
             'question' => Question::class
         ];
+    }
+
+    public function getQuestion(): ActiveQuery
+    {
+        return $this->hasOne(Question::class, ['id' => 'question_id']);
     }
 
     public function fkAttribute(): string

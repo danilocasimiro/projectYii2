@@ -3,9 +3,9 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
-use app\interfaces\ParentObjectInterface;
 use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "companies".
@@ -22,7 +22,7 @@ use Yii;
  * @property AuthUser $authUser
  * @property AuthUser $authUserCompany
  */
-class Company extends BaseModel implements ParentObjectInterface
+class Company extends BaseModel
 {
     private $actionsAfterSave= [];
     private $actionsAfterDelete= [];
@@ -67,11 +67,6 @@ class Company extends BaseModel implements ParentObjectInterface
         ];
     }
 
-    public function getFoundation()
-    {
-       return isset($this->foundation) ? Yii::$app->formatter->format($this->foundation, 'date') : '';
-    }
-
     public function actionsAfterSave(): array
     {
         $this->actionsAfterSave[] = LogObserverCreate::class;
@@ -93,17 +88,26 @@ class Company extends BaseModel implements ParentObjectInterface
         return $this->actionsAfterUpdate;
     }
 
-    /**
-     * Gets query for [[AuthUser]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAuthUser()
+    public static function relations(): array
+    {
+        return [
+            'authUser' => AuthUser::class,
+            'companyPlan' => CompanyPlan::class,
+            'authUserCompany' => AuthUser::class
+        ];
+    }
+
+    public function getAuthUser(): ActiveQuery
     {
         return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
     }
 
-    public function getAuthUserCompany()
+    public function getCompanyPlan(): ActiveQuery
+    {
+        return $this->hasOne(CompanyPlan::class, ['company_id' => 'id']);
+    }
+
+    public function getAuthUserCompany(): ActiveQuery
     {
         return $this->hasMany(AuthUser::class, ['company_id' => 'id']);
     }
@@ -111,5 +115,10 @@ class Company extends BaseModel implements ParentObjectInterface
     public function fkAttribute(): string
     {
         return 'company_id';
+    }
+
+    public function getFoundation()
+    {
+       return isset($this->foundation) ? Yii::$app->formatter->format($this->foundation, 'date') : '';
     }
 }

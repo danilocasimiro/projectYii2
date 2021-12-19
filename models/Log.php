@@ -7,6 +7,7 @@ use app\helpers\HelperMethods;
 use app\interfaces\ModelInterface;
 use app\services\systemServices\CreateObjectService;
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "Logs".
@@ -69,14 +70,16 @@ class Log extends BaseModel
         ];
     }
 
-    /**
-     * Gets query for [[AuthUser]].
-     *
-     * @return \yii\db\ActiveQuery
-    */
-    public function getAuthUser()
+    public static function relations(): array
     {
-        return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
+        return [
+            'authUsers' => AuthUser::class
+        ];
+    }
+
+    public function getAuthUsers(): ActiveQuery
+    {
+        return $this->hasMany(AuthUser::class, ['role_id' => 'id']);
     }
 
     public static function prepareParams(string $action, string $model, string $description, AuthUser $authUser = null): array

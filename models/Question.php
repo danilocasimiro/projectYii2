@@ -3,9 +3,9 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
-use app\interfaces\ParentObjectInterface;
 use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "questions".
@@ -22,7 +22,7 @@ use Yii;
  * @property Research $research
  * @property QuestionType $type
  */
-class Question extends BaseModel implements ParentObjectInterface
+class Question extends BaseModel
 {
     private $actionsAfterSave= [];
     private $actionsAfterDelete= [];
@@ -98,43 +98,28 @@ class Question extends BaseModel implements ParentObjectInterface
         return $this->actionsAfterUpdate;
     }
 
-    /**
-     * Gets query for [[Answers]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAnswers()
+    public static function relations(): array
+    {
+        return [
+            'answers' => Answer::class,
+            'research' => Research::class,
+            'questionType' => QuestionType::class
+        ];
+    }
+
+    public function getAnswers(): ActiveQuery
     {
         return $this->hasMany(Answer::class, ['question_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[Research]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getResearch()
+    public function getResearch(): ActiveQuery
     {
         return $this->hasOne(Research::class, ['id' => 'research_id']);
     }
 
-    /**
-     * Gets query for [[Question Type]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getQuestionType()
+    public function getQuestionType(): ActiveQuery
     {
         return $this->hasOne(QuestionType::class, ['id' => 'question_type_id']);
-    }
-
-    public function relationsName(): array
-    {
-        return [
-            'questionType' => QuestionType::class,
-            'research' => Research::class,
-            'answers' => Answer::class
-        ];
     }
 
     public function fkAttribute(): string

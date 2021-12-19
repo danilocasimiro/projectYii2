@@ -5,7 +5,7 @@ namespace app\models;
 use app\components\JwtMethods;
 use app\helpers\HelperMethods;
 use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
-use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "users_questions_answers".
@@ -96,32 +96,26 @@ class UserQuestionAnswer extends BaseModel
         return $this->actionsAfterUpdate;
     }
 
-    /**
-     * Gets query for [[Answer]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAnswer()
+    public static function relations(): array
+    {
+        return [
+            'answer' => Answer::class,
+            'authUser' => AuthUser::class,
+            'question' => Question::class
+        ];
+    }
+
+    public function getAnswer(): ActiveQuery
     {
         return $this->hasOne(Answer::class, ['id' => 'answer_id']);
     }
 
-    /**
-     * Gets query for [[AuthUser]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAuthUser()
+    public function getAuthUser(): ActiveQuery
     {
         return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
     }
 
-    /**
-     * Gets query for [[Question]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getQuestion()
+    public function getQuestion(): ActiveQuery
     {
         return $this->hasOne(Question::class, ['id' => 'question_id']);
     }

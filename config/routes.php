@@ -136,6 +136,17 @@ return [
   ],
   [
     'class' => 'yii\rest\UrlRule',
+    'controller' => 'v1/companies-plans',
+    'pluralize' => false,
+    'extraPatterns' => [
+      'POST batch' => 'create-batch'
+    ],
+    'tokens' => [
+      '{id}' => '<id:[\\w\\-]+>',
+    ]
+  ],
+  [
+    'class' => 'yii\rest\UrlRule',
     'controller' => 'v1/logs',
     'pluralize' => false,
     'except' => [
@@ -166,6 +177,28 @@ return [
     'tokens' => [
       '{id}' => '<id:[\\w\\-]+>',
     ],
+  ],
+  [
+    'class' => 'yii\rest\UrlRule',
+    'controller' => 'v1/plans',
+    'pluralize' => false,
+    'extraPatterns' => [
+      'POST batch' => 'create-batch'
+    ],
+    'tokens' => [
+      '{id}' => '<id:[\\w\\-]+>',
+    ]
+  ],
+  [
+    'class' => 'yii\rest\UrlRule',
+    'controller' => 'v1/plans-items',
+    'pluralize' => false,
+    'extraPatterns' => [
+      'POST batch' => 'create-batch'
+    ],
+    'tokens' => [
+      '{id}' => '<id:[\\w\\-]+>',
+    ]
   ],
   [
     'class' => 'yii\rest\UrlRule',

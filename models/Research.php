@@ -4,9 +4,9 @@ namespace app\models;
 
 use app\components\JwtMethods;
 use app\helpers\HelperMethods;
-use app\interfaces\ParentObjectInterface;
 use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "researches".
@@ -20,7 +20,7 @@ use Yii;
  * @property Questions[] $questions
  * @property Company $company
  */
-class Research extends BaseModel implements ParentObjectInterface
+class Research extends BaseModel
 {
     private $actionsAfterSave= [];
     private $actionsAfterDelete= [];
@@ -46,7 +46,7 @@ class Research extends BaseModel implements ParentObjectInterface
             [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['title'], 'string', 'max' => 40],
             [['company_id', 'id'], 'string', 'max' => 32],
-            [['description'], 'string', 'max' => 60],
+            [['description'], 'string', 'max' => 255],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
         ];
     }
@@ -97,32 +97,22 @@ class Research extends BaseModel implements ParentObjectInterface
         return $this->actionsAfterUpdate;
     }
 
-    /**
-     * Gets query for [[Questions]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getQuestions()
-    {
-        return $this->hasMany(Question::class, ['research_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[Company]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCompany()
-    {
-        return $this->hasOne(Company::class, ['id' => 'company_id']);
-    }
-
-    public function relationsName(): array
+    public static function relations(): array
     {
         return [
             'questions' => Question::class,
             'company' => Company::class
         ];
+    }
+
+    public function getQuestions(): ActiveQuery
+    {
+        return $this->hasMany(Question::class, ['research_id' => 'id']);
+    }
+
+    public function getCompany(): ActiveQuery
+    {
+        return $this->hasOne(Company::class, ['id' => 'company_id']);
     }
 
     public function fkAttribute(): string

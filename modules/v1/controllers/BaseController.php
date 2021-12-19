@@ -2,6 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
+use app\helpers\HelperExpandMethods;
 use app\services\systemServices\ {
     CreateBatchObjectsService, CreateObjectService, DeleteObjectService, GetObjectService, GetObjectsService, UpdateObjectService
 };
@@ -55,11 +56,6 @@ class BaseController extends \yii\web\Controller
         return parent::beforeAction($action);
     }
 
-    public function actionView(string $id): ModelInterface
-    {
-        return GetObjectService::getObject($this->modelClass, $id);
-    }
-
     public function actionCreate(): ModelInterface
     {
         $transaction = Yii::$app->db->beginTransaction();
@@ -74,15 +70,37 @@ class BaseController extends \yii\web\Controller
 
         return $model;
     }
+    
+    public function actionView(string $id): array
+    {
+        $model = GetObjectService::getObject($this->modelClass, $id)->one();
+
+        if(empty($model)) {
+            return [];
+        }
+
+        return HelperExpandMethods::mergeObjectWithRelationsOnExpand($model);
+    }
      
     public function actionIndex(): array
     {
-       return GetObjectsService::getObjects($this->modelClass)->all();
+        $models = GetObjectsService::getObjects($this->modelClass)->all();
+
+        if(empty($models)) {
+            return [];
+        }
+
+        return HelperExpandMethods::mergeObjectsWithRelationsOnExpand($models);
+
     }
 
     public function actionUpdate(string $id): ModelInterface
     {        
-        $oldModel = GetObjectService::getObject($this->modelClass, $id);
+        $oldModel = GetObjectService::getObject($this->modelClass, $id)->one();
+
+        if(empty($oldModel)) {
+            throw new BadRequestHttpException("Object id: ".$id." not found");
+        }
 
         $oldModelAttributes = $oldModel->getAttributes();
 
@@ -120,7 +138,7 @@ class BaseController extends \yii\web\Controller
 
     public function actionDelete(string $id): string
     {
-        $model = GetObjectService::getObject($this->modelClass, $id);
+        $model = GetObjectService::getObject($this->modelClass, $id)->one();
 
         $typeDelete = !empty($this->bodyParams['typeDelete']) ? $this->bodyParams['typeDelete'] : $this->defaultTypeDelete;
 

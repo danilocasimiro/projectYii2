@@ -3,11 +3,10 @@
 namespace app\models\rbac;
 
 use app\helpers\HelperMethods;
-use app\interfaces\ParentObjectInterface;
 use app\models\BaseModel;
 use app\models\rbac\Permission;
 use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
-use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "levels".
@@ -21,7 +20,7 @@ use Yii;
  *
  * @property AuthUserLevel[] $authUsersLevels
  */
-class Level extends BaseModel implements ParentObjectInterface
+class Level extends BaseModel
 {
     private $actionsAfterSave= [];
     private $actionsAfterDelete= [];
@@ -90,32 +89,14 @@ class Level extends BaseModel implements ParentObjectInterface
         return $this->actionsAfterUpdate;
     }
 
-    /**
-     * Gets query for [[AuthUsersLevels]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAuthUsersLevels()
+    public function getAuthUsersLevels(): ActiveQuery
     {
         return $this->hasMany(AuthUserLevel::class, ['level_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[AuthUsersLevels]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPermission()
+    public function getPermission(): ActiveQuery
     {
         return $this->hasOne(Permission::class, ['id' => 'permission_id']);
-    }
-
-    public function relationsName(): array
-    {
-        return [
-            'permission' => Permission::class,
-            'authUserLevels' => AuthUserLevel::class
-        ];
     }
 
     public function fkAttribute(): string

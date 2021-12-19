@@ -5,6 +5,7 @@ namespace app\models;
 use app\helpers\HelperMethods;
 use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "Person".
@@ -89,6 +90,13 @@ class Person extends BaseModel
         return $this->actionsAfterUpdate;
     }
 
+    public static function relations(): array
+    {
+        return [
+            'authUser' => AuthUser::class
+        ];
+    }
+
     public function getDateOfBirthAttribute()
     {
         return Yii::$app->formatter->format($this->birthdate, 'date');
@@ -102,7 +110,7 @@ class Person extends BaseModel
        
     }
 
-    public function getAuthUser()
+    public function getAuthUser(): ActiveQuery
     {
         return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
     }

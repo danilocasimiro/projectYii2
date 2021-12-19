@@ -3,9 +3,9 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
-use app\interfaces\ParentObjectInterface;
 use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "questions_types".
@@ -18,7 +18,7 @@ use Yii;
  *
  * @property Questions[] $questions
  */
-class QuestionType extends BaseModel implements ParentObjectInterface
+class QuestionType extends BaseModel
 {
     private $actionsAfterSave= [];
     private $actionsAfterDelete= [];
@@ -78,21 +78,16 @@ class QuestionType extends BaseModel implements ParentObjectInterface
         return $this->actionsAfterUpdate;
     }
 
-    /**
-     * Gets query for [[Questions]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getQuestions()
-    {
-        return $this->hasMany(Question::class, ['question_type_id' => 'id']);
-    }
-
-    public function relationsName(): array
+    public static function relations(): array
     {
         return [
             'questions' => Question::class
         ];
+    }
+
+    public function getQuestions(): ActiveQuery
+    {
+        return $this->hasMany(Question::class, ['question_type_id' => 'id']);
     }
 
     public function fkAttribute(): string

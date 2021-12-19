@@ -3,7 +3,8 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
-use app\interfaces\ParentObjectInterface;
+use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "Plans".
@@ -17,7 +18,7 @@ use app\interfaces\ParentObjectInterface;
  * @property string $created_at
  * @property string|null $deleted_at
  */
-class Plan extends BaseModel implements ParentObjectInterface
+class Plan extends BaseModel
 {
     private $actionsAfterSave= [];
     private $actionsAfterDelete= [];
@@ -38,7 +39,7 @@ class Plan extends BaseModel implements ParentObjectInterface
     {
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
-            [['id', 'name', 'description', 'value', 'subscription_period', 'friendly_id'], 'required'],
+            [['id', 'name', 'description', 'value', 'subscription_period'], 'required'],
             [['value'], 'number'],
             [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['subscription_period', 'friendly_id'], 'integer'],
@@ -87,18 +88,26 @@ class Plan extends BaseModel implements ParentObjectInterface
         return $this->actionsAfterUpdate;
     }
 
+    public static function relations(): array
+    {
+        return [
+            'plansItems' => PlanItem::class,
+            'companiesPlans' => CompanyPlan::class
+        ];
+    }
+
+    public function getPlansItems(): ActiveQuery
+    {
+        return $this->hasMany(PlanItem::class, ['plan_id' => 'id']);
+    }
+
+    public function getCompaniesPlans(): ActiveQuery
+    {
+        return $this->hasMany(CompanyPlan::class, ['plan_id' => 'id']);
+    }
+
     public function fkAttribute(): string
     {
         return 'plan_id';
-    }
-
-    public function getPlansItems()
-    {
-        return $this->hasMany(PlansItems::class, ['plan_id' => 'id']);
-    }
-
-    public function getCompaniesPlans()
-    {
-        return $this->hasMany(CompaniesPlans::class, ['plan_id' => 'id']);
     }
 }

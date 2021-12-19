@@ -5,6 +5,7 @@ namespace app\models;
 use app\helpers\HelperMethods;
 use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "companies_plans".
@@ -92,22 +93,20 @@ class CompanyPlan extends BaseModel
         return $this->actionsAfterUpdate;
     }
 
-    /**
-     * Gets query for [[Company]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCompany()
+    public static function relations(): array
+    {
+        return [
+            'plan' => Plan::class,
+            'company' => Company::class
+        ];
+    }
+
+    public function getCompany(): ActiveQuery
     {
         return $this->hasOne(Company::class, ['id' => 'company_id']);
     }
 
-    /**
-     * Gets query for [[Plan]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPlan()
+    public function getPlan(): ActiveQuery
     {
         return $this->hasOne(Plan::class, ['id' => 'plan_id']);
     }

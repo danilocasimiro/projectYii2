@@ -31,7 +31,7 @@ class JwtMethods {
     $parsed = $jwt->getParser()->parse((string) $token[1]);
     $id = $parsed->getClaim('uid');
 
-    return GetObjectService::getObject('app\models\AuthUser', $id);
+    return GetObjectService::getObject('app\models\AuthUser', $id)->one();
   }
 
   public static function getCompanyIdFromJwt()

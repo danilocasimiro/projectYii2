@@ -3,10 +3,10 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
-use app\interfaces\ParentObjectInterface;
 use app\models\rbac\Role;
 use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
+use yii\db\ActiveQuery;
 use yii\web\IdentityInterface;
 
 /**
@@ -28,7 +28,7 @@ use yii\web\IdentityInterface;
  * @property Address $adress
  * @property Company $company
  */
-class AuthUser extends BaseModel implements IdentityInterface, ParentObjectInterface
+class AuthUser extends BaseModel implements IdentityInterface
 {
     private $actionsAfterSave = [];
     private $actionsAfterDelete = [];
@@ -75,11 +75,6 @@ class AuthUser extends BaseModel implements IdentityInterface, ParentObjectInter
         ];
     }
 
-    public function isPerson()
-    {
-        return $this->person ? $this->person : $this->company;
-    }
-
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
@@ -92,6 +87,75 @@ class AuthUser extends BaseModel implements IdentityInterface, ParentObjectInter
             return true;
         }
         return false;
+    }
+
+    public function actionsAfterSave(): array
+    {
+        $this->actionsAfterSave[] = LogObserverCreate::class;
+        
+        return $this->actionsAfterSave;
+    }
+
+    public function actionsAfterDelete(): array
+    {
+        $this->actionsAfterDelete[] = LogObserverDelete::class;
+        
+        return $this->actionsAfterDelete;
+    }
+
+    public function actionsAfterUpdate(): array
+    {
+        $this->actionsAfterUpdate[] = LogObserverUpdate::class;
+        
+        return $this->actionsAfterUpdate;
+    }
+
+    public static function relations(): array
+    {
+        return [
+            'company' => Company::class,
+            'phone' => Phone::class,
+            'person' => Person::class,
+            'address' => Address::class,
+            'role' => Role::class,
+            'companyUser' => CompanyUser::class
+
+        ];
+    }
+
+    public function getPerson(): ActiveQuery
+    {
+        return $this->hasOne(Person::class, ['auth_user_id' => 'id']);
+    }
+
+    public function getPhone(): ActiveQuery
+    {
+        return $this->hasOne(Phone::class, ['auth_user_id' => 'id']);
+    }
+
+    public function getAddress(): ActiveQuery
+    {
+        return $this->hasOne(Address::class, ['auth_user_id' => 'id']);
+    }
+
+    public function getRole(): ActiveQuery
+    {
+        return $this->hasOne(Role::class, ['id' => 'role_id']);
+    }
+
+    public function getCompany(): ActiveQuery
+    {
+        return $this->hasOne(Company::class, ['auth_user_id' => 'id']);
+    }
+
+    public function getCompanyUser(): ActiveQuery
+    {
+        return $this->hasOne(Company::class, ['id' => 'company_id']);
+    }
+
+    public function fkAttribute(): string
+    {
+        return 'auth_user_id';
     }
 
     public function getName()
@@ -155,72 +219,8 @@ class AuthUser extends BaseModel implements IdentityInterface, ParentObjectInter
         return $this->password === md5($password);
     }
 
-    public function relationsName(): array
+    public function isPerson()
     {
-        return [
-            'person' => Person::class,
-            'phone' => Phone::class,
-            'address' => Address::class,
-            'company' => Company::class,
-            'companyUser' => Company::class,
-            'role' => Role::class
-            
-        ];
-    }
-
-    public function actionsAfterSave(): array
-    {
-        $this->actionsAfterSave[] = LogObserverCreate::class;
-        
-        return $this->actionsAfterSave;
-    }
-
-    public function actionsAfterDelete(): array
-    {
-        $this->actionsAfterDelete[] = LogObserverDelete::class;
-        
-        return $this->actionsAfterDelete;
-    }
-
-    public function actionsAfterUpdate(): array
-    {
-        $this->actionsAfterUpdate[] = LogObserverUpdate::class;
-        
-        return $this->actionsAfterUpdate;
-    }
-
-    public function getPerson()
-    {
-        return $this->hasOne(Person::class, ['auth_user_id' => 'id']);
-    }
-
-    public function getPhone()
-    {
-        return $this->hasOne(Phone::class, ['auth_user_id' => 'id']);
-    }
-
-    public function getAddress()
-    {
-        return $this->hasOne(Address::class, ['auth_user_id' => 'id']);
-    }
-
-    public function getRole()
-    {
-        return $this->hasOne(Role::class, ['id' => 'role_id']);
-    }
-
-    public function getCompany()
-    {
-        return $this->hasOne(Company::class, ['auth_user_id' => 'id']);
-    }
-
-    public function getCompanyUser()
-    {
-        return $this->hasOne(Company::class, ['id' => 'company_id']);
-    }
-
-    public function fkAttribute(): string
-    {
-        return 'auth_user_id';
+        return $this->person ? $this->person : $this->company;
     }
 }

@@ -5,6 +5,7 @@ namespace app\models;
 use app\helpers\HelperMethods;
 use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "plans_items".
@@ -40,7 +41,7 @@ class PlanItem extends BaseModel
     {
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
-            [['id', 'plan_id', 'limit', 'friendly_id'], 'required'],
+            [['id', 'plan_id', 'limit'], 'required'],
             [['item'], 'string'],
             [['limit', 'friendly_id'], 'integer'],
             [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
@@ -88,12 +89,14 @@ class PlanItem extends BaseModel
         return $this->actionsAfterUpdate;
     }
 
-    /**
-     * Gets query for [[Plan]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPlan()
+    public static function relations(): array
+    {
+        return [
+            'plan' => Plan::class
+        ];
+    }
+
+    public function getPlan(): ActiveQuery
     {
         return $this->hasOne(Plan::class, ['id' => 'plan_id']);
     }

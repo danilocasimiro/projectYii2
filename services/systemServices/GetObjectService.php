@@ -2,20 +2,18 @@
 
 namespace app\services\systemServices;
 
-use app\interfaces\ModelInterface;
+use app\helpers\HelperExpandMethods;
+use yii\db\ActiveQuery;
 use yii\web\BadRequestHttpException;
 
 class GetObjectService {
 
-  public static function getObject(string $class, string $id): ModelInterface
+  public static function getObject(string $class, string $id): ActiveQuery
   {
-    $model = $class::find()->where(['id' => $id, 'deleted_at' => null])->one();
+    $query = $class::find()->where([$class::tableName().".id" => $id, $class::tableName().".deleted_at" => null]);
 
-    if(empty($model)) {
+    HelperExpandMethods::getExpandQuerie($class, $query);
 
-        throw new BadRequestHttpException('Object '.ucfirst($class).' not found');
-    }
-
-    return $model;
+    return $query;
   }
 }

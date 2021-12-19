@@ -6,6 +6,8 @@ use app\helpers\HelperMethods;
 use app\models\{AuthUser, BaseModel};
 use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
+use yii\db\ActiveQuery;
+
 /**
  * This is the model class for table "auth_users_levels".
  *
@@ -87,22 +89,12 @@ class AuthUserLevel extends BaseModel
         return $this->actionsAfterUpdate;
     }
 
-    /**
-     * Gets query for [[AuthUser]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAuthUser()
+    public function getAuthUser(): ActiveQuery
     {
         return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
     }
 
-    /**
-     * Gets query for [[Level]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLevel()
+    public function getLevel(): ActiveQuery
     {
         return $this->hasOne(Level::class, ['id' => 'level_id']);
     }

@@ -70,6 +70,7 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => false,
             'rules' => require __DIR__ . '/routes.php',
         ],
         
