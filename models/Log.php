@@ -108,21 +108,6 @@ class Log extends BaseModel
         return '';
     }
 
-    public function actionsAfterSave(): array
-    {
-        return $this->actionsAfterSave;
-    }
-
-    public function actionsAfterDelete(): array
-    {        
-        return $this->actionsAfterDelete;
-    }
-
-    public function actionsAfterUpdate(): array
-    {        
-        return $this->actionsAfterUpdate;
-    }
-
     public static function addLogDelete(object $model, string $class, $typeDelete): void
     {
       $authUser = JwtMethods::getAuthUserFromJwt();

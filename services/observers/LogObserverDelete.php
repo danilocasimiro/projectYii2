@@ -7,7 +7,7 @@ use app\models\Log;
 use SplObserver;
 use SplSubject;
 
-class LogObserverDelete implements SplObserver, LogObserverInterface
+class  LogObserverDelete implements SplObserver, LogObserverInterface
 {
     private $name = 'LogObserverDelete';
 

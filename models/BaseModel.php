@@ -27,4 +27,19 @@ abstract class BaseModel extends \yii\db\ActiveRecord implements ModelInterface
     {
       return [];
     }
+
+    public function actionsAfterSave(): array
+    {
+        return [];
+    }
+
+    public function actionsAfterDelete(): array
+    {
+       return [];
+    }
+
+    public function actionsAfterUpdate(): array
+    {
+        return [];
+    }
 }
