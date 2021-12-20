@@ -5,8 +5,7 @@ namespace app\models;
 use app\components\JwtMethods;
 use app\helpers\HelperMethods;
 use app\interfaces\ModelInterface;
-use app\services\systemServices\CreateObjectService;
-use Yii;
+use app\useCases\systemServices\CreateObjectService;
 use yii\db\ActiveQuery;
 
 /**

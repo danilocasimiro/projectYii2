@@ -4,8 +4,7 @@ namespace app\models\rbac;
 
 use app\helpers\HelperMethods;
 use app\models\BaseModel;
-use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
-use Yii;
+use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use yii\db\ActiveQuery;
 
 /**

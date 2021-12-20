@@ -2,8 +2,7 @@
 
 namespace app\helpers;
 
-use app\services\systemServices\GetObjectsService;
-use Yii;
+use app\useCases\systemServices\GetObjectsService;
 
 class HelperMethods {
 

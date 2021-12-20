@@ -4,7 +4,7 @@ namespace app\models;
 
 use app\components\JwtMethods;
 use app\helpers\HelperMethods;
-use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
+use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
 use yii\db\ActiveQuery;
 

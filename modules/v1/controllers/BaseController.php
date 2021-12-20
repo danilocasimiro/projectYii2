@@ -3,13 +3,11 @@
 namespace app\modules\v1\controllers;
 
 use app\helpers\HelperExpandMethods;
-use app\services\systemServices\ {
+use app\useCases\systemServices\ {
     CreateBatchObjectsService, CreateObjectService, DeleteObjectService, GetObjectService, GetObjectsService, UpdateObjectService
 };
 use app\interfaces\ModelInterface;
-use app\services\doActionsServices\AfterCreateService;
-use app\services\doActionsServices\AfterDeleteService;
-use app\services\doActionsServices\AfterUpdateService;
+use app\useCases\doActionsUseCases\{AfterCreateUseCase, AfterDeleteUseCase, AfterUpdateUseCase};
 use Yii;
 use yii\web\BadRequestHttpException;
 
@@ -62,9 +60,9 @@ class BaseController extends \yii\web\Controller
         
         $model = CreateObjectService::createObject($this->modelClass, $this->bodyParams);
 
-        $afterCreateService = new AfterCreateService;
+        $afterCreateUseCase = new AfterCreateUseCase;
 
-        $afterCreateService->execute($model, $this);
+        $afterCreateUseCase->execute($model, $this);
 
         $transaction->commit();
 
@@ -96,6 +94,7 @@ class BaseController extends \yii\web\Controller
 
     public function actionUpdate(string $id): ModelInterface
     {        
+        /**@var ModelInterface $oldModel */
         $oldModel = GetObjectService::getObject($this->modelClass, $id)->one();
 
         if(empty($oldModel)) {
@@ -108,9 +107,9 @@ class BaseController extends \yii\web\Controller
 
         $model = UpdateObjectService::updateObject($oldModel, $this->bodyParams);
 
-        $afterUpdateService = new AfterUpdateService;
+        $afterUpdateUseCase = new AfterUpdateUseCase;
 
-        $afterUpdateService->execute($model, $this, $oldModelAttributes);
+        $afterUpdateUseCase->execute($model, $this, $oldModelAttributes);
 
         $transaction->commit();
 
@@ -123,11 +122,11 @@ class BaseController extends \yii\web\Controller
 
         $models = CreateBatchObjectsService::createBatchObjects($this->modelClass, $this->bodyParams); 
 
-        $afterCreateService = new AfterCreateService;
+        $afterCreateUseCase = new AfterCreateUseCase;
         
         foreach($models as $model) {
         
-            $afterCreateService->execute($model, $this);
+            $afterCreateUseCase->execute($model, $this);
 
         }
 
@@ -138,15 +137,16 @@ class BaseController extends \yii\web\Controller
 
     public function actionDelete(string $id): string
     {
+        /**@var ModelInterface $model */
         $model = GetObjectService::getObject($this->modelClass, $id)->one();
 
         $typeDelete = !empty($this->bodyParams['typeDelete']) ? $this->bodyParams['typeDelete'] : $this->defaultTypeDelete;
 
         $message = DeleteObjectService::deleteObject($this->modelClass, $typeDelete, $model); 
 
-        $afterDeleteService = new AfterDeleteService;
+        $afterDeleteUseCase = new AfterDeleteUseCase;
 
-        $afterDeleteService->execute($model, $this, $typeDelete);
+        $afterDeleteUseCase->execute($model, $this, $typeDelete);
         
         return $message;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\services\doActionsServices;
+namespace app\useCases\doActionsUseCases;
 
 use app\interfaces\{DoActionsInterface, ModelInterface};
 use app\modules\v1\controllers\BaseController;
@@ -8,7 +8,7 @@ use SplObserver;
 use SplSubject;
 use yii\base\Model;
 
-class AfterCreateService extends Model implements DoActionsInterface, SplSubject
+class AfterCreateUseCase extends Model implements DoActionsInterface, SplSubject
 {
     /**$var SplObserver[] */
     private $observers = [];

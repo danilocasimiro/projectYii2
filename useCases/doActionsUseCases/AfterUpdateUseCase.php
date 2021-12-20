@@ -1,6 +1,6 @@
 <?php
 
-namespace app\services\doActionsServices;
+namespace app\useCases\doActionsUseCases;
 
 use app\interfaces\{DoActionsInterface, ModelInterface};
 use app\modules\v1\controllers\BaseController;
@@ -8,14 +8,14 @@ use SplObserver;
 use SplSubject;
 use yii\base\Model;
 
-class AfterDeleteService extends Model implements DoActionsInterface, SplSubject
+class AfterUpdateUseCase extends Model implements DoActionsInterface, SplSubject
 {
     /**$var SplObserver[] */
     private $observers = [];
 
-    public function execute(?ModelInterface $model, BaseController $params, string $typeDelete=null): void
+    public function execute(?ModelInterface $model, BaseController $params, array $oldAttributes = null): void
     {
-        $actions = $model->actionsAfterDelete();
+        $actions = $model->actionsAfterUpdate();
 
         if(!empty($actions)) {
 
@@ -23,7 +23,7 @@ class AfterDeleteService extends Model implements DoActionsInterface, SplSubject
                 $this->attach(new $action);
             }
 
-            $this->notify($model, $params, $typeDelete);
+            $this->notify($model, $oldAttributes, $params);
         }
     }
 
@@ -34,11 +34,10 @@ class AfterDeleteService extends Model implements DoActionsInterface, SplSubject
         }
     }
 
-
-    public function notify(ModelInterface $model= null, $params= null, $typeDelete=null): void
+    public function notify(ModelInterface $model= null, $oldAttributes=null, $params= null): void
     {
         foreach ($this->observers as $value) {
-            $value->update($this, $model, $params, $typeDelete);
+            $value->update($this, $model, $oldAttributes, $params);
         }
     }
 

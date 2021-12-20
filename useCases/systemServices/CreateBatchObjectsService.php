@@ -1,6 +1,6 @@
 <?php
 
-namespace app\services\systemServices;
+namespace app\useCases\systemServices;
 
 class CreateBatchObjectsService {
 

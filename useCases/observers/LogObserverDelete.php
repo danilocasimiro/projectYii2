@@ -1,6 +1,6 @@
 <?php 
 
-namespace app\services\observers;
+namespace app\useCases\observers;
 
 use app\interfaces\LogObserverInterface;
 use app\models\Log;

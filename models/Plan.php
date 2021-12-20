@@ -3,7 +3,7 @@
 namespace app\models;
 
 use app\helpers\HelperMethods;
-use app\services\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
+use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use yii\db\ActiveQuery;
 
 /**
