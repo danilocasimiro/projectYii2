@@ -4,7 +4,7 @@ namespace app\models;
 
 use app\helpers\HelperMethods;
 use app\models\rbac\Role;
-use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
+use app\useCases\observers\{LogObserverCreate, LogObserverDelete, SendEmailObserver, LogObserverUpdate};
 use Yii;
 use yii\db\ActiveQuery;
 use yii\web\IdentityInterface;
@@ -34,6 +34,14 @@ class AuthUser extends BaseModel implements IdentityInterface
     private $actionsAfterDelete = [];
     private $actionsAfterUpdate = [];
     
+    public const TYPE_USER = 'User';
+    public const TYPE_EMPLOYEE = 'Employee';
+    public const TYPE_COMPANY = 'Company';
+    public const TYPE_ADMIN = 'Admin';
+
+    /**@var array */
+    public $messageEmail;
+
     /**
      * {@inheritdoc}
      */
@@ -52,6 +60,7 @@ class AuthUser extends BaseModel implements IdentityInterface
             [['email', 'password', 'role_id'], 'required'],
             [['email', 'auth_key', 'access_token'], 'string', 'max' => 45],
             [['email'], 'email'],
+            ['type', 'in', 'range' => [self::TYPE_USER, self::TYPE_EMPLOYEE, self::TYPE_COMPANY, self::TYPE_ADMIN]],
             [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['company_id', 'id'], 'string', 'max' => 32],
             [['password', 'photo'], 'string', 'max' => 60],
@@ -82,6 +91,7 @@ class AuthUser extends BaseModel implements IdentityInterface
                 $this->auth_key = \Yii::$app->security->generateRandomString();
                 $this->access_token = \Yii::$app->security->generateRandomString();
                 $this->password = md5($this->password);
+                $this->messageEmail = SystemMessage::findOne(SystemMessage::EMAIL_SYSTEM_REGISTER_ID);
             }
             
             return true;
@@ -92,6 +102,7 @@ class AuthUser extends BaseModel implements IdentityInterface
     public function actionsAfterSave(): array
     {
         $this->actionsAfterSave[] = LogObserverCreate::class;
+        $this->actionsAfterSave[] = SendEmailObserver::class;
         
         return $this->actionsAfterSave;
     }

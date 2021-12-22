@@ -13,7 +13,7 @@ class AfterCreateUseCase extends Model implements DoActionsInterface, SplSubject
     /**$var SplObserver[] */
     private $observers = [];
 
-    public function execute(?ModelInterface $model, BaseController $params): void
+    public function execute(?ModelInterface $model, BaseController $controllerParams): void
     {
         $actions = $model->actionsAfterSave();
 
@@ -23,7 +23,7 @@ class AfterCreateUseCase extends Model implements DoActionsInterface, SplSubject
                 $this->attach(new $action);
             }
 
-            $this->notify($model, $params);
+            $this->notify($model, $controllerParams);
         }
     }
 

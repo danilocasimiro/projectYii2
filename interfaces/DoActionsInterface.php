@@ -7,6 +7,6 @@ use SplObserver;
 
 interface DoActionsInterface
 {
-  public function execute(?ModelInterface $model, BaseController $class): void;
+  public function execute(?ModelInterface $model, BaseController $controllerParams): void;
   public function logObserverAlreadyAdd(SplObserver $observer): bool;
 }

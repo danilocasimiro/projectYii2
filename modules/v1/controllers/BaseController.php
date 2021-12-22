@@ -71,6 +71,7 @@ class BaseController extends \yii\web\Controller
     
     public function actionView(string $id): array
     {
+        /**@var ModelInterface $model */
         $model = GetObjectService::getObject($this->modelClass, $id)->one();
 
         if(empty($model)) {
@@ -139,6 +140,12 @@ class BaseController extends \yii\web\Controller
     {
         /**@var ModelInterface $model */
         $model = GetObjectService::getObject($this->modelClass, $id)->one();
+
+        if(empty($model)) {
+        
+            throw new BadRequestHttpException("Object id: ".$id." not found");
+            
+        }
 
         $typeDelete = !empty($this->bodyParams['typeDelete']) ? $this->bodyParams['typeDelete'] : $this->defaultTypeDelete;
 

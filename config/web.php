@@ -11,6 +11,9 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    'container' => [
+        'definitions' => require __DIR__ . '/ioc.php',
+    ],
     'modules' =>require __DIR__ . '/modules.php',
     'components' => [
         'response' => [

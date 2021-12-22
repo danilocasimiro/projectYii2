@@ -13,6 +13,24 @@ class m211215_235729_add_default_data extends Migration
      */
     public function safeUp()
     {
+        $system_messages_emails = [
+            ['id'=>'a68f90e39b72bd6e5b792e6d46977eb2', 'subject'=> 'Cadastro no sistema', 'message' => 'Parabéns receiver_name, você acaba de se cadastrar no sistema com o email receiver_email !!!',                  'type' => 'email', 'friendly_id' => '1'],
+            ['id'=>'c6a0f1a9b56c0b4c27043a63bf49d2d0', 'subject'=> 'Recuperar senha',     'message' => 'Olá receiver_name, clique no link a seguir para trocar a sua senha, lembrando que seu email é receiver_email.', 'type' => 'email', 'friendly_id' => '2'],
+            ['id'=>'fc5aff6a21a1f68e61bca99d4064fcf0', 'subject'=> 'Exclusão da conta',   'message' => 'Olá receiver_name, sua conta com o email receiver_email foi excluida com sucesso!!!',                           'type' => 'email', 'friendly_id' => '3'],
+            ['id'=>'0e74aee953f468530384b0764242733f', 'subject'=> 'Aniversário',         'message' => 'Pararabéns receiver_name, pelo seu aniversário!!!',                                                             'type' => 'email', 'friendly_id' => '4'],
+        ];
+
+        $system_messages_logs = [
+            ['id'=>'85108729b0f7c0d050954a48552f7e96', 'subject'=> 'Info',       'message' => 'O usuário current_user_email realizou login no sistema.',                  'type' => 'log', 'friendly_id' => '5'],
+            ['id'=>'6fef4fc93ad486f88a90318e1ae2be65', 'subject'=> 'Danger',     'message' => 'Ocorreu o seguinte erro. ',                                                'type' => 'log', 'friendly_id' => '6'],
+            ['id'=>'378bf9cf1d7b56c52e2e484f69c209cd', 'subject'=> 'Warning',    'message' => 'O usuário current_user_email realizou a seguinte alteração no sistema.',   'type' => 'log', 'friendly_id' => '7'],
+            ['id'=>'322c7a7c07295ca931dcbb2acd4cfec1', 'subject'=> 'Success',    'message' => 'O usuário current_user_email adicionou o seguinte item ao sistema.',       'type' => 'log', 'friendly_id' => '8'],
+            ['id'=>'f2a4531dee2a1b4a92c2c145bbabe0a6', 'subject'=> 'Success',    'message' => 'O usuário current_user_email excluiu o seguinte item do sistema.',         'type' => 'log', 'friendly_id' => '9'],
+            ['id'=>'6364d3f0f495b6ab9dcf8d3b5c6e0b01', 'subject'=> 'Success',    'message' => 'Envio de email enviado com sucesso para receiver_email.',                  'type' => 'log', 'friendly_id' => '10'],
+            ['id'=>'12e086066892a311b752673a28583d3f', 'subject'=> 'Danger',     'message' => 'Erro ao enviar email para receiver_email.',                                'type' => 'log', 'friendly_id' => '11'],
+
+        ];
+
         $roles = [
             ['id'=>'b2ca678b4c936f905fb82f2733f5297f', 'name'=> 'admin',    'friendly_id' => '1'],
             ['id'=>'437599f1ea3514f8969f161a6606ce18', 'name'=> 'company',  'friendly_id' => '2'],
@@ -180,6 +198,16 @@ class m211215_235729_add_default_data extends Migration
              ['id'=>md5(uniqid(rand(), true)), 'auth_user_id' => '37ffdb2ade7430762ea471dc3ad6400a', 'street' => 'alameda faria lima',                        'number' => '30',  'district' => 'Emirados arabes',             'city' => 'Prudentopolis',   'state' => 'RR', 'country' => 'BR', 'zipcode' => '68952-658', 'friendly_id' => '34'],
 
         ];
+
+        \Yii::$app->db
+        ->createCommand()
+        ->batchInsert('system_messages',  ['id', 'subject', 'message', 'type', 'friendly_id'], $system_messages_emails)
+        ->execute();
+
+        \Yii::$app->db
+        ->createCommand()
+        ->batchInsert('system_messages',  ['id', 'subject', 'message', 'type', 'friendly_id'], $system_messages_logs)
+        ->execute();
 
         \Yii::$app->db
         ->createCommand()

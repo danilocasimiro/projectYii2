@@ -6,6 +6,7 @@ use app\components\JwtMethods;
 use app\helpers\HelperMethods;
 use app\interfaces\ModelInterface;
 use app\useCases\systemServices\CreateObjectService;
+use app\useCases\systemServices\GetObjectService;
 use yii\db\ActiveQuery;
 
 /**
@@ -16,16 +17,19 @@ use yii\db\ActiveQuery;
  * @property string|null $action
  * @property string|null $description
  * @property string|null $model
+ * @property string $level
  * @property string $friendly_id
  * @property string $created_at
  * @property string|null $deleted_at
  */
 class Log extends BaseModel 
 {
-    private $actionsAfterSave= [];
-    private $actionsAfterDelete= [];
-    private $actionsAfterUpdate = [];
-    
+    public const LEVEL_INFO = 'Info';
+    public const LEVEL_WARNING = 'Warning';
+    public const LEVEL_DANGER = 'Danger';
+    public const LEVEL_SUCCESS = 'Success';
+
+
     /**
      * {@inheritdoc}
      */
@@ -45,6 +49,7 @@ class Log extends BaseModel
             [['created_at', 'deleted_at'], 'safe'],
             [['id', 'auth_user_id'], 'string', 'max' => 32],
             [['action'], 'string', 'max' => 40],
+            ['level', 'in', 'range' => [self::LEVEL_INFO, self::LEVEL_WARNING, self::LEVEL_DANGER, self::LEVEL_SUCCESS]],
             [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['description'], 'string', 'max' => 255],
             [['model'], 'string', 'max' => 50],
@@ -81,15 +86,13 @@ class Log extends BaseModel
         return $this->hasMany(AuthUser::class, ['role_id' => 'id']);
     }
 
-    public static function prepareParams(string $action, string $model, string $description, AuthUser $authUser = null): array
+    public static function prepareParams(string $action, string $model, string $description, string $level, AuthUser $authUser = null): array
     {
-        $authUser = $authUser?? JwtMethods::getAuthUserFromJwt();
-
-        $description = str_replace("authUserEmail", $authUser->email, $description);
         $params['auth_user_id'] = $authUser->id; 
         $params['description'] = $description;
         $params['model'] = $model;
         $params['action'] = $action;
+        $params['level'] = $level;
         
         return $params;
     }
@@ -99,7 +102,7 @@ class Log extends BaseModel
         foreach($changedAttributes as $attribute => $oldAttribute) {
 
             if($model[$attribute] != $oldAttribute){ 
-                $message[] = "Alterou o atributo '".$attribute. "' de '".$oldAttribute. "' para '".$model[$attribute]."'.";
+                $message[] = "Alterou o atributo '".$attribute. "' de '".$oldAttribute. "' para '".$model[$attribute]."' no object: ".$model['friendly_id'].".";
             }
         }
 
@@ -113,10 +116,14 @@ class Log extends BaseModel
     public static function addLogDelete(object $model, string $class, $typeDelete): void
     {
       $authUser = JwtMethods::getAuthUserFromJwt();
+
+      $systemMessage = GetObjectService::getObject(SystemMessage::class, SystemMessage::LOG_DELETE_ID)->one();
+
+      $initialMessage = str_replace("current_user_email", $authUser->email, $systemMessage->message);
   
-      $description = "O usuário de email ".$authUser->email." excluiu o objeto de id:".$model->friendly_id.". Tipo ".$typeDelete." delete.";
+      $description = $initialMessage." Um model de id: ".$model->friendly_id.". Delete do tipo ".$typeDelete;
   
-      $params = Log::prepareParams('delete', $class, $description);
+      $params = Log::prepareParams('delete',  $class, $description, static::LEVEL_SUCCESS, $authUser);
   
       CreateObjectService::createObject(Log::class, $params);
   
@@ -124,33 +131,60 @@ class Log extends BaseModel
 
     public static function addLogUpdate(ModelInterface $model,  string $class, array $changedAttributes): void
     { 
-        $message = static::getMessageOfChangedAttributes($model, $changedAttributes);
-        
-        if(!empty($message)) {
-         
-            $description = "O usuário de email authUserEmail alterou o objeto de id:".$model['friendly_id'].". ".$message.".";
+        $authUser = JwtMethods::getAuthUserFromJwt();
 
-            $params = Log::prepareParams('update', $class, $description);
+        $messageChangedAttributes = static::getMessageOfChangedAttributes($model, $changedAttributes);
+
+        if(!empty($messageChangedAttributes)) {
+
+            $systemMessage = GetObjectService::getObject(SystemMessage::class, SystemMessage::LOG_UPDATE_ID)->one();
+
+            $initialMessage = str_replace("current_user_email", $authUser->email, $systemMessage->message);
+         
+            $description = $initialMessage." ".$messageChangedAttributes;
+
+            $params = Log::prepareParams('update',  $class, $description, static::LEVEL_WARNING, $authUser);
 
             CreateObjectService::createObject(Log::class, $params);
         }
 
     }
 
-    public static function addLogCreate(object $model, string $class): void
+    public static function addLogCreate(ModelInterface $model, string $class): void
     {
-        $description = "O usuário de email authUserEmail adicionou o objeto de id:".$model->friendly_id.".";
+        $authUser = JwtMethods::getAuthUserFromJwt();
 
-        $params = Log::prepareParams('create',  $class, $description);
+        $systemMessage = GetObjectService::getObject(SystemMessage::class, SystemMessage::LOG_CREATE_ID)->one();
+
+        $description = str_replace("current_user_email", $authUser->email, $systemMessage->message);
+
+        $description = $description." Um model de id: ".$model->friendly_id.".";
+
+        $params = Log::prepareParams('create',  $class, $description, static::LEVEL_SUCCESS, $authUser);
 
         CreateObjectService::createObject(Log::class, $params);
     }
 
-    public static function addLogLogin(object $model, string $class)
+    public static function addLogLogin(ModelInterface $model, string $class): void
     {
-        $description = "O usuário de email ".$model->email." logou.";
+        $systemMessage = GetObjectService::getObject(SystemMessage::class, SystemMessage::LOG_LOGIN_ID)->one();
 
-        $params = Log::prepareParams('login',  $class, $description, $model);
+        $description = str_replace("current_user_email", $model->email, $systemMessage->message);
+
+        $params = static::prepareParams('Login', $class, $description, static::LEVEL_INFO, $model);
+
+        CreateObjectService::createObject(Log::class, $params);
+    }
+
+    public static function addLogSendEmail(ModelInterface $model, string $class, $typeMessageId)
+    {
+        $authUser = JwtMethods::getAuthUserFromJwt();
+
+        $systemMessage = GetObjectService::getObject(SystemMessage::class, $typeMessageId)->one();
+
+        $description = str_replace("receiver_email", $model->email, $systemMessage->message);
+
+        $params = Log::prepareParams('Email',  $class, $description, $systemMessage->subject, $authUser);
 
         CreateObjectService::createObject(Log::class, $params);
     }

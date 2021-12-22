@@ -18,6 +18,7 @@ class m211211_194321_create_logs_table extends Migration
             'action'=>$this->string(40),
             'description'=>$this->string(255),
             'model'=>$this->string(50),
+            'level'=> "ENUM('Info', 'Danger', 'Warning', 'Success')",
             'friendly_id' => $this->integer()->notNull(),
             'created_at' => $this->dateTime()->defaultValue(date('Y-m-d H:i:s'))->notNull(),
             'deleted_at' => $this->dateTime()
