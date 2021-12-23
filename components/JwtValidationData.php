@@ -6,7 +6,6 @@ use sizeg\jwt\JwtValidationData as jwtValidate;
 
 class JwtValidationData extends jwtValidate
 {
- 
     /**
      * @inheritdoc
      */

@@ -23,6 +23,9 @@ class BaseController extends \yii\web\Controller
       
         $behaviors['authenticator'] = [
             'class' => \sizeg\jwt\JwtHttpBearerAuth::class,
+            'except' => [
+                'options'
+            ]
         ];
 
          $behaviors['corsFilter'] = [
@@ -40,6 +43,11 @@ class BaseController extends \yii\web\Controller
         ];
   
       return $behaviors;
+    }
+
+    public function actionOptions()
+    {
+        return true;
     }
 
     public function beforeAction($action)
@@ -136,8 +144,10 @@ class BaseController extends \yii\web\Controller
         return $models;
     }
 
-    public function actionDelete(string $id): string
+    public function actionDelete(string $id): bool
     {
+        $transaction = Yii::$app->db->beginTransaction();
+
         /**@var ModelInterface $model */
         $model = GetObjectService::getObject($this->modelClass, $id)->one();
 
@@ -149,12 +159,16 @@ class BaseController extends \yii\web\Controller
 
         $typeDelete = !empty($this->bodyParams['typeDelete']) ? $this->bodyParams['typeDelete'] : $this->defaultTypeDelete;
 
-        $message = DeleteObjectService::deleteObject($this->modelClass, $typeDelete, $model); 
-
         $afterDeleteUseCase = new AfterDeleteUseCase;
 
         $afterDeleteUseCase->execute($model, $this, $typeDelete);
         
-        return $message;
+        if(DeleteObjectService::deleteObject($this->modelClass, $typeDelete, $model)) {
+            $transaction->commit();
+            return true;
+        } 
+
+        $transaction->rollBack();
+        return false;
     }
 }

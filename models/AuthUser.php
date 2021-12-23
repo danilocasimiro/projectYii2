@@ -64,6 +64,7 @@ class AuthUser extends BaseModel implements IdentityInterface
             [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['company_id', 'id'], 'string', 'max' => 32],
             [['password', 'photo'], 'string', 'max' => 60],
+            [['id', 'email'], 'unique'],
             [['access_token', 'auth_key'], 'default', 'value' => md5(uniqid(rand(), true))],
 
         ];
@@ -102,7 +103,7 @@ class AuthUser extends BaseModel implements IdentityInterface
     public function actionsAfterSave(): array
     {
         $this->actionsAfterSave[] = LogObserverCreate::class;
-        $this->actionsAfterSave[] = SendEmailObserver::class;
+       // $this->actionsAfterSave[] = SendEmailObserver::class;
         
         return $this->actionsAfterSave;
     }
@@ -216,7 +217,7 @@ class AuthUser extends BaseModel implements IdentityInterface
      */
     public static function findByEmail($email)
     {
-       return static::findOne(['email' => $email]);
+       return static::findOne(['email' => $email, 'deleted_at' => null]);
     }
 
     /**
