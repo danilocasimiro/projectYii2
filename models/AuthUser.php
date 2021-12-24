@@ -93,6 +93,11 @@ class AuthUser extends BaseModel implements IdentityInterface
                 $this->access_token = \Yii::$app->security->generateRandomString();
                 $this->password = md5($this->password);
                 $this->messageEmail = SystemMessage::findOne(SystemMessage::EMAIL_SYSTEM_REGISTER_ID);
+            } else {
+
+                if($this->getOldAttribute('password') !== $this->password) {
+                    $this->password = md5($this->password);
+                }
             }
             
             return true;

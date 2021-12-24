@@ -2,6 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
+use app\components\JwtMethods;
 use app\models\{AuthUser, Log, Person};
 use Yii;
 
@@ -43,36 +44,11 @@ class AuthenticateController extends BaseController
 
   public function actionLogin(): array
   {
-    $model = new \app\models\LoginForm();
-    $params = \Yii::$app->request->getBodyParams();
-    $model->load($params, '');
-    
-    if ($model->login()) {
-      $user = AuthUser::findByEmail($model->email);
+      $model = new \app\models\LoginForm();
+      $params = \Yii::$app->request->getBodyParams();
+      $model->load($params, '');
 
-      $token = $this->generateJwt($user);
-
-      $this->generateRefreshToken($user);
-
-      Log::addLogLogin($user, $this->modelClass);
-
-      return [
-        'user' => $user,
-        'person' => $user->person,
-        'token' => (string) $token,
-        'message' => 'Logado com sucesso',
-        'code' => '200'
-      ];
-    } else {
-
-      $message = $model->getErrors();
-      return [ 
-        'user' => '',
-        'token' => '',
-        'message' => $message['password'],
-        'code' => '400'
-      ];
-    }
+      return $model->login();
   }
 
   public function actionRefreshToken(): array
@@ -96,7 +72,7 @@ class AuthenticateController extends BaseController
         ->where(['id' => $userRefreshToken->id])
         ->one();
 
-      $token = $this->generateJwt($user);
+      $token = JwtMethods::generateJwt($user);
 
       return [
         'status' => 'ok',
@@ -115,55 +91,5 @@ class AuthenticateController extends BaseController
     }
   }
 
-  private function generateJwt(AuthUser $user)
-  {
-    $jwt = \Yii::$app->jwt;
-    $signer = $jwt->getSigner('HS256');
-    $key = $jwt->getKey();
-    $time = time();
-
-    $jwtParams = \Yii::$app->params['jwt'];
-
-    return $jwt->getBuilder()
-      ->issuedBy($jwtParams['issuer'])
-      ->permittedFor($jwtParams['audience'])
-      ->identifiedBy($jwtParams['id'], true)
-      ->issuedAt($time)
-      ->expiresAt($time + $jwtParams['expire'])
-      ->withClaim('uid', $user->id)
-      ->getToken($signer, $key);
-  }
-  
-
-  /**
-   * @throws yii\base\Exception
-   */
-  private function generateRefreshToken(\app\models\AuthUser $user, \app\models\User $impersonator = null): \app\models\UserRefreshToken 
-  {
-    $refreshToken = \Yii::$app->security->generateRandomString(200);
-    // TODO: Don't always regenerate - you could reuse existing one if user already has one with same IP and user agent
-    $userRefreshToken = new \app\models\UserRefreshToken([
-      'user_id' => (string) $user->id,
-      'token' => $refreshToken,
-      'ip' => \Yii::$app->request->userIP,
-      'user_agent' => \Yii::$app->request->userAgent,
-      'created_at' => gmdate('Y-m-d H:i:s'),
-    ]);
-    if (!$userRefreshToken->save()) {
-      throw new \yii\web\ServerErrorHttpException('Failed to save the refresh token: '. $userRefreshToken->getErrorSummary(true));
-    }
-
-    // Send the refresh-token to the user in a HttpOnly cookie that Javascript can never read and that's limited by path
-    \Yii::$app->response->cookies->add(new \yii\web\Cookie([
-      'name' => 'refresh-token',
-      'value' => $refreshToken,
-      'httpOnly' => true,
-      'sameSite' => 'none',
-      'secure' => true,
-      'path' => '/v1/auth/refresh-token',  //endpoint URI for renewing the JWT token using this refresh-token, or deleting refresh-token
-    ]));
-
-    return $userRefreshToken;
-  }
-
+ 
 }

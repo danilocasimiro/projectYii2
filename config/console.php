@@ -14,6 +14,15 @@ $config = [
         '@tests' => '@app/tests',
     ],
     'components' => [
+        'jwt' => [
+            'class' => \sizeg\jwt\Jwt::class,
+            'key'   => 'secret',
+            'jwtValidationData' => [
+                'class' => \sizeg\jwt\JwtValidationData::class,
+                 // configure leeway 
+                'leeway' => 20,
+            ],
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],

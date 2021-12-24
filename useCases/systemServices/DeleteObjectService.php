@@ -25,7 +25,7 @@ class DeleteObjectService {
           throw new BadRequestHttpException('Não foi possível realizar a hard exclusão!!!');
       }
 
-     return  "Object ".$class." hard deleted successfully";
+     return  "Object ".$model->id." hard deleted successfully";
   }
 
   private static function softDelete(ModelInterface $model, string $class): string
@@ -37,7 +37,7 @@ class DeleteObjectService {
         throw new BadRequestHttpException('Não foi possível realizar a soft exclusão!!!');
       }
 
-      return "Object ".$class." soft deleted successfully";
+      return "Object ".$model->id." soft deleted successfully";
   }
  
 }

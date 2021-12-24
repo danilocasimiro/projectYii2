@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\JwtMethods;
 use Yii;
 use yii\base\Model;
 
@@ -54,18 +55,6 @@ class LoginForm extends Model
     }
 
     /**
-     * Logs in a user using the provided email and password.
-     * @return bool whether the user is logged in successfully
-     */
-    public function login()
-    {
-        if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
-        }
-        return false;
-    }
-
-    /**
      * Finds user by [[email]]
      *
      * @return AuthUser|null
@@ -77,5 +66,47 @@ class LoginForm extends Model
         }
 
         return $this->_user;
+    }
+
+    public function login()
+    {
+        if ($this->validLogin()) {
+            $user = AuthUser::findByEmail($this->email);
+    
+            $token = JwtMethods::generateJwt($user);
+    
+            JwtMethods::generateRefreshToken($user);
+    
+            Log::addLogLogin($user, AuthUser::class);
+    
+            return [
+            'user' => $user,
+            'person' => $user->person,
+            'token' => (string) $token,
+            'message' => 'Logado com sucesso',
+            'code' => '200'
+            ];
+        } else {
+    
+            $message = $this->getErrors();
+            return [ 
+            'user' => '',
+            'token' => '',
+            'message' => $message['password'],
+            'code' => '400'
+            ];
+        }
+    }
+
+    /**
+     * Logs in a user using the provided email and password.
+     * @return bool whether the user is logged in successfully
+     */
+    private function validLogin()
+    {
+        if ($this->validate()) {
+            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+        }
+        return false;
     }
 }
