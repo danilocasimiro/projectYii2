@@ -86,8 +86,10 @@ return [
     'class' => 'yii\rest\UrlRule',
     'controller' => 'v1/addresses',
     'pluralize' => false,
-    'extraPatterns' => [
-      'POST batch' => 'create-batch'
+    'except' => [
+        'delete',
+        'index',
+        'create'
     ],
     'tokens' => [
       '{id}' => '<id:[\\w\\-]+>',
@@ -97,8 +99,8 @@ return [
     'class' => 'yii\rest\UrlRule', 
     'controller' => 'v1/answers',
     'pluralize' => false,
-    'extraPatterns' => [
-      'POST batch' => 'create-batch'
+    'except' => [
+        'index'
     ],
     'tokens' => [
       '{id}' => '<id:[\\w\\-]+>',
@@ -127,22 +129,20 @@ return [
     'class' => 'yii\rest\UrlRule',
     'controller' => 'v1/companies',
     'pluralize' => false,
-    'extraPatterns' => [
-      'POST batch' => 'create-batch'
+    'except' => [
+        'delete',
+        'create'
     ],
     'tokens' => [
-      '{id}' => '<id:[\\w\\-]+>',
+        '{id}' => '<id:[\\w\\-]+>',
     ]
   ],
   [
     'class' => 'yii\rest\UrlRule',
     'controller' => 'v1/companies-plans',
     'pluralize' => false,
-    'extraPatterns' => [
-      'POST batch' => 'create-batch'
-    ],
     'tokens' => [
-      '{id}' => '<id:[\\w\\-]+>',
+        '{id}' => '<id:[\\w\\-]+>',
     ]
   ],
   [
@@ -160,22 +160,25 @@ return [
     'class' => 'yii\rest\UrlRule',
     'controller' => 'v1/people',
     'pluralize' => false,
-    'extraPatterns' => [
-      'POST batch' => 'create-batch'
+    'except' => [
+        'delete',
+        'create'
     ],
     'tokens' => [
-      '{id}' => '<id:[\\w\\-]+>',
+        '{id}' => '<id:[\\w\\-]+>',
     ]
   ],
   [
     'class' => 'yii\rest\UrlRule',
     'controller' => 'v1/phones',
     'pluralize' => false,
-    'extraPatterns' => [
-      'POST batch' => 'create-batch'
+    'except' => [
+        'delete',
+        'index',
+        'create'
     ],
     'tokens' => [
-      '{id}' => '<id:[\\w\\-]+>',
+        '{id}' => '<id:[\\w\\-]+>',
     ],
   ],
   [
@@ -204,11 +207,11 @@ return [
     'class' => 'yii\rest\UrlRule',
     'controller' => 'v1/questions',
     'pluralize' => false,
-    'extraPatterns' => [
-      'POST batch' => 'create-batch'
+    'except' => [
+        'index'
     ],
     'tokens' => [
-      '{id}' => '<id:[\\w\\-]+>',
+        '{id}' => '<id:[\\w\\-]+>',
     ]
   ],
   [

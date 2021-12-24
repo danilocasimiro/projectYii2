@@ -3,7 +3,6 @@
 namespace app\useCases\systemServices;
 
 use app\interfaces\ModelInterface;
-use app\useCases\systemServices\CreateObjectsRelationsService;
 use yii\web\BadRequestHttpException;
 
 class CreateObjectService {

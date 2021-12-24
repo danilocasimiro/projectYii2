@@ -16,6 +16,9 @@ class BaseController extends \yii\web\Controller
     public $enableCsrfValidation = false;
     public $bodyParams = [];
 
+    /**@var ModelInterface */
+    public $getObject;
+
     /**
      * @inheritdoc
      */
@@ -59,6 +62,13 @@ class BaseController extends \yii\web\Controller
             throw new BadRequestHttpException("The params 'objects' is mandatory.");
             
         }
+
+        if(in_array($action->id, ['view', 'delete', 'update'])) {
+
+            $this->getObject();
+          
+        }
+
         return parent::beforeAction($action);
     }
 
@@ -77,16 +87,9 @@ class BaseController extends \yii\web\Controller
         return $model;
     }
     
-    public function actionView(string $id): array
+    public function actionView(): array
     {
-        /**@var ModelInterface $model */
-        $model = GetObjectService::getObject($this->modelClass, $id)->one();
-
-        if(empty($model)) {
-            return [];
-        }
-
-        return HelperExpandMethods::mergeObjectWithRelationsOnExpand($model);
+        return HelperExpandMethods::mergeObjectWithRelationsOnExpand($this->getObject);
     }
      
     public function actionIndex(): array
@@ -101,20 +104,13 @@ class BaseController extends \yii\web\Controller
 
     }
 
-    public function actionUpdate(string $id): ModelInterface
+    public function actionUpdate(): ModelInterface
     {        
-        /**@var ModelInterface $oldModel */
-        $oldModel = GetObjectService::getObject($this->modelClass, $id)->one();
-
-        if(empty($oldModel)) {
-            throw new BadRequestHttpException("Object id: ".$id." not found");
-        }
-
-        $oldModelAttributes = $oldModel->getAttributes();
+        $oldModelAttributes = $this->getObject->getAttributes();
 
         $transaction = Yii::$app->db->beginTransaction();
 
-        $model = UpdateObjectService::updateObject($oldModel, $this->bodyParams);
+        $model = UpdateObjectService::updateObject($this->getObject, $this->bodyParams);
 
         $afterUpdateUseCase = new AfterUpdateUseCase;
 
@@ -144,31 +140,34 @@ class BaseController extends \yii\web\Controller
         return $models;
     }
 
-    public function actionDelete(string $id): bool
+    public function actionDelete(): string
     {
         $transaction = Yii::$app->db->beginTransaction();
-
-        /**@var ModelInterface $model */
-        $model = GetObjectService::getObject($this->modelClass, $id)->one();
-
-        if(empty($model)) {
-        
-            throw new BadRequestHttpException("Object id: ".$id." not found");
-            
-        }
 
         $typeDelete = !empty($this->bodyParams['typeDelete']) ? $this->bodyParams['typeDelete'] : $this->defaultTypeDelete;
 
         $afterDeleteUseCase = new AfterDeleteUseCase;
 
-        $afterDeleteUseCase->execute($model, $this, $typeDelete);
-        
-        if(DeleteObjectService::deleteObject($this->modelClass, $typeDelete, $model)) {
-            $transaction->commit();
-            return true;
-        } 
+        $afterDeleteUseCase->execute($this->getObject, $this, $typeDelete);
 
-        $transaction->rollBack();
-        return false;
+        $response = DeleteObjectService::deleteObject($this->modelClass, $typeDelete, $this->getObject);
+        
+        if($response) {
+            $transaction->commit();
+            
+            return $response;
+        } 
+    }
+
+    private function getObject()
+    {
+        $id = Yii::$app->request->get('id');
+        $object = GetObjectService::getObject($this->modelClass, $id)->one();
+
+        if(!$object) {
+            throw new BadRequestHttpException("Object id: ".$id." not found");
+        }
+
+        $this->getObject = $object;
     }
 }
