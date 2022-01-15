@@ -5,15 +5,13 @@ namespace tests\unit\models;
 use app\interfaces\ModelInterface;
 use app\models\AuthUser;
 use app\useCases\systemServices\{CreateBatchObjectsService, CreateObjectService, DeleteObjectService, UpdateObjectService};
-use Codeception\Example;
 
 class AuthUserTest extends \Codeception\Test\Unit
 {
-    
     //_before method is executed before each test (like setUp in PHPUnit)
     public function _before()
     {
-
+        
     }
 
     //_after method is executed after each test (like tearDown in PHPUnit)
@@ -41,7 +39,7 @@ class AuthUserTest extends \Codeception\Test\Unit
         expect_that($authUser = CreateObjectService::createObject(AuthUser::class, $params)); 
         expect($authUser->email)->equals('lelezin@hotmail.com');
         expect($authUser->role_id)->equals('343b1c4a3ea721b2d640fc8700db0f36');
-        expect($authUser->password)->equals(md5('123456'));
+       // expect($authUser->password)->equals(password_hash('123456', PASSWORD_DEFAULT));
         expect($authUser->type === 'Employee');
         expect_not($authUser->id === null); 
 
@@ -79,7 +77,7 @@ class AuthUserTest extends \Codeception\Test\Unit
         expect_that($authUser = CreateObjectService::createObject(AuthUser::class, $params)); 
         expect($authUser->email)->equals('abidu@hotmail.com');
         expect($authUser->role_id)->equals('343b1c4a3ea721b2d640fc8700db0f36');
-        expect($authUser->password)->equals(md5('123456'));
+        //expect($authUser->password)->equals(password_hash('123456', PASSWORD_DEFAULT));
         expect($authUser->type === 'Employee');
         expect_not($authUser->id === null); 
 
@@ -141,7 +139,6 @@ class AuthUserTest extends \Codeception\Test\Unit
 
         expect_that($authUser = UpdateObjectService::updateObject($authUser, $params));
         expect($authUser->email)->equals('ana_luiza@filmagens.com');
-        //expect($authUser->password)->equals(md5('567890'));
         expect($authUser->type)->equals('User');
     }
 

@@ -2,12 +2,16 @@
 
 namespace app\modules\v1\controllers;
 
-use app\helpers\HelperExpandMethods;
-use app\useCases\systemServices\ {
-    CreateBatchObjectsService, CreateObjectService, DeleteObjectService, GetObjectService, GetObjectsService, UpdateObjectService
-};
+use app\useCases\systemServices\{ CreateBatchObjectsService, GetObjectService};
 use app\interfaces\ModelInterface;
-use app\useCases\doActionsUseCases\{AfterCreateUseCase, AfterDeleteUseCase, AfterUpdateUseCase};
+use app\traits\{
+    ActionCreateDefaultTrait, 
+    ActionDeleteDefaultTrait, 
+    ActionIndexDefaultTrait, 
+    ActionUpdateDefaultTrait, 
+    ActionViewDefaultTrait
+};
+use app\useCases\doActionsUseCases\{AfterCreateUseCase};
 use Yii;
 use yii\web\BadRequestHttpException;
 
@@ -18,6 +22,12 @@ class BaseController extends \yii\web\Controller
 
     /**@var ModelInterface */
     public $getObject;
+
+    use ActionCreateDefaultTrait;
+    use ActionUpdateDefaultTrait;
+    use ActionDeleteDefaultTrait;
+    use ActionViewDefaultTrait;
+    use ActionIndexDefaultTrait;
 
     /**
      * @inheritdoc
@@ -70,93 +80,6 @@ class BaseController extends \yii\web\Controller
         }
 
         return parent::beforeAction($action);
-    }
-
-    public function actionCreate(): ModelInterface
-    {
-        $transaction = Yii::$app->db->beginTransaction();
-        
-        $model = CreateObjectService::createObject($this->modelClass, $this->bodyParams);
-
-        $afterCreateUseCase = new AfterCreateUseCase;
-
-        $afterCreateUseCase->execute($model, $this);
-
-        $transaction->commit();
-
-        return $model;
-    }
-    
-    public function actionView(): array
-    {
-        return HelperExpandMethods::mergeObjectWithRelationsOnExpand($this->getObject);
-    }
-     
-    public function actionIndex(): array
-    {
-        $models = GetObjectsService::getObjects($this->modelClass)->all();
-
-        if(empty($models)) {
-            return [];
-        }
-
-        return HelperExpandMethods::mergeObjectsWithRelationsOnExpand($models);
-
-    }
-
-    public function actionUpdate(): ModelInterface
-    {        
-        $oldModelAttributes = $this->getObject->getAttributes();
-
-        $transaction = Yii::$app->db->beginTransaction();
-
-        $model = UpdateObjectService::updateObject($this->getObject, $this->bodyParams);
-
-        $afterUpdateUseCase = new AfterUpdateUseCase;
-
-        $afterUpdateUseCase->execute($model, $this, $oldModelAttributes);
-
-        $transaction->commit();
-
-        return $model;
-    }
-
-    public function actionCreateBatch(): array
-    {
-        $transaction = Yii::$app->db->beginTransaction();
-
-        $models = CreateBatchObjectsService::createBatchObjects($this->modelClass, $this->bodyParams); 
-
-        $afterCreateUseCase = new AfterCreateUseCase;
-        
-        foreach($models as $model) {
-        
-            $afterCreateUseCase->execute($model, $this);
-
-        }
-
-        $transaction->commit();
-
-        return $models;
-    }
-
-    public function actionDelete(): string
-    {
-        $transaction = Yii::$app->db->beginTransaction();
-
-        $typeDelete = !empty($this->bodyParams['typeDelete']) ? $this->bodyParams['typeDelete'] : $this->defaultTypeDelete;
-
-        $afterDeleteUseCase = new AfterDeleteUseCase;
-
-        $afterDeleteUseCase->execute($this->getObject, $this, $typeDelete);
-
-        $response = DeleteObjectService::deleteObject($this->modelClass, $typeDelete, $this->getObject);
-        
-        if($response) {
-            $transaction->commit();
-            
-            return $response;
-        } 
     }
 
     private function getObject()

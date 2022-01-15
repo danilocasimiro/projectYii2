@@ -16,9 +16,7 @@ class LoginTest extends \Codeception\Test\Unit
         $model = new LoginForm();
         $model->load($params, '');
         expect_that($currentUser = $model->login());
-        static::assertNotEmpty($currentUser['user'], 'Usuário vazio');
-        expect($currentUser['message'])->equals('Logado com sucesso');
-        expect($currentUser['code'])->equals('200');
+        static::assertTrue($currentUser);
 
        // expect_not(AuthUser::findIdentity(999));
     }

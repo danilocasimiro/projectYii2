@@ -91,12 +91,12 @@ class AuthUser extends BaseModel implements IdentityInterface
             if ($this->isNewRecord) {
                 $this->auth_key = \Yii::$app->security->generateRandomString();
                 $this->access_token = \Yii::$app->security->generateRandomString();
-                $this->password = md5($this->password);
+                $this->password = password_hash($this->password, PASSWORD_DEFAULT);
                 $this->messageEmail = SystemMessage::findOne(SystemMessage::EMAIL_SYSTEM_REGISTER_ID);
             } else {
 
-                if($this->getOldAttribute('password') !== $this->password) {
-                    $this->password = md5($this->password);
+                if(password_verify($this->getOldAttribute('password'), $this->password)) {
+                    $this->password = password_hash($this->password, PASSWORD_DEFAULT);
                 }
             }
             
@@ -233,7 +233,7 @@ class AuthUser extends BaseModel implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return $this->password === md5($password);
+        return password_verify($password, $this->password);
     }
 
     public function isPerson()
