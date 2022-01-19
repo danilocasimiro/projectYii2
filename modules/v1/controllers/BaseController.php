@@ -2,16 +2,16 @@
 
 namespace app\modules\v1\controllers;
 
-use app\useCases\systemServices\{ CreateBatchObjectsService, GetObjectService};
+use app\useCases\systemServices\{ GetObjectService};
 use app\interfaces\ModelInterface;
 use app\traits\{
+    ActionCreateBatchDefaultTrait,
     ActionCreateDefaultTrait, 
     ActionDeleteDefaultTrait, 
     ActionIndexDefaultTrait, 
     ActionUpdateDefaultTrait, 
     ActionViewDefaultTrait
 };
-use app\useCases\doActionsUseCases\{AfterCreateUseCase};
 use Yii;
 use yii\web\BadRequestHttpException;
 
@@ -28,6 +28,7 @@ class BaseController extends \yii\web\Controller
     use ActionDeleteDefaultTrait;
     use ActionViewDefaultTrait;
     use ActionIndexDefaultTrait;
+    use ActionCreateBatchDefaultTrait;
 
     /**
      * @inheritdoc

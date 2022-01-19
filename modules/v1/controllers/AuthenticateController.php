@@ -60,6 +60,7 @@ class AuthenticateController extends BaseController
       return [
         'user' => $user,
         'person' => $user->person,
+        'company' => $user->company,
         'token' => (string) $token,
         'message' => 'Logado com sucesso',
         'code' => '200'
