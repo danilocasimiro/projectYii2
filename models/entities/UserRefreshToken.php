@@ -1,10 +1,8 @@
 <?php
 
-namespace app\models;
+namespace app\models\entities;
 
-use Yii;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * This is the model class for table "users_refresh_tokens".

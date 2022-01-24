@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\models\entities;
 
 use app\helpers\HelperMethods;
 use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
@@ -8,32 +8,34 @@ use Yii;
 use yii\db\ActiveQuery;
 
 /**
- * This is the model class for table "companies".
+ * This is the model class for table "Person".
  *
  * @property string $id
  * @property string $auth_user_id
  * @property string $name
- * @property string $foundation
- * @property string $cnpj
+ * @property string $birthdate
+ * @property string $genre
  * @property string $friendly_id
  * @property string $created_at
  * @property string $deleted_at
- *
  * @property AuthUser $authUser
- * @property AuthUser $authUserCompany
  */
-class Company extends BaseModel
+class Person extends BaseModel 
 {
     private $actionsAfterSave= [];
     private $actionsAfterDelete= [];
     private $actionsAfterUpdate = [];
-    
+
+    public const GENRE_MALE = 'male';
+    public const GENRE_FEMALE = 'female';
+    public const GENRE_UNDEFINED = 'undefined';
+
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'companies';
+        return 'people';
     }
 
     /**
@@ -43,13 +45,13 @@ class Company extends BaseModel
     {
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
-            [['auth_user_id', 'name', 'foundation', 'cnpj'], 'required'],
-            [['foundation'], 'safe'],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['auth_user_id', 'name', 'birthdate', 'genre'], 'required'],
             [['id', 'auth_user_id'], 'string', 'max' => 32],
+            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
             [['name'], 'string', 'max' => 60],
-            [['cnpj'], 'string', 'max' => 18],
+            ['genre', 'in', 'range' => [self::GENRE_MALE, self::GENRE_FEMALE, self::GENRE_UNDEFINED]],
             [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],
+
         ];
     }
 
@@ -61,9 +63,9 @@ class Company extends BaseModel
         return [
             'id' => Yii::t('app', 'ID'),
             'auth_user_id' => Yii::t('app', 'Auth User ID'),
-            'name' => Yii::t('app', 'Fantasy name'),
-            'foundation' => Yii::t('app', 'Foundation'),
-            'cnpj' => Yii::t('app', 'CNPJ'),
+            'name' => Yii::t('app', 'Name'),
+            'birthdate' => Yii::t('app', 'birthdate'),
+            'genre' => Yii::t('app', 'Genre'),
         ];
     }
 
@@ -91,34 +93,25 @@ class Company extends BaseModel
     public static function relations(): array
     {
         return [
-            'authUser' => AuthUser::class,
-            'companyPlan' => CompanyPlan::class,
-            'authUserCompany' => AuthUser::class
+            'authUser' => AuthUser::class
         ];
+    }
+
+    public function getDateOfBirthAttribute()
+    {
+        return Yii::$app->formatter->format($this->birthdate, 'date');
+    }
+
+    public function afterFind()
+    {
+        //$this->birthdate = Yii::$app->formatter->format($this->birthdate, 'date');
+        
+        parent::afterFind();    
+       
     }
 
     public function getAuthUser(): ActiveQuery
     {
         return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
-    }
-
-    public function getCompanyPlan(): ActiveQuery
-    {
-        return $this->hasOne(CompanyPlan::class, ['company_id' => 'id']);
-    }
-
-    public function getAuthUserCompany(): ActiveQuery
-    {
-        return $this->hasMany(AuthUser::class, ['company_id' => 'id']);
-    }
-
-    public function fkAttribute(): string
-    {
-        return 'company_id';
-    }
-
-    public function getFoundation()
-    {
-       return isset($this->foundation) ? Yii::$app->formatter->format($this->foundation, 'date') : '';
     }
 }

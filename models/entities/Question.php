@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\models\entities;
 
 use app\helpers\HelperMethods;
 use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};

@@ -1,10 +1,9 @@
 <?php
 
-namespace app\models;
+namespace app\models\entities;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\AuthUser;
 
 /**
  * AuthUserSearch represents the model behind the search form of `app\models\AuthUser`.

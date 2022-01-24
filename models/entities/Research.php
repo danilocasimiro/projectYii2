@@ -1,38 +1,37 @@
 <?php
 
-namespace app\models;
+namespace app\models\entities;
 
+use app\components\JwtMethods;
 use app\helpers\HelperMethods;
 use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
+use Yii;
 use yii\db\ActiveQuery;
 
 /**
- * This is the model class for table "companies_plans".
+ * This is the model class for table "researches".
  *
  * @property string $id
  * @property string $company_id
- * @property string $plan_id
- * @property float $monthly_payment
- * @property string $due_date
- * @property int $friendly_id
- * @property string $created_at
- * @property string|null $deleted_at
+ * @property string $friendly_id
+ * @property string $title
+ * @property string $description
  *
- * @property Companies $company
- * @property Plans $plan
+ * @property Questions[] $questions
+ * @property Company $company
  */
-class CompanyPlan extends BaseModel
+class Research extends BaseModel
 {
     private $actionsAfterSave= [];
     private $actionsAfterDelete= [];
     private $actionsAfterUpdate = [];
-
+    
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'companies_plans';
+        return 'researches';
     }
 
     /**
@@ -42,15 +41,13 @@ class CompanyPlan extends BaseModel
     {
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
-            [['id', 'company_id', 'plan_id', 'monthly_payment', 'due_date'], 'required'],
-            [['monthly_payment'], 'number'],
-            [['due_date', 'created_at', 'deleted_at'], 'safe'],
+            [['company_id'], 'default', 'value' => JwtMethods::getCompanyIdFromJwt()],
+            [['company_id', 'title', 'description'], 'required'],
             [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
-            [['friendly_id'], 'integer'],
-            [['id', 'company_id', 'plan_id'], 'string', 'max' => 32],
-            [['id'], 'unique'],
+            [['title'], 'string', 'max' => 40],
+            [['company_id', 'id'], 'string', 'max' => 32],
+            [['description'], 'string', 'max' => 255],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
-            [['plan_id'], 'exist', 'skipOnError' => true, 'targetClass' => Plan::class, 'targetAttribute' => ['plan_id' => 'id']],
         ];
     }
 
@@ -60,14 +57,22 @@ class CompanyPlan extends BaseModel
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'company_id' => 'Company ID',
-            'plan_id' => 'Plan ID',
-            'monthly_payment' => 'Monthly Payment',
-            'due_date' => 'Due Date',
-            'friendly_id' => 'Friendly ID',
-            'created_at' => 'Created At',
-            'deleted_at' => 'Deleted At',
+            'id' => Yii::t('app', 'ID'),
+            'auth_user_id' => Yii::t('app', 'Auth User ID'),
+            'title' => Yii::t('app', 'Title'),
+            'description' => Yii::t('app', 'Description'),
+        ];
+    }
+
+    public function fields()
+    {
+        return [
+            'id' => 'id',
+            'company_id' => 'company_id',
+            'friendly_id' => 'friendly_id',
+            'title' => 'title',
+            'description' => 'description',
+            'questions' => 'questions'
         ];
     }
 
@@ -95,9 +100,14 @@ class CompanyPlan extends BaseModel
     public static function relations(): array
     {
         return [
-            'plan' => Plan::class,
+            'questions' => Question::class,
             'company' => Company::class
         ];
+    }
+
+    public function getQuestions(): ActiveQuery
+    {
+        return $this->hasMany(Question::class, ['research_id' => 'id']);
     }
 
     public function getCompany(): ActiveQuery
@@ -105,8 +115,8 @@ class CompanyPlan extends BaseModel
         return $this->hasOne(Company::class, ['id' => 'company_id']);
     }
 
-    public function getPlan(): ActiveQuery
+    public function fkAttribute(): string
     {
-        return $this->hasOne(Plan::class, ['id' => 'plan_id']);
+        return 'research_id';
     }
 }

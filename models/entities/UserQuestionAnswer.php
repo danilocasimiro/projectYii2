@@ -1,10 +1,10 @@
 <?php
 
-namespace app\models;
+namespace app\models\entities;
 
+use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use app\components\JwtMethods;
 use app\helpers\HelperMethods;
-use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use yii\db\ActiveQuery;
 
 /**

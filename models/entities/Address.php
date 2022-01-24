@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\models\entities;
 
 use app\helpers\HelperMethods;
 use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
@@ -8,34 +8,35 @@ use Yii;
 use yii\db\ActiveQuery;
 
 /**
- * This is the model class for table "Person".
+ * This is the model class for table "addresses".
  *
  * @property string $id
  * @property string $auth_user_id
- * @property string $name
- * @property string $birthdate
- * @property string $genre
+ * @property string $street
+ * @property string $number
+ * @property string $district
+ * @property string $city
+ * @property string $state
+ * @property string $country
+ * @property string $zipcode
  * @property string $friendly_id
  * @property string $created_at
  * @property string $deleted_at
- * @property AuthUser $authUser
+ *
+ * @property AuthUsers $authUser
  */
-class Person extends BaseModel 
+class Address extends BaseModel
 {
     private $actionsAfterSave= [];
     private $actionsAfterDelete= [];
     private $actionsAfterUpdate = [];
-
-    public const GENRE_MALE = 'male';
-    public const GENRE_FEMALE = 'female';
-    public const GENRE_UNDEFINED = 'undefined';
 
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'people';
+        return 'addresses';
     }
 
     /**
@@ -45,13 +46,13 @@ class Person extends BaseModel
     {
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
-            [['auth_user_id', 'name', 'birthdate', 'genre'], 'required'],
-            [['id', 'auth_user_id'], 'string', 'max' => 32],
+            [['auth_user_id', 'street', 'number', 'district', 'city', 'state', 'country', 'zipcode'], 'required'],
+            [['street'], 'string', 'max' => 50],
+            [['number', 'zipcode'], 'string', 'max' => 15],
             [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
-            [['name'], 'string', 'max' => 60],
-            ['genre', 'in', 'range' => [self::GENRE_MALE, self::GENRE_FEMALE, self::GENRE_UNDEFINED]],
+            [['id', 'auth_user_id'], 'string', 'max' => 32],
+            [['district', 'city', 'state', 'country'], 'string', 'max' => 30],
             [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],
-
         ];
     }
 
@@ -63,9 +64,13 @@ class Person extends BaseModel
         return [
             'id' => Yii::t('app', 'ID'),
             'auth_user_id' => Yii::t('app', 'Auth User ID'),
-            'name' => Yii::t('app', 'Name'),
-            'birthdate' => Yii::t('app', 'birthdate'),
-            'genre' => Yii::t('app', 'Genre'),
+            'street' => Yii::t('app', 'Street'),
+            'number' => Yii::t('app', 'Number'),
+            'district' => Yii::t('app', 'District'),
+            'city' => Yii::t('app', 'City'),
+            'state' => Yii::t('app', 'State'),
+            'country' => Yii::t('app', 'Country'),
+            'zipcode' => Yii::t('app', 'Zipcode'),
         ];
     }
 
@@ -89,7 +94,7 @@ class Person extends BaseModel
         
         return $this->actionsAfterUpdate;
     }
-
+    
     public static function relations(): array
     {
         return [
@@ -97,17 +102,9 @@ class Person extends BaseModel
         ];
     }
 
-    public function getDateOfBirthAttribute()
+    public function getFullAddress()
     {
-        return Yii::$app->formatter->format($this->birthdate, 'date');
-    }
-
-    public function afterFind()
-    {
-        //$this->birthdate = Yii::$app->formatter->format($this->birthdate, 'date');
-        
-        parent::afterFind();    
-       
+        return $this->street . ', ' . $this->number . ' ' . $this->district . ' ' . $this->city . '/' . $this->state;
     }
 
     public function getAuthUser(): ActiveQuery

@@ -1,8 +1,8 @@
 <?php 
 
-namespace app\interfaces;
+namespace app\models\entities\interfaces;
 
-interface ModelInterface
+interface EntitiesInterface
 {
   public function actionsAfterSave(): array;
   public function actionsAfterDelete(): array;

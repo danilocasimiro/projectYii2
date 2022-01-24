@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\models\entities;
 
 use app\helpers\HelperMethods;
 use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
@@ -8,17 +8,19 @@ use Yii;
 use yii\db\ActiveQuery;
 
 /**
- * This is the model class for table "questions_types".
+ * This is the model class for table "phones".
  *
  * @property string $id
- * @property string $text
+ * @property string $auth_user_id
+ * @property string $ddd
+ * @property string $number
  * @property string $friendly_id
  * @property string $created_at
  * @property string $deleted_at
  *
- * @property Questions[] $questions
+ * @property AuthUsers $authUser
  */
-class QuestionType extends BaseModel
+class Phone extends BaseModel 
 {
     private $actionsAfterSave= [];
     private $actionsAfterDelete= [];
@@ -29,7 +31,7 @@ class QuestionType extends BaseModel
      */
     public static function tableName()
     {
-        return 'questions_types';
+        return 'phones';
     }
 
     /**
@@ -39,10 +41,12 @@ class QuestionType extends BaseModel
     {
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
-            [['text'], 'required'],
+            [['auth_user_id', 'ddd', 'number'], 'required'],
+            [['ddd'], 'string', 'max' => 5],
+            [['id', 'auth_user_id'], 'string', 'max' => 32],
             [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
-            [['id'], 'string', 'max' => 32],
-            [['text'], 'string', 'max' => 60],
+            [['number'], 'string', 'max' => 15],
+            [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],
         ];
     }
 
@@ -53,7 +57,9 @@ class QuestionType extends BaseModel
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'text' => Yii::t('app', 'Text'),
+            'auth_user_id' => Yii::t('app', 'Auth User ID'),
+            'ddd' => Yii::t('app', 'DDD'),
+            'number' => Yii::t('app', 'Number'),
         ];
     }
 
@@ -81,17 +87,12 @@ class QuestionType extends BaseModel
     public static function relations(): array
     {
         return [
-            'questions' => Question::class
+            'authUser' => AuthUser::class
         ];
     }
 
-    public function getQuestions(): ActiveQuery
+    public function getAuthUser(): ActiveQuery
     {
-        return $this->hasMany(Question::class, ['question_type_id' => 'id']);
-    }
-
-    public function fkAttribute(): string
-    {
-        return 'question_type_id';
+        return $this->hasOne(AuthUser::class, ['id' => 'auth_user_id']);
     }
 }

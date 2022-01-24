@@ -2,7 +2,7 @@
 
 namespace app\components;
 
-use app\interfaces\ModelInterface;
+use app\models\entities\interfaces\EntitiesInterface;
 use app\useCases\systemServices\GetObjectService;
 use sizeg\jwt\Jwt;
 use yii\web\BadRequestHttpException;
@@ -18,7 +18,7 @@ class JwtMethods {
         return $token; 
     }
 
-    public static function getAuthUserFromJwt(): ?ModelInterface
+    public static function getAuthUserFromJwt(): ?EntitiesInterface
     {
         $token = static::getJwtToken();
         

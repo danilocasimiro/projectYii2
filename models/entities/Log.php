@@ -1,10 +1,10 @@
 <?php
 
-namespace app\models;
+namespace app\models\entities;
 
 use app\components\JwtMethods;
 use app\helpers\HelperMethods;
-use app\interfaces\ModelInterface;
+use app\models\entities\interfaces\EntitiesInterface;
 use app\useCases\systemServices\CreateObjectService;
 use app\useCases\systemServices\GetObjectService;
 use yii\db\ActiveQuery;
@@ -22,7 +22,7 @@ use yii\db\ActiveQuery;
  * @property string $created_at
  * @property string|null $deleted_at
  */
-class Log extends BaseModel 
+class Log extends BaseModel
 {
     public const LEVEL_INFO = 'Info';
     public const LEVEL_WARNING = 'Warning';
@@ -88,25 +88,25 @@ class Log extends BaseModel
 
     public static function prepareParams(string $action, string $model, string $description, string $level, AuthUser $authUser = null): array
     {
-        $params['auth_user_id'] = $authUser->id; 
+        $params['auth_user_id'] = $authUser->id;
         $params['description'] = $description;
         $params['model'] = $model;
         $params['action'] = $action;
         $params['level'] = $level;
-        
+
         return $params;
     }
 
-    protected static function getMessageOfChangedAttributes(ModelInterface $model, array $changedAttributes): string
+    protected static function getMessageOfChangedAttributes(EntitiesInterface $model, array $changedAttributes): string
     {
-        foreach($changedAttributes as $attribute => $oldAttribute) {
+        foreach ($changedAttributes as $attribute => $oldAttribute) {
 
-            if($model[$attribute] != $oldAttribute){ 
-                $message[] = "Alterou o atributo '".$attribute. "' de '".$oldAttribute. "' para '".$model[$attribute]."' no object: ".$model['friendly_id'].".";
+            if ($model[$attribute] != $oldAttribute) {
+                $message[] = "Alterou o atributo '" . $attribute . "' de '" . $oldAttribute . "' para '" . $model[$attribute] . "' no object: " . $model['friendly_id'] . ".";
             }
         }
 
-        if(!empty($message)) {
+        if (!empty($message)) {
             return json_encode($message);
         }
 
@@ -115,42 +115,40 @@ class Log extends BaseModel
 
     public static function addLogDelete(object $model, string $class, $typeDelete): void
     {
-      $authUser = JwtMethods::getAuthUserFromJwt();
+        $authUser = JwtMethods::getAuthUserFromJwt();
 
-      $systemMessage = GetObjectService::getObject(SystemMessage::class, SystemMessage::LOG_DELETE_ID)->one();
+        $systemMessage = GetObjectService::getObject(SystemMessage::class, SystemMessage::LOG_DELETE_ID)->one();
 
-      $initialMessage = str_replace("current_user_email", $authUser->email, $systemMessage->message);
-  
-      $description = $initialMessage." Um model de id: ".$model->friendly_id.". Delete do tipo ".$typeDelete;
-  
-      $params = Log::prepareParams('delete',  $class, $description, static::LEVEL_SUCCESS, $authUser);
-  
-      CreateObjectService::createObject(Log::class, $params);
-  
+        $initialMessage = str_replace("current_user_email", $authUser->email, $systemMessage->message);
+
+        $description = $initialMessage . " Um model de id: " . $model->friendly_id . ". Delete do tipo " . $typeDelete;
+
+        $params = Log::prepareParams('delete',  $class, $description, static::LEVEL_SUCCESS, $authUser);
+
+        CreateObjectService::createObject(Log::class, $params);
     }
 
-    public static function addLogUpdate(ModelInterface $model,  string $class, array $changedAttributes): void
-    { 
+    public static function addLogUpdate(EntitiesInterface $model,  string $class, array $changedAttributes): void
+    {
         $authUser = JwtMethods::getAuthUserFromJwt();
 
         $messageChangedAttributes = static::getMessageOfChangedAttributes($model, $changedAttributes);
 
-        if(!empty($messageChangedAttributes)) {
+        if (!empty($messageChangedAttributes)) {
 
             $systemMessage = GetObjectService::getObject(SystemMessage::class, SystemMessage::LOG_UPDATE_ID)->one();
 
             $initialMessage = str_replace("current_user_email", $authUser->email, $systemMessage->message);
-         
-            $description = $initialMessage." ".$messageChangedAttributes;
+
+            $description = $initialMessage . " " . $messageChangedAttributes;
 
             $params = Log::prepareParams('update',  $class, $description, static::LEVEL_WARNING, $authUser);
 
             CreateObjectService::createObject(Log::class, $params);
         }
-
     }
 
-    public static function addLogCreate(ModelInterface $model, string $class): void
+    public static function addLogCreate(EntitiesInterface $model, string $class): void
     {
         $authUser = JwtMethods::getAuthUserFromJwt();
 
@@ -158,14 +156,14 @@ class Log extends BaseModel
 
         $description = str_replace("current_user_email", $authUser->email, $systemMessage->message);
 
-        $description = $description." Um model de id: ".$model->friendly_id.".";
+        $description = $description . " Um model de id: " . $model->friendly_id . ".";
 
         $params = Log::prepareParams('create',  $class, $description, static::LEVEL_SUCCESS, $authUser);
 
         CreateObjectService::createObject(Log::class, $params);
     }
 
-    public static function addLogLogin(ModelInterface $model, string $class): void
+    public static function addLogLogin(AuthUser $model, string $class): void
     {
         $systemMessage = GetObjectService::getObject(SystemMessage::class, SystemMessage::LOG_LOGIN_ID)->one();
 
@@ -176,7 +174,7 @@ class Log extends BaseModel
         CreateObjectService::createObject(Log::class, $params);
     }
 
-    public static function addLogSendEmail(ModelInterface $model, string $class, $typeMessageId)
+    public static function addLogSendEmail(EntitiesInterface $model, string $class, $typeMessageId)
     {
         $authUser = JwtMethods::getAuthUserFromJwt();
 

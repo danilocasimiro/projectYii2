@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\models\entities;
 
 class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
 {
@@ -26,7 +26,6 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
             'accessToken' => '101-token',
         ],
     ];
-
 
     /**
      * {@inheritdoc}

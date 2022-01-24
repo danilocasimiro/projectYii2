@@ -1,24 +1,25 @@
 <?php
 
-namespace app\models;
+namespace app\models\entities;
 
 use app\helpers\HelperMethods;
 use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use yii\db\ActiveQuery;
 
 /**
- * This is the model class for table "Plans".
+ * This is the model class for table "plans_items".
  *
  * @property string $id
- * @property string $name
- * @property string $description
- * @property float $value
- * @property int $subscription_period
+ * @property string $plan_id
+ * @property string|null $item
+ * @property int $limit
  * @property int $friendly_id
  * @property string $created_at
  * @property string|null $deleted_at
+ *
+ * @property Plans $plan
  */
-class Plan extends BaseModel
+class PlanItem extends BaseModel
 {
     private $actionsAfterSave= [];
     private $actionsAfterDelete= [];
@@ -29,7 +30,7 @@ class Plan extends BaseModel
      */
     public static function tableName()
     {
-        return 'plans';
+        return 'plans_items';
     }
 
     /**
@@ -39,14 +40,14 @@ class Plan extends BaseModel
     {
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
-            [['id', 'name', 'description', 'value', 'subscription_period'], 'required'],
-            [['value'], 'number'],
+            [['id', 'plan_id', 'limit'], 'required'],
+            [['item'], 'string'],
+            [['limit', 'friendly_id'], 'integer'],
             [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
-            [['subscription_period', 'friendly_id'], 'integer'],
             [['created_at', 'deleted_at'], 'safe'],
-            [['id'], 'string', 'max' => 32],
-            [['name', 'description'], 'string', 'max' => 255],
+            [['id', 'plan_id'], 'string', 'max' => 32],
             [['id'], 'unique'],
+            [['plan_id'], 'exist', 'skipOnError' => true, 'targetClass' => Plan::class, 'targetAttribute' => ['plan_id' => 'id']],
         ];
     }
 
@@ -57,10 +58,9 @@ class Plan extends BaseModel
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'description' => 'Description',
-            'value' => 'Value',
-            'subscription_period' => 'Subscription Period',
+            'plan_id' => 'Plan ID',
+            'item' => 'Item',
+            'limit' => 'Limit',
             'friendly_id' => 'Friendly ID',
             'created_at' => 'Created At',
             'deleted_at' => 'Deleted At',
@@ -91,23 +91,12 @@ class Plan extends BaseModel
     public static function relations(): array
     {
         return [
-            'plansItems' => PlanItem::class,
-            'companiesPlans' => CompanyPlan::class
+            'plan' => Plan::class
         ];
     }
 
-    public function getPlansItems(): ActiveQuery
+    public function getPlan(): ActiveQuery
     {
-        return $this->hasMany(PlanItem::class, ['plan_id' => 'id']);
-    }
-
-    public function getCompaniesPlans(): ActiveQuery
-    {
-        return $this->hasMany(CompanyPlan::class, ['plan_id' => 'id']);
-    }
-
-    public function fkAttribute(): string
-    {
-        return 'plan_id';
+        return $this->hasOne(Plan::class, ['id' => 'plan_id']);
     }
 }

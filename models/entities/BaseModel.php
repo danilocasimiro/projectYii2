@@ -1,11 +1,11 @@
 <?php
 
-namespace app\models;
+namespace app\models\entities;
 
-use app\interfaces\ModelInterface;
+use app\models\entities\interfaces\EntitiesInterface;
 use yii\db\ActiveRecord;
 
-abstract class BaseModel extends \yii\db\ActiveRecord implements ModelInterface
+abstract class BaseModel extends \yii\db\ActiveRecord implements EntitiesInterface
 {
     public function fields()
     {
