@@ -42,7 +42,7 @@ class Role extends BaseModel
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['id', 'name'], 'required'],
             [['friendly_id'], 'integer'],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->increment(static::class)],
             [['created_at', 'deleted_at'], 'safe'],
             [['id'], 'string', 'max' => 32],
             [['name'], 'string', 'max' => 60],

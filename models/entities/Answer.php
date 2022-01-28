@@ -42,7 +42,7 @@ class Answer extends BaseModel
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['question_id', 'text'], 'required'],
             [['text'], 'string', 'max' => 60],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['id', 'question_id'], 'string', 'max' => 32],
             [['question_id'], 'exist', 'skipOnError' => true, 'targetClass' => Question::class, 'targetAttribute' => ['question_id' => 'id']],
         ];

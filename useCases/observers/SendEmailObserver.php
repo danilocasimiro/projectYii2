@@ -2,9 +2,9 @@
 
 namespace app\useCases\observers;
 
-use app\interfaces\LogObserverInterface;
-use app\interfaces\ModelInterface;
+use app\models\entities\interfaces\EntitiesInterface;
 use app\services\emailServices\EmailInterface;
+use app\useCases\observers\interfaces\LogObserverInterface;
 use SplObserver;
 use SplSubject;
 use Yii;
@@ -14,7 +14,7 @@ class SendEmailObserver implements SplObserver, LogObserverInterface
     public $name = 'SendEmailObserver';
     
 
-    public function update(SplSubject $subject, ModelInterface $model=null, $params=null): void
+    public function update(SplSubject $subject, EntitiesInterface $model=null, $params=null): void
     {
         $emailService = Yii::createObject(EmailInterface::class);
 

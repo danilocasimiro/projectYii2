@@ -2,7 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
-use app\models\Person;
+use app\models\entities\Person;
 
 class PeopleController extends BaseController
 {

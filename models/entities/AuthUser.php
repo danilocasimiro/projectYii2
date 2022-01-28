@@ -2,7 +2,6 @@
 
 namespace app\models\entities;
 
-use app\helpers\HelperMethods;
 use app\models\rbac\Role;
 use app\useCases\observers\{LogObserverCreate, LogObserverDelete, SendEmailObserver, LogObserverUpdate};
 use Yii;
@@ -61,7 +60,7 @@ class AuthUser extends BaseModel implements IdentityInterface
             [['email', 'auth_key', 'access_token'], 'string', 'max' => 45],
             [['email'], 'email'],
             ['type', 'in', 'range' => [self::TYPE_USER, self::TYPE_EMPLOYEE, self::TYPE_COMPANY, self::TYPE_ADMIN]],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['company_id', 'id'], 'string', 'max' => 32],
             [['password', 'photo'], 'string', 'max' => 60],
             [['id', 'email'], 'unique'],
@@ -135,7 +134,8 @@ class AuthUser extends BaseModel implements IdentityInterface
             'person' => Person::class,
             'address' => Address::class,
             'role' => Role::class,
-            'companyUser' => CompanyUser::class
+            'companyUser' => CompanyUser::class,
+            'socialNetwork' => SocialNetwork::class,
 
         ];
     }
@@ -168,6 +168,11 @@ class AuthUser extends BaseModel implements IdentityInterface
     public function getCompanyUser(): ActiveQuery
     {
         return $this->hasOne(Company::class, ['id' => 'company_id']);
+    }
+
+    public function getSocialNetwork(): ActiveQuery
+    {
+        return $this->hasOne(SocialNetwork::class, ['auth_user_id' => 'id']);
     }
 
     public function fkAttribute(): string

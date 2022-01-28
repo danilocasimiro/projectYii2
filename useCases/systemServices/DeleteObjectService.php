@@ -2,12 +2,12 @@
 
 namespace app\useCases\systemServices;
 
-use app\interfaces\ModelInterface;
+use app\models\entities\interfaces\EntitiesInterface;
 use yii\web\BadRequestHttpException;
 
 class DeleteObjectService {
 
-  public static function deleteObject(string $class, string $typeDelete, ModelInterface $model): string
+  public static function deleteObject(string $class, string $typeDelete, EntitiesInterface $model): string
   {
       if($typeDelete === 'soft') {
 
@@ -19,7 +19,7 @@ class DeleteObjectService {
 
   }
 
-  private static function hardDelete(ModelInterface $model, string $class): string
+  private static function hardDelete(EntitiesInterface $model, string $class): string
   {
       if(!$model->delete()) {
           throw new BadRequestHttpException('Não foi possível realizar a hard exclusão!!!');
@@ -28,7 +28,7 @@ class DeleteObjectService {
      return  "Object ".$model->id." hard deleted successfully";
   }
 
-  private static function softDelete(ModelInterface $model, string $class): string
+  private static function softDelete(EntitiesInterface $model, string $class): string
   {
       $model->deleted_at = date('Y-m-d H:m:s');
 

@@ -43,7 +43,7 @@ class PlanItem extends BaseModel
             [['id', 'plan_id', 'limit'], 'required'],
             [['item'], 'string'],
             [['limit', 'friendly_id'], 'integer'],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['created_at', 'deleted_at'], 'safe'],
             [['id', 'plan_id'], 'string', 'max' => 32],
             [['id'], 'unique'],

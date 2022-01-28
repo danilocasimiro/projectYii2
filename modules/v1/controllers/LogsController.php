@@ -2,7 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
-use app\models\Log;
+use app\models\entities\Log;
 
 class LogsController extends BaseController
 {

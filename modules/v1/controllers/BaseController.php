@@ -3,7 +3,6 @@
 namespace app\modules\v1\controllers;
 
 use app\useCases\systemServices\{ GetObjectService};
-use app\interfaces\ModelInterface;
 use app\traits\{
     ActionCreateBatchDefaultTrait,
     ActionCreateDefaultTrait, 
@@ -20,7 +19,7 @@ class BaseController extends \yii\web\Controller
     public $enableCsrfValidation = false;
     public $bodyParams = [];
 
-    /**@var ModelInterface */
+    /**@var EntitiesInterface */
     public $getObject;
 
     use ActionCreateDefaultTrait;

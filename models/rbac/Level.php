@@ -43,7 +43,7 @@ class Level extends BaseModel
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['id', 'permission_id', 'rate'], 'required'],
             [['friendly_id'], 'integer'],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['created_at', 'deleted_at'], 'safe'],
             [['id', 'permission_id'], 'string', 'max' => 32],
             [['rate'], 'string', 'max' => 60],

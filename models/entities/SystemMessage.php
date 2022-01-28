@@ -46,7 +46,7 @@ class SystemMessage extends BaseModel
             [['id', 'subject', 'message'], 'required'],
             [['type'], 'string'],
             [['friendly_id'], 'integer'],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['created_at', 'deleted_at'], 'safe'],
             [['id'], 'string', 'max' => 32],
             [['subject', 'message'], 'string', 'max' => 255],

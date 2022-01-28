@@ -45,7 +45,7 @@ class CompanyPlan extends BaseModel
             [['id', 'company_id', 'plan_id', 'monthly_payment', 'due_date'], 'required'],
             [['monthly_payment'], 'number'],
             [['due_date', 'created_at', 'deleted_at'], 'safe'],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['friendly_id'], 'integer'],
             [['id', 'company_id', 'plan_id'], 'string', 'max' => 32],
             [['id'], 'unique'],

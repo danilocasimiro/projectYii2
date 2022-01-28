@@ -2,8 +2,8 @@
 
 namespace app\useCases\observers;
 
-use app\interfaces\LogObserverInterface;
-use app\models\Log;
+use app\models\entities\Log;
+use app\useCases\observers\interfaces\LogObserverInterface;
 use SplObserver;
 use SplSubject;
 

@@ -1,8 +1,8 @@
 <?php 
 
-namespace app\helpers;
+namespace app\useCases\systemServices;
 
-use app\interfaces\ModelInterface;
+use app\models\entities\interfaces\EntitiesInterface;
 use Yii;
 
 class HelperExpandMethods {
@@ -25,7 +25,7 @@ class HelperExpandMethods {
     }      
   }
   
-  public static function mergeObjectWithRelationsOnExpand(ModelInterface $model): array
+  public static function mergeObjectWithRelationsOnExpand(EntitiesInterface $model): array
   {
       return array_merge((array) $model->getAttributes(), $model->getRelatedRecords());
   }

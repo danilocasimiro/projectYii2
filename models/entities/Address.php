@@ -2,7 +2,6 @@
 
 namespace app\models\entities;
 
-use app\helpers\HelperMethods;
 use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
 use yii\db\ActiveQuery;
@@ -49,7 +48,7 @@ class Address extends BaseModel
             [['auth_user_id', 'street', 'number', 'district', 'city', 'state', 'country', 'zipcode'], 'required'],
             [['street'], 'string', 'max' => 50],
             [['number', 'zipcode'], 'string', 'max' => 15],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['id', 'auth_user_id'], 'string', 'max' => 32],
             [['district', 'city', 'state', 'country'], 'string', 'max' => 30],
             [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],

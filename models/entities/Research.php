@@ -2,7 +2,7 @@
 
 namespace app\models\entities;
 
-use app\components\JwtMethods;
+use app\components\jwt\JwtMethods;
 use app\helpers\HelperMethods;
 use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
@@ -43,7 +43,7 @@ class Research extends BaseModel
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['company_id'], 'default', 'value' => JwtMethods::getCompanyIdFromJwt()],
             [['company_id', 'title', 'description'], 'required'],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['title'], 'string', 'max' => 40],
             [['company_id', 'id'], 'string', 'max' => 32],
             [['description'], 'string', 'max' => 255],

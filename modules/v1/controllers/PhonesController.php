@@ -2,7 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
-use app\models\Phone;
+use app\models\entities\Phone;
 
 class PhonesController extends BaseController
 {

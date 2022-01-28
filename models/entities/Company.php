@@ -2,7 +2,6 @@
 
 namespace app\models\entities;
 
-use app\helpers\HelperMethods;
 use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
 use Yii;
 use yii\db\ActiveQuery;
@@ -45,7 +44,7 @@ class Company extends BaseModel
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['auth_user_id', 'name', 'foundation', 'cnpj'], 'required'],
             [['foundation'], 'safe'],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' =>$this->incrementFriendlyId()],
             [['id', 'auth_user_id'], 'string', 'max' => 32],
             [['name'], 'string', 'max' => 60],
             [['cnpj'], 'string', 'max' => 18],

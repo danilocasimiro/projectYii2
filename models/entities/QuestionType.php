@@ -40,7 +40,7 @@ class QuestionType extends BaseModel
         return [
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['text'], 'required'],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['id'], 'string', 'max' => 32],
             [['text'], 'string', 'max' => 60],
         ];

@@ -2,12 +2,12 @@
 
 namespace app\useCases\systemServices;
 
-use app\interfaces\ModelInterface;
+use app\models\entities\interfaces\EntitiesInterface;
 use yii\web\BadRequestHttpException;
 
 class UpdateObjectService {
 
-  public static function updateObject(ModelInterface $model, array $bodyParams): ModelInterface 
+  public static function updateObject(EntitiesInterface $model, array $bodyParams): EntitiesInterface 
   {
     $model->load($bodyParams, '');
 

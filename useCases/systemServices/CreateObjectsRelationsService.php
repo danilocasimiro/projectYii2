@@ -2,13 +2,13 @@
 
 namespace app\useCases\systemServices;
 
-use app\interfaces\ModelInterface;
+use app\models\entities\interfaces\EntitiesInterface;
 use Yii;
 use yii\web\BadRequestHttpException;
 
 class CreateObjectsRelationsService {
 
-  public static function createObjectsRelations(ModelInterface $model, array $params): void
+  public static function createObjectsRelations(EntitiesInterface $model, array $params): void
     {
         $relations = $model->relations();
 
@@ -26,7 +26,7 @@ class CreateObjectsRelationsService {
         }
     }
 
-    private static function prepareObjectRelation(array $relationParams, string $class, ModelInterface $model): void
+    private static function prepareObjectRelation(array $relationParams, string $class, EntitiesInterface $model): void
     {
         $arrayRelations = array_key_exists(0, $relationParams);
 
@@ -42,7 +42,7 @@ class CreateObjectsRelationsService {
         
     }
 
-    private static function saveObjectRelation(array $relationParams, ModelInterface $model, $class): void
+    private static function saveObjectRelation(array $relationParams, EntitiesInterface $model, $class): void
     {
         $modelRelation = new $class;
 

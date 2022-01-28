@@ -1,6 +1,6 @@
 <?php
 
-namespace app\components;
+namespace app\components\jwt;
 
 use sizeg\jwt\JwtValidationData as jwtValidate;
 

@@ -2,7 +2,7 @@
 
 namespace app\traits;
 
-use app\helpers\HelperExpandMethods;
+use app\useCases\systemServices\HelperExpandMethods;
 
 trait ActionViewDefaultTrait
 {

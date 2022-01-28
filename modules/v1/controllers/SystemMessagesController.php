@@ -2,7 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
-use app\models\SystemMessage;
+use app\models\entities\SystemMessage;
 
 class SystemMessagesController extends BaseController
 {

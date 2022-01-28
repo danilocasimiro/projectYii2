@@ -2,7 +2,6 @@
 
 namespace app\useCases\systemServices;
 
-use app\helpers\HelperExpandMethods;
 use Yii;
 use yii\db\ActiveQuery;
 
@@ -15,12 +14,12 @@ class GetObjectsService
 
     HelperExpandMethods::getExpandQuerie($class, $query);
 
-    static::getExtraQueries($class, $query);
+    static::getExtraQueries($query);
 
     return $query;
   }
 
-  private static function getExtraQueries($class, $query)
+  private static function getExtraQueries($query)
   {
     $queryParams = Yii::$app->request->get();
 

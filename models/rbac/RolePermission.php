@@ -43,7 +43,7 @@ class RolePermission extends BaseModel
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['id', 'role_id', 'permission_id'], 'required'],
             [['friendly_id'], 'integer'],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->increment(static::class)],
             [['created_at', 'deleted_at'], 'safe'],
             [['id', 'role_id', 'permission_id'], 'string', 'max' => 32],
             [['id'], 'unique'],

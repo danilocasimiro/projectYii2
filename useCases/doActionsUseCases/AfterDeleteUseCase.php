@@ -2,8 +2,9 @@
 
 namespace app\useCases\doActionsUseCases;
 
-use app\interfaces\{DoActionsInterface, ModelInterface};
+use app\models\entities\interfaces\EntitiesInterface;
 use app\modules\v1\controllers\BaseController;
+use app\useCases\doActionsUseCases\interfaces\DoActionsInterface;
 use SplObserver;
 use SplSubject;
 use yii\base\Model;
@@ -13,7 +14,7 @@ class AfterDeleteUseCase extends Model implements DoActionsInterface, SplSubject
     /**$var SplObserver[] */
     private $observers = [];
 
-    public function execute(?ModelInterface $model, BaseController $params, string $typeDelete=null): void
+    public function execute(?EntitiesInterface $model, BaseController $params, string $typeDelete=null): void
     {
         $actions = $model->actionsAfterDelete();
 
@@ -35,7 +36,7 @@ class AfterDeleteUseCase extends Model implements DoActionsInterface, SplSubject
     }
 
 
-    public function notify(ModelInterface $model= null, $params= null, $typeDelete=null): void
+    public function notify(EntitiesInterface $model= null, $params= null, $typeDelete=null): void
     {
         foreach ($this->observers as $value) {
             $value->update($this, $model, $params, $typeDelete);

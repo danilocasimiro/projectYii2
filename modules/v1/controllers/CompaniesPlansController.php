@@ -2,7 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
-use app\models\CompanyPlan;
+use app\models\entities\CompanyPlan;
 
 class CompaniesPlansController extends BaseController
 {

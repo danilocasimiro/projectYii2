@@ -7,7 +7,7 @@ use yii\db\Migration;
  */
 class m211219_130121_create_fk_companies_plans_companies extends Migration
 {
-      /**
+    /**
      * {@inheritdoc}
      */
     public function safeUp()

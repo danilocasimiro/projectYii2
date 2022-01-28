@@ -3,10 +3,24 @@
 namespace app\models\entities;
 
 use app\models\entities\interfaces\EntitiesInterface;
+use app\useCases\systemServices\GetObjectsService;
 use yii\db\ActiveRecord;
 
-abstract class BaseModel extends \yii\db\ActiveRecord implements EntitiesInterface
+abstract class BaseModel extends ActiveRecord implements EntitiesInterface
 {
+    public function incrementFriendlyId(): int
+    {
+      $query = GetObjectsService::getObjects(static::class);
+      
+      $result = $query->max('friendly_id');
+  
+      if(!$result) {
+        return 1;
+      }
+  
+      return $result + 1;
+    }
+
     public function fields()
     {
         return ActiveRecord::fields();

@@ -41,7 +41,7 @@ class Plan extends BaseModel
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['id', 'name', 'description', 'value', 'subscription_period'], 'required'],
             [['value'], 'number'],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' =>$this->incrementFriendlyId()],
             [['subscription_period', 'friendly_id'], 'integer'],
             [['created_at', 'deleted_at'], 'safe'],
             [['id'], 'string', 'max' => 32],

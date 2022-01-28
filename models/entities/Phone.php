@@ -44,7 +44,7 @@ class Phone extends BaseModel
             [['auth_user_id', 'ddd', 'number'], 'required'],
             [['ddd'], 'string', 'max' => 5],
             [['id', 'auth_user_id'], 'string', 'max' => 32],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['number'], 'string', 'max' => 15],
             [['auth_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUser::class, 'targetAttribute' => ['auth_user_id' => 'id']],
         ];

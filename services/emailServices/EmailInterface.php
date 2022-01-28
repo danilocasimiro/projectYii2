@@ -2,9 +2,9 @@
 
 namespace app\services\emailServices;
 
-use app\interfaces\ModelInterface;
+use app\models\entities\interfaces\EntitiesInterface;
 
 interface EmailInterface
 {
-    public function sendEmail(ModelInterface $receiver, string $class): void;
+    public function sendEmail(EntitiesInterface $receiver, string $class): void;
 }

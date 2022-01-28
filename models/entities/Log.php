@@ -2,7 +2,7 @@
 
 namespace app\models\entities;
 
-use app\components\JwtMethods;
+use app\components\jwt\JwtMethods;
 use app\helpers\HelperMethods;
 use app\models\entities\interfaces\EntitiesInterface;
 use app\useCases\systemServices\CreateObjectService;
@@ -50,7 +50,7 @@ class Log extends BaseModel
             [['id', 'auth_user_id'], 'string', 'max' => 32],
             [['action'], 'string', 'max' => 40],
             ['level', 'in', 'range' => [self::LEVEL_INFO, self::LEVEL_WARNING, self::LEVEL_DANGER, self::LEVEL_SUCCESS]],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['description'], 'string', 'max' => 255],
             [['model'], 'string', 'max' => 50],
             [['id'], 'unique'],

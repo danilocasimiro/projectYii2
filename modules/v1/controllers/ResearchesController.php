@@ -2,7 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
-use app\models\Research;
+use app\models\entities\Research;
 
 class ResearchesController extends BaseController
 {

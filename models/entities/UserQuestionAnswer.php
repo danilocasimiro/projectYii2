@@ -3,7 +3,7 @@
 namespace app\models\entities;
 
 use app\useCases\observers\{LogObserverCreate, LogObserverDelete, LogObserverUpdate};
-use app\components\JwtMethods;
+use app\components\jwt\JwtMethods;
 use app\helpers\HelperMethods;
 use yii\db\ActiveQuery;
 
@@ -48,7 +48,7 @@ class UserQuestionAnswer extends BaseModel
             [['id', 'auth_user_id', 'question_id', 'answer_id'], 'required'],
             [['friendly_id'], 'integer'],
             [['created_at', 'deleted_at'], 'safe'],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['id', 'auth_user_id', 'question_id', 'answer_id'], 'string', 'max' => 32],
             [['description'], 'string', 'max' => 255],
             [['id'], 'unique'],

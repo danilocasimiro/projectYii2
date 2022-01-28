@@ -2,7 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
-use app\models\AuthUser;
+use app\models\entities\AuthUser;
 
 class AuthUsersController extends BaseController
 {

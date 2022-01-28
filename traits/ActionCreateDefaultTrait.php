@@ -2,14 +2,14 @@
 
 namespace app\traits;
 
-use app\interfaces\ModelInterface;
+use app\models\entities\interfaces\EntitiesInterface;
 use app\useCases\doActionsUseCases\AfterCreateUseCase;
 use app\useCases\systemServices\CreateObjectService;
 use Yii;
 
 trait ActionCreateDefaultTrait {
   
-  public function actionCreate(): ModelInterface
+  public function actionCreate(): EntitiesInterface
   {
       $transaction = Yii::$app->db->beginTransaction();
       

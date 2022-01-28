@@ -2,8 +2,8 @@
 
 namespace tests\unit\models;
 
-use app\interfaces\ModelInterface;
-use app\models\AuthUser;
+use app\models\entities\AuthUser;
+use app\models\entities\interfaces\EntitiesInterface;
 use app\useCases\systemServices\{CreateBatchObjectsService, CreateObjectService, DeleteObjectService, UpdateObjectService};
 
 class AuthUserTest extends \Codeception\Test\Unit
@@ -112,7 +112,7 @@ class AuthUserTest extends \Codeception\Test\Unit
 
     public function testSoftDeleteAuthUser()
     {
-        /**@var ModelInterface $authUser */
+        /**@var EntitiesInterface $authUser */
         expect_that($authUser = AuthUser::findIdentity('2a6571da26602a67be14ea8c5ab82349'));
         $id = $authUser->id;
         expect($authUser = DeleteObjectService::deleteObject(AuthUser::class, 'soft', $authUser))->equals("Object ".$id." soft deleted successfully"); 
@@ -120,7 +120,7 @@ class AuthUserTest extends \Codeception\Test\Unit
 
     public function testHardDeleteAuthUser()
     {
-        /**@var ModelInterface $authUser */
+        /**@var EntitiesInterface $authUser */
         expect_that($authUser = AuthUser::findIdentity('2a6571da26602a67be14ea8c5ab82349'));
         $id = $authUser->id;
         expect($authUser = DeleteObjectService::deleteObject(AuthUser::class, 'hard', $authUser))->equals("Object ".$id." hard deleted successfully"); 
@@ -134,7 +134,7 @@ class AuthUserTest extends \Codeception\Test\Unit
             'password' => '567890',
             'type' => 'User'
         ];
-        /**@var ModelInterface $authUser */
+        /**@var EntitiesInterface $authUser */
         expect_that($authUser = AuthUser::findIdentity('2a6571da26602a67be14ea8c5ab82349'));
 
         expect_that($authUser = UpdateObjectService::updateObject($authUser, $params));

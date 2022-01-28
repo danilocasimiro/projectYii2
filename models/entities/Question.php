@@ -45,7 +45,7 @@ class Question extends BaseModel
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['research_id', 'question_type_id', 'text'], 'required'],
             [['text'], 'string', 'max' => 255],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['question_type_id', 'research_id', 'id'], 'string', 'max' => 32],
             [['research_id'], 'exist', 'skipOnError' => true, 'targetClass' => Research::class, 'targetAttribute' => ['research_id' => 'id']],
             [['question_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => QuestionType::class, 'targetAttribute' => ['question_type_id' => 'id']],

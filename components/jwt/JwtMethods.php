@@ -1,7 +1,8 @@
 <?php 
 
-namespace app\components;
+namespace app\components\jwt;
 
+use app\models\entities\AuthUser;
 use app\models\entities\interfaces\EntitiesInterface;
 use app\useCases\systemServices\GetObjectService;
 use sizeg\jwt\Jwt;
@@ -31,7 +32,7 @@ class JwtMethods {
         $parsed = $jwt->getParser()->parse((string) $token[1]);
         $id = $parsed->getClaim('uid');
 
-        return GetObjectService::getObject('app\models\AuthUser', $id)->one();
+        return GetObjectService::getObject(AuthUser::class, $id)->one();
     }
 
     public static function getCompanyIdFromJwt()

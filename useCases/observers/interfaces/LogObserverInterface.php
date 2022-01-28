@@ -1,6 +1,6 @@
 <?php 
 
-namespace app\interfaces;
+namespace app\useCases\observers\interfaces;
 
 use SplObserver;
 

@@ -2,12 +2,12 @@
 
 namespace app\useCases\systemServices;
 
-use app\interfaces\ModelInterface;
+use app\models\entities\interfaces\EntitiesInterface;
 use yii\web\BadRequestHttpException;
 
 class CreateObjectService {
 
-  public static function createObject(string $class, array $params): ModelInterface
+  public static function createObject(string $class, array $params): EntitiesInterface
   {
       $model = new $class;
 

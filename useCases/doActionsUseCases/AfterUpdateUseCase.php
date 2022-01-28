@@ -2,8 +2,9 @@
 
 namespace app\useCases\doActionsUseCases;
 
-use app\interfaces\{DoActionsInterface, ModelInterface};
+use app\models\entities\interfaces\EntitiesInterface;
 use app\modules\v1\controllers\BaseController;
+use app\useCases\doActionsUseCases\interfaces\DoActionsInterface;
 use SplObserver;
 use SplSubject;
 use yii\base\Model;
@@ -13,7 +14,7 @@ class AfterUpdateUseCase extends Model implements DoActionsInterface, SplSubject
     /**$var SplObserver[] */
     private $observers = [];
 
-    public function execute(?ModelInterface $model, BaseController $params, array $oldAttributes = null): void
+    public function execute(?EntitiesInterface $model, BaseController $params, array $oldAttributes = null): void
     {
         $actions = $model->actionsAfterUpdate();
 
@@ -34,7 +35,7 @@ class AfterUpdateUseCase extends Model implements DoActionsInterface, SplSubject
         }
     }
 
-    public function notify(ModelInterface $model= null, $oldAttributes=null, $params= null): void
+    public function notify(EntitiesInterface $model= null, $oldAttributes=null, $params= null): void
     {
         foreach ($this->observers as $value) {
             $value->update($this, $model, $oldAttributes, $params);

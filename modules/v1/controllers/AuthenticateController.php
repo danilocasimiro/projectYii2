@@ -2,8 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
-use app\components\JwtMethods;
-use app\models\{AuthUser, Log, Person};
+use app\models\entities\{AuthUser, Log, Person, LoginForm, User, UserRefreshToken};
 use Yii;
 
 class AuthenticateController extends BaseController
@@ -44,7 +43,7 @@ class AuthenticateController extends BaseController
 
   public function actionLogin(): array
   {
-    $model = new \app\models\LoginForm();
+    $model = new LoginForm;
     $params = \Yii::$app->request->getBodyParams();
     $model->load($params, '');
 
@@ -86,7 +85,7 @@ class AuthenticateController extends BaseController
       return new \yii\web\UnauthorizedHttpException('No refresh token found.');
     }
 
-    $userRefreshToken = \app\models\UserRefreshToken::findOne(['token' => $refreshToken]);
+    $userRefreshToken = UserRefreshToken::findOne(['token' => $refreshToken]);
 
     if (\Yii::$app->request->getMethod() == 'POST') {
       // Getting new JWT after it has expired
@@ -94,7 +93,7 @@ class AuthenticateController extends BaseController
         return new \yii\web\UnauthorizedHttpException('The refresh token no longer exists.');
       }
 
-      $user = \app\models\AuthUser::find()  //adapt this to your needs
+      $user = AuthUser::find()  //adapt this to your needs
         ->where(['id' => $userRefreshToken->id])
         ->one();
 
@@ -139,11 +138,11 @@ class AuthenticateController extends BaseController
   /**
    * @throws yii\base\Exception
    */
-  private function generateRefreshToken(\app\models\AuthUser $user, \app\models\User $impersonator = null): \app\models\UserRefreshToken 
+  private function generateRefreshToken(AuthUser $user, User $impersonator = null): UserRefreshToken 
   {
     $refreshToken = \Yii::$app->security->generateRandomString(200);
     // TODO: Don't always regenerate - you could reuse existing one if user already has one with same IP and user agent
-    $userRefreshToken = new \app\models\UserRefreshToken([
+    $userRefreshToken = new UserRefreshToken([
       'user_id' => (string) $user->id,
       'token' => $refreshToken,
       'ip' => \Yii::$app->request->userIP,

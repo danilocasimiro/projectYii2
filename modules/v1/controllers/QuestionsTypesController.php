@@ -2,7 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
-use app\models\QuestionType;
+use app\models\entities\QuestionType;
 
 class QuestionsTypesController extends BaseController
 {

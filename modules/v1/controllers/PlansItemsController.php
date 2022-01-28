@@ -2,7 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
-use app\models\PlanItem;
+use app\models\entities\PlanItem;
 
 class PlansItemsController extends BaseController
 {

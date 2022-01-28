@@ -2,7 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
-use app\models\UserQuestionAnswer;
+use app\models\entities\UserQuestionAnswer;
 
 class UsersQuestionsAnswersController extends BaseController
 {

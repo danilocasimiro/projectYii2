@@ -44,7 +44,7 @@ class AuthUserLevel extends BaseModel
             [['id'], 'default', 'value' => md5(uniqid(rand(), true))],
             [['id', 'auth_user_id', 'level_id'], 'required'],
             [['friendly_id'], 'integer'],
-            [['!friendly_id'], 'default', 'value' => HelperMethods::incrementFriendlyId(static::class)],
+            [['!friendly_id'], 'default', 'value' => $this->incrementFriendlyId()],
             [['created_at', 'deleted_at'], 'safe'],
             [['id', 'auth_user_id', 'level_id'], 'string', 'max' => 32],
             [['id'], 'unique'],

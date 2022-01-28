@@ -2,14 +2,14 @@
 
 namespace app\traits;
 
-use app\interfaces\ModelInterface;
+use app\models\entities\interfaces\EntitiesInterface;
 use app\useCases\doActionsUseCases\AfterUpdateUseCase;
 use app\useCases\systemServices\UpdateObjectService;
 use Yii;
 
 trait ActionUpdateDefaultTrait {
   
-  public function actionUpdate(): ModelInterface
+  public function actionUpdate(): EntitiesInterface
   {        
       $oldModelAttributes = $this->getObject->getAttributes();
 
